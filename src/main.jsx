@@ -106,6 +106,8 @@ function App() {
   const [earningTitle, setEarningTitle] = React.useState('');
   const [earningSource, setEarningSource] = React.useState('Karmyug AI');
   const [earningRate, setEarningRate] = React.useState('');
+  const [earningRateUnit, setEarningRateUnit] = React.useState('Per accepted task');
+  const [earningRateCurrency, setEarningRateCurrency] = React.useState('INR');
   const [earningUrl, setEarningUrl] = React.useState('');
   const [earningStatus, setEarningStatus] = React.useState('Lead found');
 
@@ -146,6 +148,9 @@ function App() {
       title: earningTitle.trim(),
       source: earningSource,
       claimedRateInr: earningRate.trim(),
+      claimedRateText: earningRate.trim(),
+      claimedRateCurrency: earningRateCurrency,
+      claimedRateUnit: earningRateUnit,
       url: earningUrl.trim(),
       status: earningStatus,
       earnedInr: '',
@@ -156,6 +161,8 @@ function App() {
     setEarningsLog(prev => [entry, ...prev]);
     setEarningTitle('');
     setEarningRate('');
+    setEarningRateUnit('Per accepted task');
+    setEarningRateCurrency('INR');
     setEarningUrl('');
     setEarningStatus('Lead found');
     setNotice('Task saved on this device. No application or task submission was made.');
@@ -164,10 +171,10 @@ function App() {
     setEarningsLog(prev => prev.map(item => item.id === id ? { ...item, [field]: value, updatedAt: new Date().toISOString() } : item));
   }
   function exportEarnings() {
-    const cols = ['id','source','title','claimed_rate_inr','status','actual_earned_inr','payout_received_inr','url','created_at','updated_at'];
+    const cols = ['id','source','title','claimed_rate_text','rate_currency','rate_unit','status','actual_earned_inr','payout_received_inr','url','created_at','updated_at'];
     const rows = [
       cols.map(csvCell).join(','),
-      ...earningsLog.map(item => [item.id,item.source,item.title,item.claimedRateInr,item.status,item.earnedInr,item.payoutInr,item.url,item.createdAt,item.updatedAt].map(csvCell).join(','))
+      ...earningsLog.map(item => [item.id,item.source,item.title,item.claimedRateText ?? item.claimedRateInr,item.claimedRateCurrency || 'Unknown',item.claimedRateUnit || 'Unknown',item.status,item.earnedInr,item.payoutInr,item.url,item.createdAt,item.updatedAt].map(csvCell).join(','))
     ];
     saveDownload('autopilot-earnings-tracker.csv', '\ufeff' + rows.join('\r\n'));
     setNotice('Earnings tracker CSV exported. It contains only entries saved on this device.');
@@ -248,26 +255,26 @@ function App() {
         <section className="earning-hero">
           <div><p className="eyebrow">CROSS-PLATFORM MICROTASKS</p><h2>Hunt real work. Track every rupee.</h2><p>Daily public-page scans, rate evidence, scam-risk checks and a private task-to-payout ledger. This is separate from POD.</p></div>
           <div className="earning-hero-actions">
-            <a className="primary earning-link-button" href="https://github.com/kumbipakam29-dev/autopilot-studio/actions/workflows/earnings-hunter.yml" target="_blank" rel="noreferrer">Open latest hunt ↗</a>
+            <a className="primary earning-link-button" href="https://github.com/kumbipakam29-dev/autopilot-studio/actions/workflows/data-labeling-hunter.yml" target="_blank" rel="noreferrer">Open data-labeling scan ↗</a>
             <button className="secondary" onClick={exportEarnings}>Export tracker ↓</button>
           </div>
         </section>
 
         <div className="earning-stats">
-          <article><small>PUBLIC SOURCES SCANNED</small><b>8</b><span>Last verified scan: 24 Oct 2026</span></article>
+          <article><small>SOURCE PROFILES IN REGISTRY</small><b>{EARNING_SOURCES.length}</b><span>Live fetch status is in the GitHub Actions report</span></article>
           <article><small>₹50–₹200 PER TASK</small><b>{targetLeadCount}</b><span>Exact public INR rates in this lead snapshot</span></article>
           <article><small>ACTUAL EARNED</small><b>₹{earnedTotal.toFixed(2)}</b><span>Only what you record as accepted</span></article>
           <article><small>PAYOUT RECEIVED</small><b>₹{payoutTotal.toFixed(2)}</b><span>Enter only when money really arrives</span></article>
         </div>
 
-        <div className="notice"><b>Honest hunt result — 24 October 2026</b><p>The latest run on this branch's baseline scan emitted 30 leads and found <strong>zero verified public rates in the ₹50–₹200 per-task target band</strong>. Karmyug's live page currently shows ₹2 per approved recording, with task counts changing over time; CrowdGen Project Coffee advertises about ₹175/hour, not ₹175 per task, and requires a laptop/PC and qualification. Open the source to confirm current slots and terms before doing any work.</p></div>
+        <div className="notice"><b>Higher-value data-labeling experiments</b><p>YPAI's official India pages advertise typical project pay of <strong>₹550–₹800/hour</strong> for data annotation, model evaluation and data collection. Application review, qualification, work availability and the exact project rate are not guaranteed. Karmyug's public listings have shown ₹2 per approved recording, which is below the target. The app uses a dated lead snapshot; verify the official listing and current terms before applying.</p></div>
 
         <section className="earning-section">
           <div className="earning-section-head"><div><h3>Specific leads found</h3><p>Rate and availability here reflect the last scan; verify live details before applying.</p></div><span className="status warn">No target-rate task verified</span></div>
           <div className="earning-lead-grid">{EARNING_LEADS.map(lead => <article className="earning-lead" key={lead.id}>
             <div className="earning-lead-top"><span className={'status ' + (lead.ratePerTaskInr === 2 ? 'warn' : '')}>{lead.badge}</span><small>{lead.source}</small></div>
             <h4>{lead.title}</h4><div className="earning-rate">{lead.rate}</div><p>{lead.detail}</p>
-            <div className="earning-actions"><a href={lead.url} target="_blank" rel="noreferrer">Open official listing ↗</a><button className="secondary" onClick={() => { setEarningTitle(lead.title); setEarningSource(lead.source); setEarningRate(lead.ratePerTaskInr === null ? '' : String(lead.ratePerTaskInr)); setEarningUrl(lead.url); setNotice('Lead added to the form below. Review it and save your tracker entry.'); document.getElementById('earning-tracker-form')?.scrollIntoView({behavior:'smooth', block:'start'}); }}>Track this lead +</button></div>
+            <div className="earning-actions"><a href={lead.url} target="_blank" rel="noreferrer">Open official listing ↗</a><button className="secondary" onClick={() => { setEarningTitle(lead.title); setEarningSource(lead.source); setEarningRate(lead.rateValue ?? (lead.ratePerTaskInr === null ? '' : String(lead.ratePerTaskInr))); setEarningRateUnit(lead.rateUnit || 'Unknown'); setEarningRateCurrency(lead.rateCurrency || (lead.ratePerTaskInr !== null ? 'INR' : 'Unknown')); setEarningUrl(lead.url); setNotice('Lead added to the form below. Review it and save your tracker entry.'); document.getElementById('earning-tracker-form')?.scrollIntoView({behavior:'smooth', block:'start'}); }}>Track this lead +</button></div>
           </article>)}</div>
         </section>
 
@@ -283,14 +290,16 @@ function App() {
           <form className="earning-form" onSubmit={e => { e.preventDefault(); addEarning(); }}>
             <label>Task title<input value={earningTitle} onChange={e => setEarningTitle(e.target.value)} placeholder="e.g. Hindi data labeling task" required /></label>
             <label>Source<select value={earningSource} onChange={e => setEarningSource(e.target.value)}>{[...EARNING_SOURCES.map(s => s.name), 'Other / new source'].map(name => <option key={name}>{name}</option>)}</select></label>
-            <label>Claimed rate (₹/task, if stated)<input type="number" min="0" step="0.01" value={earningRate} onChange={e => setEarningRate(e.target.value)} placeholder="Leave blank if unknown" /></label>
+            <label>Posted rate (range allowed)<input type="text" value={earningRate} onChange={e => setEarningRate(e.target.value)} placeholder="e.g. 550-800" /></label>
+            <label>Rate currency<select value={earningRateCurrency} onChange={e => setEarningRateCurrency(e.target.value)}>{['INR','USD','EUR','GBP','Unknown'].map(code => <option key={code}>{code}</option>)}</select></label>
+            <label>Rate unit<select value={earningRateUnit} onChange={e => setEarningRateUnit(e.target.value)}>{['Per accepted task','Per task','Per hour','Per batch','Fixed project','Unknown'].map(unit => <option key={unit}>{unit}</option>)}</select></label>
             <label>Official task URL<input type="url" value={earningUrl} onChange={e => setEarningUrl(e.target.value)} placeholder="https://…" /></label>
             <label>Status<select value={earningStatus} onChange={e => setEarningStatus(e.target.value)}>{EARNING_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label>
             <button className="primary" type="submit">Save tracker entry</button>
           </form>
           {notice && <div className="inline-notice" role="status">{notice}</div>}
           {earningsLog.length ? <div className="earning-log-list">{earningsLog.map(item => <article className="earning-log" key={item.id}>
-            <div className="earning-log-head"><div><b>{item.title}</b><small>{item.source} · Added {new Date(item.createdAt).toLocaleDateString()}</small></div>{item.url && <a href={item.url} target="_blank" rel="noreferrer">Open task ↗</a>}</div>
+            <div className="earning-log-head"><div><b>{item.title}</b><small>{item.source} · Rate: {item.claimedRateText ?? item.claimedRateInr ?? 'Unknown'} {item.claimedRateCurrency || 'Unknown'} / {item.claimedRateUnit || 'unit unknown'} · Added {new Date(item.createdAt).toLocaleDateString()}</small></div>{item.url && <a href={item.url} target="_blank" rel="noreferrer">Open task ↗</a>}</div>
             <div className="earning-log-fields">
               <label>Status<select value={item.status} onChange={e => updateEarning(item.id, 'status', e.target.value)}>{EARNING_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label>
               <label>Actual earned (₹)<input type="number" min="0" step="0.01" value={item.earnedInr} onChange={e => updateEarning(item.id, 'earnedInr', e.target.value)} placeholder="0.00" /></label>
