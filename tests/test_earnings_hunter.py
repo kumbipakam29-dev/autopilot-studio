@@ -49,6 +49,14 @@ class EarningsHunterTests(unittest.TestCase):
         us_specialty = earnings.task_link_priority("Apply", "https://www.oneforma.com/projects/physician-clinical-reasoning-reviewer-ehr-cases/")
         self.assertGreater(india_task, us_specialty)
 
+    def test_india_relevant_sources_are_in_registry(self):
+        names = {source["name"] for source in earnings.SOURCES}
+        self.assertIn("uTest — Project Radar Hindi-English subtitle evaluation", names)
+        self.assertIn("UserTest Pro India", names)
+        self.assertIn("Smallest AI Contributor", names)
+        self.assertIn("Corpshore / Jwuma India AI data work", names)
+        self.assertIn("Prolific participant studies", names)
+
     def test_unsafe_external_link_not_allowed(self):
         self.assertFalse(earnings.allowed_same_site_url("https://evil.example/task", "https://work.karmyug.in/"))
         self.assertTrue(earnings.allowed_same_site_url("/jobs/", "https://work.karmyug.in/"))
