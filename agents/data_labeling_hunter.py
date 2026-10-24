@@ -113,7 +113,7 @@ def extract_pay_evidence(text: str) -> tuple[str, str, str, str]:
                 currency, raw_amount = "USD", m.group(2)
             else:
                 currency, raw_amount = "USD", m.group(3)
-            amount = re.sub(r"\\s*(?:-|–|to)\\s*", "-", raw_amount, flags=re.I).replace(",", "")
+            amount = re.sub(r"\s*(?:-|–|to)\s*", "-", raw_amount, flags=re.I).replace(",", "")
             return currency, amount, re.sub(r"\s+", " ", u.group(1)).strip(), line[:500]
     return "", "", "", ""
 
