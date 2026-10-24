@@ -1,0 +1,38 @@
+name: Data Labeling Earnings Hunter
+
+on:
+  pull_request:
+    paths:
+      - 'agents/data_labeling_hunter.py'
+      - 'tests/test_data_labeling_hunter.py'
+      - '.github/workflows/data-labeling-hunter.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: data-labeling-hunter-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test-and-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run offline tests
+        run: python -m unittest discover -s tests -v
+      - name: Scan official public listings
+        run: python agents/data_labeling_hunter.py --output-dir output
+      - name: Upload CSV and JSON lead report
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-labeling-leads
+          path: output/
+          retention-days: 14
