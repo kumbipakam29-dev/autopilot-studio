@@ -33,9 +33,24 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertEqual(candidate["automation_status"], "DISCOVERY_ONLY_NO_LOGIN_NO_SUBMISSION")
         self.assertIn("manually", candidate["required_next_step"])
 
+    def test_link_priority_prefers_general_language_work_over_us_only_specialty(self):
+        india_task = earnings.task_link_priority("Apply", "https://www.oneforma.com/projects/online-data-labeling-and-search-evaluation-tasks/")
+        us_specialty = earnings.task_link_priority("Apply", "https://www.oneforma.com/projects/physician-clinical-reasoning-reviewer-ehr-cases/")
+        self.assertGreater(india_task, us_specialty)
+
     def test_unsafe_external_link_not_allowed(self):
         self.assertFalse(earnings.allowed_same_site_url("https://evil.example/task", "https://work.karmyug.in/"))
         self.assertTrue(earnings.allowed_same_site_url("/jobs/", "https://work.karmyug.in/"))
+
+    def test_detail_page_extracts_rate_and_eligibility(self):
+        parser = earnings.PageParser()
+        parser.text_parts = ["Recording project", "₹150 per approved task", "Open to residents in India", "Payment weekly"]
+        facts = earnings.relevant_detail_facts(parser)
+        self.assertIn("₹150", facts)
+        self.assertIn("per approved task", facts)
+        self.assertIn("weekly", facts)
+        evidence = earnings.eligibility_evidence(facts)
+        self.assertIn("India", evidence)
 
     def test_offline_run_writes_expected_files(self):
         old_out = earnings.OUT

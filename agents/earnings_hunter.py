@@ -118,31 +118,80 @@ def make_candidate(source, title, url, snippet, page_status, kind):
       "page_fetch_status":page_status,"required_next_step":"Open official page; confirm current task, rate, eligibility, deadline and payout before deciding manually.",
       "automation_status":"DISCOVERY_ONLY_NO_LOGIN_NO_SUBMISSION"}
 
+def relevant_detail_facts(parser):
+    facts = []
+    fact_pattern = re.compile(r"(₹|INR|Rs\.?|\$|USD|€|EUR|£|GBP|per\s+(?:approved\s+)?(?:task|recording|image|minute|hour)|payment|payout|paid|rate|reward|compensation|eligib|India|resident|country|deadline|minimum|qualification|weekly|monthly)", re.I)
+    for part in parser.text_parts:
+        cleaned = clean_text(part)
+        if cleaned and fact_pattern.search(cleaned) and cleaned not in facts:
+            facts.append(cleaned)
+    return " ".join(facts)[:1800]
+
+def eligibility_evidence(text):
+    snippets = re.findall(r"[^.!?\n]{0,80}(?:India|Indian|resident|residents|country|eligible|eligibility|location|remote|worldwide|US only|United States|language requirement)[^.!?\n]{0,100}", text, re.I)
+    return clean_text(" | ".join(snippets[:5]))[:700]
+
+def task_link_priority(label, url):
+    text = clean_text(label + " " + urllib.parse.urlparse(url).path).lower()
+    score = 0
+    preferred = ("hindi", "india", "indian", "local maps", "local search", "online-data-labeling", "search-evaluation", "language", "translation", "bilingual", "recording", "transcription", "ai-evaluation", "data-labeling", "speech", "annotat", "evaluator")
+    excluded = ("physician", "clinical", "ehr-cases", "doctor", "las-vegas", "nevada", "3d-home-capture", "overnight-home-video", "us-only")
+    score += sum(18 for phrase in preferred if phrase in text)
+    score -= sum(100 for phrase in excluded if phrase in text)
+    if "/jobs/" in urllib.parse.urlparse(url).path.lower() or "/projects/" in urllib.parse.urlparse(url).path.lower():
+        score += 5
+    if label.strip().lower() == "apply":
+        score -= 2
+    return score
+
 def discover_source(source, offline=False):
     base = make_candidate(source, source["name"] + " — official starting point", source["url"], source["type"] + ". " + source["payout_note"], "offline mode", "PLATFORM_LEAD")
-    if offline: return [base], {"source":source["name"],"fetch_status":"offline mode","candidate_links_extracted":"0"}
+    if offline:
+        return [base], {"source":source["name"],"fetch_status":"offline mode","candidate_links_extracted":"0","detail_pages_checked":"0"}
     body, status = fetch_public_page(source["url"])
     if not body:
         base["page_fetch_status"] = status
         base["triage_score"] = str(int(base["triage_score"])-5)
-        return [base], {"source":source["name"],"fetch_status":status,"candidate_links_extracted":"0"}
+        return [base], {"source":source["name"],"fetch_status":status,"candidate_links_extracted":"0","detail_pages_checked":"0"}
     parser = PageParser()
     try: parser.feed(body)
     except Exception: pass
     page_title = clean_text(" ".join(parser.title_parts)) or source["name"] + " public page"
-    # Do not attribute amounts or warning text from an entire page to one specific task.
     rows = [make_candidate(source, page_title, source["url"], source["type"] + ". " + source["payout_note"], status, "OFFICIAL_PAGE_SCAN")]
-    seen, count = {source["url"]}, 0
-    for label, href in parser.links:
+    # Prioritize likely India/language/data tasks and avoid spending the small fetch budget on visibly US-only or credential-gated specialties.
+    ordered_links = sorted(parser.links, key=lambda item: task_link_priority(item[0], urllib.parse.urljoin(source["url"], item[1])), reverse=True)
+    seen, count, detail_count = {source["url"]}, 0, 0
+    for label, href in ordered_links:
         url = urllib.parse.urljoin(source["url"], href)
         parsed = urllib.parse.urlparse(url)
         if not allowed_same_site_url(url, source["url"]): continue
         url = urllib.parse.urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", parsed.query, ""))
-        if url in seen or len(seen) >= 45 or not TASK_WORDS.search(label): continue
+        if url in seen or len(seen) >= 60 or not TASK_WORDS.search(label): continue
         seen.add(url)
-        rows.append(make_candidate(source,label,url,(label+". "+source["type"]+". "+source["payout_note"])[:500],status,"SAME_SITE_LINK_LEAD"))
+        path = parsed.path.lower().rstrip("/")
+        is_detail = ("/jobs/" in path and path.rsplit("/jobs/",1)[-1] not in {"", "index"}) or ("/projects/" in path and path.rsplit("/projects/",1)[-1] not in {"", "index"})
+        detail_body, detail_status = (None, "not attempted")
+        if is_detail and detail_count < 5:
+            detail_body, detail_status = fetch_public_page(url)
+            detail_count += 1
+        if detail_body:
+            detail_parser = PageParser()
+            try: detail_parser.feed(detail_body)
+            except Exception: pass
+            detail_title = clean_text(" ".join(detail_parser.title_parts))
+            facts = relevant_detail_facts(detail_parser)
+            title = clean_text(label + (" — " + detail_title if detail_title and detail_title.lower() not in label.lower() else ""))[:240]
+            row = make_candidate(source, title, url, facts or label, detail_status, "TASK_DETAIL_PAGE")
+            row["public_detail_evidence"] = facts
+            row["eligibility_evidence"] = eligibility_evidence(facts)
+            rows.append(row)
+        else:
+            row = make_candidate(source, label, url, label + ". " + source["type"] + ". " + source["payout_note"], status if not is_detail else detail_status, "SAME_SITE_LINK_LEAD")
+            row["public_detail_evidence"] = ""
+            row["eligibility_evidence"] = ""
+            rows.append(row)
         count += 1
-    return rows, {"source":source["name"],"fetch_status":status,"candidate_links_extracted":str(count)}
+    return rows, {"source":source["name"],"fetch_status":status,"candidate_links_extracted":str(count),"detail_pages_checked":str(detail_count)}
 
 def write_csv(path, rows, columns):
     with path.open("w",encoding="utf-8-sig",newline="") as handle:
@@ -161,7 +210,7 @@ def run_hunt(offline=False, limit=30):
     candidates.sort(key=lambda r:(r["triage_status"]!="QUARANTINE_RISK_REVIEW",int(r["triage_score"])),reverse=True)
     candidates = candidates[:max(1,min(200,limit))]
     run_id=dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S-UTC")
-    columns=["discovered_at_utc","source","candidate_type","title","url","region_or_eligibility","task_type","public_amount_text","currency","payment_signal","triage_score","triage_status","score_notes","payout_or_eligibility_note","page_fetch_status","required_next_step","automation_status"]
+    columns=["discovered_at_utc","source","candidate_type","title","url","region_or_eligibility","task_type","public_amount_text","currency","payment_signal","triage_score","triage_status","score_notes","payout_or_eligibility_note","page_fetch_status","public_detail_evidence","eligibility_evidence","required_next_step","automation_status"]
     write_csv(OUT/"earnings_opportunities.csv",candidates,columns)
     write_csv(OUT/"source_status.csv",source_report,["source","fetch_status","candidate_links_extracted"])
     tracker_cols=["candidate_url","source","task_title","status","claimed_rate","actual_time_minutes","proof_link_or_note","approval_status","amount_earned_inr","payout_received_inr","next_follow_up"]

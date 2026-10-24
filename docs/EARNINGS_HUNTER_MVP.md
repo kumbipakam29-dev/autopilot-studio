@@ -17,7 +17,7 @@ The scheduled GitHub Actions workflow runs daily. Open the repository Actions ta
 
 ## Discovery boundaries
 
-Only official public starting pages and same-site links found in public HTML are inspected. Requests are bounded by time and size. The code does not submit forms, create accounts, log in, click apply/claim buttons, handle identity verification, bypass CAPTCHAs, or scrape private dashboards. Results are leads, not a guarantee that the provider currently has work or that a person is eligible.
+Only official public starting pages and a small capped number of same-site task/project detail pages found in public HTML are inspected. The job extracts any visible rate and eligibility phrases as evidence, but does not treat a listing as a guarantee. Requests are bounded by time and size. The code does not submit forms, create accounts, log in, click apply/claim buttons, handle identity verification, bypass CAPTCHAs, or scrape private dashboards. Results are leads, not a guarantee that the provider currently has work or that a person is eligible.
 
 ## Safe work → evidence → repeat loop
 
