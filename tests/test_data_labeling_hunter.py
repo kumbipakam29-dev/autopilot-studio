@@ -71,6 +71,30 @@ class HtmlTests(unittest.TestCase):
 
 
 class EligibilityAndPriorityTests(unittest.TestCase):
+    def test_generic_openings_landing_page_is_not_a_task_detail(self):
+        source = next(s for s in hunter.SOURCES if s.name == "YPAI Data Annotator India")
+        url = "https://freelancer.ypai.ai/jobs/openings/"
+        raw = "<html><title>Open freelance roles, rates listed</title><p>Typical pay INR 550-800 per hour.</p></html>"
+        lead = hunter.make_lead(source, url, "200", raw)
+        self.assertFalse(hunter.is_task_detail_url(source, url))
+        self.assertEqual(lead.currency, "")
+        self.assertEqual(lead.amount, "")
+
+    def test_generic_slug_ending_in_jobs_is_not_detail(self):
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        self.assertFalse(hunter.is_task_detail_url(source, "https://www.opentrain.ai/jobs/remote-ai-code-evaluator-jobs"))
+
+    def test_specific_job_slug_is_detail(self):
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        self.assertTrue(hunter.is_task_detail_url(source, "https://www.opentrain.ai/jobs/c-llm-evaluation-engineer-cm123"))
+
+    def test_child_job_does_not_inherit_india_from_parent_source(self):
+        source = next(s for s in hunter.SOURCES if s.name == "YPAI Data Annotator India")
+        url = "https://freelancer.ypai.ai/jobs/remote-reviewer-cm123"
+        raw = "<html><title>Remote Reviewer</title><p>Typical project pay INR 550-800 per hour.</p></html>"
+        lead = hunter.make_lead(source, url, "200", raw)
+        self.assertEqual(lead.fit_hint, "ELIGIBILITY_UNKNOWN_VERIFY")
+
     def test_generic_us_physician_rate_is_not_promoted(self):
         source = next(s for s in hunter.SOURCES if s.name == "OneForma Jobs")
         raw = "<html><title>Open Freelance Projects</title><p>Review clinical reasoning tasks. Remote, for physicians in the United States, $150 USD per hour.</p></html>"
