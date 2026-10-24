@@ -1,7 +1,6 @@
 # Direct-client microgig experiment: CSV/text labeling + QA
 
 ## Service hypothesis
-
 Offer a small, clearly scoped CSV cleanup and text-labeling service to clients who have permission to share the data. Deliverables: a labeled CSV based on the client's written taxonomy, rationale notes for ambiguous labels, and a quality report checking duplicate IDs, missing fields, invalid labels and schema consistency.
 
 The portfolio CSV at `portfolio/synthetic_customer_feedback_labeled.csv` contains **synthetic demo text**. It is not client data and is not evidence of prior paid work. Label correctness always depends on the buyer's actual written rubric; do not promise perfect accuracy.
@@ -30,3 +29,7 @@ The checker validates structure and allowed values; it cannot prove semantic cor
 > Hi — I can clean and label a small CSV using your exact intent/sentiment taxonomy, then return the labeled file plus a consistency report for duplicate IDs, missing fields and invalid labels. I can first validate a small sample against your written guidelines so we agree on edge cases before scaling. Please share the expected columns, label definitions, row count, deadline and acceptance/payment terms. I only work with data you have permission to share.
 
 Send only to a few relevant, real listings or client requests; personalize each proposal and follow the marketplace's rules. Don't bulk-spam, invent paid experience, fabricate proof, or submit fake reviews.
+
+## First-payment sprint link
+
+Use the [First Verified Payment Sprint](FIRST_VERIFIED_PAYMENT_SPRINT.md) for the current India-focused opportunity order, live-page checks, payout-verification criteria and scam stop conditions.
