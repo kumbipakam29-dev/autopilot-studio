@@ -34,7 +34,7 @@ RISK_PATTERNS = {
     "captcha_bypass": re.compile(r"\b(captcha bypass|solve captchas? at scale|bypass captcha)\b", re.I),
     "guaranteed_income": re.compile(r"\bguaranteed\s+(income|earnings|profit)\b", re.I),
 }
-CURRENCY = re.compile(r"(?:(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?)|\$\s*([0-9]+(?:\.[0-9]+)?))", re.I)
+CURRENCY = re.compile(r"(?:(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?)|\$\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?))", re.I)
 UNIT = re.compile(r"\b(per\s+(?:task|accepted task|hour|hr|minute|batch|project|recording|image|audio|page)|/\s*(?:task|hour|hr|batch|image|page)|each\s+(?:task|recording|image|page)|for\s+\d+\s+(?:tasks|images|minutes|hours|pages|prompts))\b", re.I)
 RISK_TEXT_LIMIT = 6000
 
@@ -107,9 +107,13 @@ def extract_pay_evidence(text: str) -> tuple[str, str, str, str]:
         m = CURRENCY.search(line)
         u = UNIT.search(line)
         if m and u:
-            if m.group(1): currency, amount = "INR", m.group(1).replace(",", "")
-            elif m.group(2): currency, amount = "USD", m.group(2)
-            else: currency, amount = "USD", m.group(3)
+            if m.group(1):
+                currency, raw_amount = "INR", m.group(1)
+            elif m.group(2):
+                currency, raw_amount = "USD", m.group(2)
+            else:
+                currency, raw_amount = "USD", m.group(3)
+            amount = re.sub(r"\\s*(?:-|–|to)\\s*", "-", raw_amount, flags=re.I).replace(",", "")
             return currency, amount, re.sub(r"\s+", " ", u.group(1)).strip(), line[:500]
     return "", "", "", ""
 
