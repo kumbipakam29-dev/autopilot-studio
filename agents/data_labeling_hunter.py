@@ -168,11 +168,11 @@ def find_links(page_url: str, raw_html: str, limit: int = 8) -> list[str]:
 def classify_risk(text: str) -> list[str]:
     """Flag risky asks, but do not mistake a platform's explicit anti-scam warning for an offer."""
     sample = text[:RISK_TEXT_LIMIT]
-    sentences = re.split(r"(?<=[.!?])\\s+|\\n+", sample)
+    sentences = re.split(r"(?<=[.!?])\s+|\n+", sample)
     flags = set()
     denial = re.compile(
-        r"\\b(?:no|never|not|without|don't|do not|doesn't|does not|won't|will not|free)\\b"
-        r".{0,90}\\b(?:fee|deposit|upfront|joining|registration|unlock|money|pay|payment|charge)\\b",
+        r"\b(?:no|never|not|without|don't|do not|doesn't|does not|won't|will not|free)\b"
+        r".{0,90}\b(?:fee|deposit|upfront|joining|registration|unlock|money|pay|payment|charge)\b",
         re.I,
     )
     for sentence in sentences:
