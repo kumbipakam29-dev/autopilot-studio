@@ -7,40 +7,76 @@ const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Task Que
 const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
 
 const EARNING_SOURCES = [
-  { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Language & AI data tasks', note: 'Public India listings show ₹2 per approved recording on the last scan. ID verification and quality acceptance apply.' },
-  { name: 'CrowdGen by Appen', url: 'https://crowdgen.com/', kind: 'AI data & evaluation projects', note: 'Project-specific qualification, rates and availability. Never pay to join.' },
+  { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Phone-based voice/data tasks', note: 'Last checked listings showed ₹2 per approved recording. Easy to start, but below the ₹50–₹200 task target; verify available tasks and payout terms.' },
+  { name: 'YPAI Data Annotator India', url: 'https://freelancer.ypai.ai/jobs/openings/data-annotator-in', kind: 'Image/video/audio/text annotation', note: 'Official India role page advertises typical INR 550–800/hour. Selection, project volume and exact invitation rate are not guaranteed.' },
+  { name: 'YPAI Model Evaluator India', url: 'https://freelancer.ypai.ai/jobs/openings/model-evaluator-in', kind: 'AI answer evaluation and fact-checking', note: 'Official India role page advertises typical INR 550–800/hour. Requires rubric-based judgement and clear written reasoning; selection is required.' },
+  { name: 'YPAI Data Collection Contributor India', url: 'https://freelancer.ypai.ai/jobs/openings/data-contributor-in', kind: 'Audio/video/image/text data collection', note: 'Official India role page advertises typical INR 550–800/hour. Device, consent and project-specific instructions apply.' },
+  { name: 'HumanSignal AI Training Contributors', url: 'https://onboard.humansignal.com/', kind: 'AI training and data labeling', note: 'Rates appear after matching to an eligible project. Location, skills, ID checks and project availability apply.' },
+  { name: 'Corpshore/Jwuma India', url: 'https://platform.corpshore.ai/india', kind: 'AI annotation, evaluation and transcription', note: 'Public pages may show USD per-task examples; the exact accepted task and rate must be confirmed before starting.' },
+  { name: 'CrowdGen by Appen', url: 'https://crowdgen.com/coffee-en-in/', kind: 'AI data & evaluation projects', note: 'Project availability and payout requirements change; if the project page is unavailable, use the official main site and re-check eligibility.' },
   { name: 'Clickworker', url: 'https://www.clickworker.com/clickworker/', kind: 'Microtasks & data work', note: 'Check India availability and supported payout method before investing time.' },
-  { name: 'OneForma', url: 'https://www.oneforma.com/jobs/', kind: 'Language & AI projects', note: 'Project requirements, rates and recruitment status vary. Confirm that a listing fits your location and skills.' },
-  { name: 'TELUS Digital AI Community', url: 'https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india', kind: 'Rating & evaluation roles', note: 'Often application/qualification based, not instant microtask cash.' },
+  { name: 'OneForma', url: 'https://www.oneforma.com/jobs/', kind: 'Language & AI projects', note: 'Project requirements, rates and recruitment status vary. Avoid jobs whose country or professional qualifications do not fit you.' },
+  { name: 'TELUS Digital AI Community', url: 'https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india', kind: 'Rating & evaluation roles', note: 'Application and qualification based; not instant task income.' },
   { name: 'Microworkers', url: 'https://www.microworkers.com/', kind: 'Small online tasks', note: 'KYC and withdrawal conditions apply. Use only genuine tasks and proof.' },
-  { name: 'Toloka', url: 'https://toloka.ai/tolokers/', kind: 'Data annotation', note: 'Check current country and project restrictions, which can change.' },
+  { name: 'Toloka', url: 'https://toloka.ai/tolokers/', kind: 'Data annotation and related work', note: 'Check current country/project restrictions and payment route.' },
+  { name: 'OpenTrain Python Software Engineering LLM Evaluator', url: 'https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/', kind: 'Specialist coding evaluation', note: 'A specialist listing has advertised high per-task pay, but only apply if your real Python/software evaluation skills match the requirements; verify live terms.' },
   { name: 'Gitcoin Bounties', url: 'https://gitcoin.co/mechanisms/bounties', kind: 'Open-source & skill bounties', note: 'Acceptance is competitive; check the live amount, deadline, requirements and payout terms.' }
 ];
 
 const EARNING_LEADS = [
   {
+    id: 'ypai-annotator', title: 'Data Annotator — India', source: 'YPAI Data Annotator India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/data-annotator-in',
+    rate: '₹550–₹800/hour typical project rate', ratePerTaskInr: null, rateValue: '550-800', rateUnit: 'Per hour', rateCurrency: 'INR', badge: 'High-value; application required',
+    detail: 'The official India page advertises typical project pay of INR 550–800/hour and biweekly payments after approved work. This is not a guaranteed offer: application review, qualification, project supply and exact invitation rate apply.'
+  },
+  {
+    id: 'ypai-evaluator', title: 'Model Evaluator — India', source: 'YPAI Model Evaluator India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/model-evaluator-in',
+    rate: '₹550–₹800/hour typical project rate', ratePerTaskInr: null, rateValue: '550-800', rateUnit: 'Per hour', rateCurrency: 'INR', badge: 'High-value; judgement required',
+    detail: 'Rate is a typical project range shown by the provider, not guaranteed work. The role requires reading AI answers against project rubrics and explaining why an answer is correct or wrong.'
+  },
+  {
+    id: 'ypai-contributor', title: 'Data Collection Contributor — India', source: 'YPAI Data Collection Contributor India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/data-contributor-in',
+    rate: '₹550–₹800/hour typical project rate', ratePerTaskInr: null, rateValue: '550-800', rateUnit: 'Per hour', rateCurrency: 'INR', badge: 'Device/project requirements',
+    detail: 'The provider advertises typical INR 550–800/hour with payment every two weeks after approved work. Follow project capture instructions and consent requirements; exact pay and work volume depend on the invitation.'
+  },
+  {
+    id: 'humansignal', title: 'HumanSignal AI Training Contributor', source: 'HumanSignal AI Training Contributors',
+    url: 'https://onboard.humansignal.com/',
+    rate: 'Rate shown after eligible project matching', ratePerTaskInr: null, rateValue: '', rateUnit: 'Unknown', rateCurrency: 'INR', badge: 'Profile and matching required',
+    detail: 'Create a truthful profile, verify your identity and see if eligible projects are available in your location and skill areas. No rate or work is promised before matching.'
+  },
+  {
+    id: 'jwuma-india', title: 'AI Annotation & Evaluation Tasks — India', source: 'Corpshore/Jwuma India',
+    url: 'https://platform.corpshore.ai/india',
+    rate: 'Public pages have shown USD per-task examples; exact task rate varies', ratePerTaskInr: null, rateValue: '', rateUnit: 'Unknown', rateCurrency: 'USD', badge: 'Verify exact offer',
+    detail: 'The provider lists annotation, evaluation and transcription work. Confirm the exact available task, payment unit, currency, qualification and payout method in your own offer before starting.'
+  },
+  {
     id: 'karmyug-hindi', title: 'Hindi Script Recording Project', source: 'Karmyug AI',
     url: 'https://work.karmyug.in/jobs/d6f10b46-7249-4484-b114-c8008519acbf',
-    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: 'Below target',
-    detail: 'Live page currently shows ₹2 per approved recording and an apply-by date of 31 Oct 2026. Task slots change; confirm the current count, eligibility and payout terms on the official page. Your own Hindi recording must pass quality review.'
+    rate: '₹2 per approved recording', ratePerTaskInr: 2, rateValue: '2', rateUnit: 'Per approved task', rateCurrency: 'INR', badge: 'Below target',
+    detail: 'Public listing shows ₹2 per approved recording. Current task slots, deadline, quality acceptance and payout terms must be confirmed on the official page.'
   },
   {
     id: 'karmyug-english', title: 'English Script Recording Project', source: 'Karmyug AI',
     url: 'https://work.karmyug.in/jobs/df3d4bf3-c11b-449c-abd6-97e382c5bdf9',
-    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: 'Below target',
-    detail: 'Live page currently shows ₹2 per approved recording and an apply-by date of 31 Oct 2026. Task slots change; confirm the current count, eligibility and payout terms on the official page. Your own English recording must pass quality review.'
-  },
-  {
-    id: 'karmyug-bengali', title: 'Bengali Script Recording Project', source: 'Karmyug AI',
-    url: 'https://work.karmyug.in/jobs/ed08603e-04a2-4e5e-a053-65c45980bc47',
-    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: '0 tasks last checked',
-    detail: 'The last public page check showed zero task slots, so this is not an immediate lead. Re-check the official page before applying.'
+    rate: '₹2 per approved recording', ratePerTaskInr: 2, rateValue: '2', rateUnit: 'Per approved task', rateCurrency: 'INR', badge: 'Below target',
+    detail: 'Public listing shows ₹2 per approved recording. Current task slots, deadline, quality acceptance and payout terms must be confirmed on the official page.'
   },
   {
     id: 'crowdgen-coffee', title: 'Project Coffee — India Data Labeling', source: 'CrowdGen by Appen',
     url: 'https://crowdgen.com/coffee-en-in/',
-    rate: 'US$2/hour (site advertises about ₹175/hour)', ratePerTaskInr: null, badge: 'Hourly, not per task',
-    detail: 'Potentially better hourly value, but recruitment status must be confirmed. Published requirements include India residence, fluent English, laptop/PC, up to 20 hours/week and passing qualification/identity checks. Do not treat this as ₹175 per task.'
+    rate: 'US$2/hour (page previously advertised about ₹175/hour)', ratePerTaskInr: null, rateValue: '2', rateUnit: 'Per hour', rateCurrency: 'USD', badge: 'Hourly, not per task',
+    detail: 'The project page has sometimes been unavailable in automated scans. Published requirements included India residence, fluent English and laptop/PC. Re-check the live page and recruitment status; this is an hourly USD rate, not ₹175 per task.'
+  },
+  {
+    id: 'opentrain-python', title: 'Python Software Engineering LLM Evaluator', source: 'OpenTrain Python Software Engineering LLM Evaluator',
+    url: 'https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/',
+    rate: '$100 per task advertised in the specific role listing', ratePerTaskInr: null, rateValue: '100', rateUnit: 'Per task', rateCurrency: 'USD', badge: 'Specialist only',
+    detail: 'A public listing described a coding-evaluation contract and India among eligible countries. It requires genuine Python/software-engineering judgement and strong English. Verify the current live rate and only apply if your real experience matches; no skills are assumed.'
   }
 ];
 
@@ -70,6 +106,8 @@ function App() {
   const [earningTitle, setEarningTitle] = React.useState('');
   const [earningSource, setEarningSource] = React.useState('Karmyug AI');
   const [earningRate, setEarningRate] = React.useState('');
+  const [earningRateUnit, setEarningRateUnit] = React.useState('Per accepted task');
+  const [earningRateCurrency, setEarningRateCurrency] = React.useState('INR');
   const [earningUrl, setEarningUrl] = React.useState('');
   const [earningStatus, setEarningStatus] = React.useState('Lead found');
 
@@ -110,6 +148,9 @@ function App() {
       title: earningTitle.trim(),
       source: earningSource,
       claimedRateInr: earningRate.trim(),
+      claimedRateText: earningRate.trim(),
+      claimedRateCurrency: earningRateCurrency,
+      claimedRateUnit: earningRateUnit,
       url: earningUrl.trim(),
       status: earningStatus,
       earnedInr: '',
@@ -120,6 +161,8 @@ function App() {
     setEarningsLog(prev => [entry, ...prev]);
     setEarningTitle('');
     setEarningRate('');
+    setEarningRateUnit('Per accepted task');
+    setEarningRateCurrency('INR');
     setEarningUrl('');
     setEarningStatus('Lead found');
     setNotice('Task saved on this device. No application or task submission was made.');
@@ -128,10 +171,10 @@ function App() {
     setEarningsLog(prev => prev.map(item => item.id === id ? { ...item, [field]: value, updatedAt: new Date().toISOString() } : item));
   }
   function exportEarnings() {
-    const cols = ['id','source','title','claimed_rate_inr','status','actual_earned_inr','payout_received_inr','url','created_at','updated_at'];
+    const cols = ['id','source','title','claimed_rate_text','rate_currency','rate_unit','status','actual_earned_inr','payout_received_inr','url','created_at','updated_at'];
     const rows = [
       cols.map(csvCell).join(','),
-      ...earningsLog.map(item => [item.id,item.source,item.title,item.claimedRateInr,item.status,item.earnedInr,item.payoutInr,item.url,item.createdAt,item.updatedAt].map(csvCell).join(','))
+      ...earningsLog.map(item => [item.id,item.source,item.title,item.claimedRateText ?? item.claimedRateInr,item.claimedRateCurrency || 'Unknown',item.claimedRateUnit || 'Unknown',item.status,item.earnedInr,item.payoutInr,item.url,item.createdAt,item.updatedAt].map(csvCell).join(','))
     ];
     saveDownload('autopilot-earnings-tracker.csv', '\ufeff' + rows.join('\r\n'));
     setNotice('Earnings tracker CSV exported. It contains only entries saved on this device.');
@@ -212,26 +255,26 @@ function App() {
         <section className="earning-hero">
           <div><p className="eyebrow">CROSS-PLATFORM MICROTASKS</p><h2>Hunt real work. Track every rupee.</h2><p>Daily public-page scans, rate evidence, scam-risk checks and a private task-to-payout ledger. This is separate from POD.</p></div>
           <div className="earning-hero-actions">
-            <a className="primary earning-link-button" href="https://github.com/kumbipakam29-dev/autopilot-studio/actions/workflows/earnings-hunter.yml" target="_blank" rel="noreferrer">Open latest hunt ↗</a>
+            <a className="primary earning-link-button" href="https://github.com/kumbipakam29-dev/autopilot-studio/actions/workflows/data-labeling-hunter.yml" target="_blank" rel="noreferrer">Open data-labeling scan ↗</a>
             <button className="secondary" onClick={exportEarnings}>Export tracker ↓</button>
           </div>
         </section>
 
         <div className="earning-stats">
-          <article><small>PUBLIC SOURCES SCANNED</small><b>8</b><span>Last verified scan: 24 Oct 2026</span></article>
+          <article><small>SOURCE PROFILES IN REGISTRY</small><b>{EARNING_SOURCES.length}</b><span>Live fetch status is in the GitHub Actions report</span></article>
           <article><small>₹50–₹200 PER TASK</small><b>{targetLeadCount}</b><span>Exact public INR rates in this lead snapshot</span></article>
           <article><small>ACTUAL EARNED</small><b>₹{earnedTotal.toFixed(2)}</b><span>Only what you record as accepted</span></article>
           <article><small>PAYOUT RECEIVED</small><b>₹{payoutTotal.toFixed(2)}</b><span>Enter only when money really arrives</span></article>
         </div>
 
-        <div className="notice"><b>Honest hunt result — 24 October 2026</b><p>The latest run on this branch's baseline scan emitted 30 leads and found <strong>zero verified public rates in the ₹50–₹200 per-task target band</strong>. Karmyug's live page currently shows ₹2 per approved recording, with task counts changing over time; CrowdGen Project Coffee advertises about ₹175/hour, not ₹175 per task, and requires a laptop/PC and qualification. Open the source to confirm current slots and terms before doing any work.</p></div>
+        <div className="notice"><b>Higher-value data-labeling experiments</b><p>YPAI's official India pages advertise typical project pay of <strong>₹550–₹800/hour</strong> for data annotation, model evaluation and data collection. Application review, qualification, work availability and the exact project rate are not guaranteed. Karmyug's public listings have shown ₹2 per approved recording, which is below the target. The app uses a dated lead snapshot; verify the official listing and current terms before applying.</p></div>
 
         <section className="earning-section">
           <div className="earning-section-head"><div><h3>Specific leads found</h3><p>Rate and availability here reflect the last scan; verify live details before applying.</p></div><span className="status warn">No target-rate task verified</span></div>
           <div className="earning-lead-grid">{EARNING_LEADS.map(lead => <article className="earning-lead" key={lead.id}>
             <div className="earning-lead-top"><span className={'status ' + (lead.ratePerTaskInr === 2 ? 'warn' : '')}>{lead.badge}</span><small>{lead.source}</small></div>
             <h4>{lead.title}</h4><div className="earning-rate">{lead.rate}</div><p>{lead.detail}</p>
-            <div className="earning-actions"><a href={lead.url} target="_blank" rel="noreferrer">Open official listing ↗</a><button className="secondary" onClick={() => { setEarningTitle(lead.title); setEarningSource(lead.source); setEarningRate(lead.ratePerTaskInr === null ? '' : String(lead.ratePerTaskInr)); setEarningUrl(lead.url); setNotice('Lead added to the form below. Review it and save your tracker entry.'); document.getElementById('earning-tracker-form')?.scrollIntoView({behavior:'smooth', block:'start'}); }}>Track this lead +</button></div>
+            <div className="earning-actions"><a href={lead.url} target="_blank" rel="noreferrer">Open official listing ↗</a><button className="secondary" onClick={() => { setEarningTitle(lead.title); setEarningSource(lead.source); setEarningRate(lead.rateValue ?? (lead.ratePerTaskInr === null ? '' : String(lead.ratePerTaskInr))); setEarningRateUnit(lead.rateUnit || 'Unknown'); setEarningRateCurrency(lead.rateCurrency || (lead.ratePerTaskInr !== null ? 'INR' : 'Unknown')); setEarningUrl(lead.url); setNotice('Lead added to the form below. Review it and save your tracker entry.'); document.getElementById('earning-tracker-form')?.scrollIntoView({behavior:'smooth', block:'start'}); }}>Track this lead +</button></div>
           </article>)}</div>
         </section>
 
@@ -247,14 +290,16 @@ function App() {
           <form className="earning-form" onSubmit={e => { e.preventDefault(); addEarning(); }}>
             <label>Task title<input value={earningTitle} onChange={e => setEarningTitle(e.target.value)} placeholder="e.g. Hindi data labeling task" required /></label>
             <label>Source<select value={earningSource} onChange={e => setEarningSource(e.target.value)}>{[...EARNING_SOURCES.map(s => s.name), 'Other / new source'].map(name => <option key={name}>{name}</option>)}</select></label>
-            <label>Claimed rate (₹/task, if stated)<input type="number" min="0" step="0.01" value={earningRate} onChange={e => setEarningRate(e.target.value)} placeholder="Leave blank if unknown" /></label>
+            <label>Posted rate (range allowed)<input type="text" value={earningRate} onChange={e => setEarningRate(e.target.value)} placeholder="e.g. 550-800" /></label>
+            <label>Rate currency<select value={earningRateCurrency} onChange={e => setEarningRateCurrency(e.target.value)}>{['INR','USD','EUR','GBP','Unknown'].map(code => <option key={code}>{code}</option>)}</select></label>
+            <label>Rate unit<select value={earningRateUnit} onChange={e => setEarningRateUnit(e.target.value)}>{['Per accepted task','Per task','Per hour','Per batch','Fixed project','Unknown'].map(unit => <option key={unit}>{unit}</option>)}</select></label>
             <label>Official task URL<input type="url" value={earningUrl} onChange={e => setEarningUrl(e.target.value)} placeholder="https://…" /></label>
             <label>Status<select value={earningStatus} onChange={e => setEarningStatus(e.target.value)}>{EARNING_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label>
             <button className="primary" type="submit">Save tracker entry</button>
           </form>
           {notice && <div className="inline-notice" role="status">{notice}</div>}
           {earningsLog.length ? <div className="earning-log-list">{earningsLog.map(item => <article className="earning-log" key={item.id}>
-            <div className="earning-log-head"><div><b>{item.title}</b><small>{item.source} · Added {new Date(item.createdAt).toLocaleDateString()}</small></div>{item.url && <a href={item.url} target="_blank" rel="noreferrer">Open task ↗</a>}</div>
+            <div className="earning-log-head"><div><b>{item.title}</b><small>{item.source} · Rate: {item.claimedRateText ?? item.claimedRateInr ?? 'Unknown'} {item.claimedRateCurrency || 'Unknown'} / {item.claimedRateUnit || 'unit unknown'} · Added {new Date(item.createdAt).toLocaleDateString()}</small></div>{item.url && <a href={item.url} target="_blank" rel="noreferrer">Open task ↗</a>}</div>
             <div className="earning-log-fields">
               <label>Status<select value={item.status} onChange={e => updateEarning(item.id, 'status', e.target.value)}>{EARNING_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label>
               <label>Actual earned (₹)<input type="number" min="0" step="0.01" value={item.earnedInr} onChange={e => updateEarning(item.id, 'earnedInr', e.target.value)} placeholder="0.00" /></label>
