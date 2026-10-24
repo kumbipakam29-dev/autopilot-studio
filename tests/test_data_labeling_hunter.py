@@ -82,11 +82,11 @@ class EligibilityAndPriorityTests(unittest.TestCase):
         self.assertEqual(lead.amount, "")
 
     def test_generic_slug_ending_in_jobs_is_not_detail(self):
-        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain C++"))
         self.assertFalse(hunter.is_task_detail_url(source, "https://www.opentrain.ai/jobs/remote-ai-code-evaluator-jobs"))
 
     def test_specific_job_slug_is_detail(self):
-        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain C++"))
         self.assertTrue(hunter.is_task_detail_url(source, "https://www.opentrain.ai/jobs/c-llm-evaluation-engineer-cm123"))
 
     def test_child_job_does_not_inherit_india_from_parent_source(self):
