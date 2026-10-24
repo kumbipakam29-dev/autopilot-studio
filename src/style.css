@@ -8,3 +8,51 @@
 
 .platform-readiness{background:#fff;border:1px solid #e8ebf2;border-radius:15px;padding:20px}.platform-readiness h3{font:800 17px Manrope;margin:0 0 14px}.platform-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.platform-options article{border:1px solid #edf0f5;border-radius:11px;padding:15px;min-width:0}.platform-options h4{font:800 14px Manrope;margin:12px 0 8px}.platform-options p{font-size:12px;line-height:1.6;color:#77849a;margin:0 0 12px}.platform-options a{font-size:12px;font-weight:700;color:#6655d6;text-decoration:none}.platform-options a:hover{text-decoration:underline}
 @media(max-width:760px){.platform-readiness{padding:16px}.platform-options{grid-template-columns:1fr}}
+
+/* Earnings Hunter: public leads, local task ledger and payout evidence */
+.earning-workspace{display:grid;gap:18px}
+.earning-hero{display:flex;justify-content:space-between;align-items:center;gap:22px;padding:27px 30px;border-radius:18px;background:linear-gradient(115deg,#182b45,#2f526c);color:#fff}
+.earning-hero .eyebrow{color:#c5e7e9}
+.earning-hero h2{font:800 25px/1.25 Manrope;margin:10px 0}
+.earning-hero p:last-child{font-size:13px;line-height:1.65;color:#d6e7ef;margin:0;max-width:680px}
+.earning-hero-actions{display:grid;gap:10px;min-width:165px}
+.earning-link-button{display:inline-flex;align-items:center;justify-content:center;text-align:center;text-decoration:none}
+.earning-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.earning-stats article{background:#fff;border:1px solid #e8ebf2;border-radius:13px;padding:16px;min-width:0}
+.earning-stats small{display:block;color:#8994a8;font-size:9px;font-weight:800;letter-spacing:.75px}
+.earning-stats b{display:block;font:800 22px Manrope;margin:11px 0 5px;overflow-wrap:anywhere}
+.earning-stats span{display:block;color:#7e899d;font-size:11px;line-height:1.5}
+.earning-section{background:#fff;border:1px solid #e8ebf2;border-radius:15px;padding:20px}
+.earning-section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.earning-section-head h3{font:800 17px Manrope;margin:0 0 5px}
+.earning-section-head p{font-size:12px;line-height:1.55;color:#8792a6;margin:0}
+.earning-lead-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.earning-lead{border:1px solid #edf0f5;border-radius:12px;padding:16px;min-width:0;display:flex;flex-direction:column}
+.earning-lead-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.earning-lead-top small{font-size:11px;color:#7b879a}
+.earning-lead h4{font:800 15px/1.4 Manrope;margin:13px 0 8px}
+.earning-rate{font:800 15px Manrope;color:#2c394f;margin-bottom:8px}
+.earning-lead p{font-size:12px;line-height:1.65;color:#77849a;margin:0 0 14px;flex:1}
+.earning-actions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;border-top:1px solid #edf0f5;padding-top:13px}
+.earning-actions a,.earning-source a,.earning-log-head a{color:#6254cc;font-size:12px;font-weight:800;text-decoration:none}
+.earning-actions a:hover,.earning-source a:hover,.earning-log-head a:hover{text-decoration:underline}
+.earning-actions .secondary{font-size:11px;padding:8px 10px}
+.earning-source-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.earning-source{border:1px solid #edf0f5;border-radius:11px;padding:14px;min-width:0}
+.earning-source h4{font:800 13px/1.4 Manrope;margin:0 0 6px;overflow-wrap:anywhere}
+.earning-source>span{font-size:10px;color:#6557cb;font-weight:800}
+.earning-source p{font-size:11px;line-height:1.6;color:#7e899d;margin:9px 0 12px}
+.earning-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;align-items:end;margin:18px 0}
+.earning-form label,.earning-log-fields label{display:grid;gap:6px;min-width:0;color:#7b879a;font-size:11px;font-weight:800}
+.earning-form input,.earning-form select,.earning-log-fields input,.earning-log-fields select{width:100%;min-width:0;border:1px solid #dfe4ee;border-radius:8px;padding:11px;background:#fff;color:#263148;font:12px 'DM Sans';outline-color:#7869e8}
+.earning-form .primary{min-height:40px}
+.inline-notice{border:1px solid #dce8e8;background:#f2fafa;border-radius:9px;color:#35646a;padding:11px 13px;font-size:12px;line-height:1.5;margin:10px 0}
+.earning-log-list{display:grid;gap:11px;margin-top:14px}
+.earning-log{border:1px solid #e8ebf2;border-radius:12px;padding:14px}
+.earning-log-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:13px}
+.earning-log-head b{display:block;font-size:13px;overflow-wrap:anywhere}
+.earning-log-head small{display:block;color:#8a95a8;font-size:10px;margin-top:5px}
+.earning-log-fields{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:10px;align-items:end}
+.earning-log-fields .secondary{padding:10px;font-size:11px}
+@media(max-width:1000px){.earning-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.earning-source-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.earning-log-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.earning-hero{display:block;padding:22px 19px}.earning-hero h2{font-size:22px}.earning-hero-actions{grid-template-columns:1fr;margin-top:16px}.earning-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.earning-stats article{padding:13px}.earning-stats b{font-size:19px}.earning-section{padding:15px}.earning-section-head{align-items:flex-start;flex-direction:column}.earning-lead-grid,.earning-source-grid,.earning-form,.earning-log-fields{grid-template-columns:1fr}.earning-actions{align-items:flex-start;flex-direction:column}.earning-actions .secondary{width:100%}.earning-log-head{flex-direction:column}.earning-log-fields .secondary{width:100%}}

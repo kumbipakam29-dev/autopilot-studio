@@ -3,8 +3,48 @@ import { createRoot } from 'react-dom/client';
 import { POD_CONCEPTS, REVIEW_STAGES } from './podData.js';
 import './style.css';
 
-const NAV = ['Overview', 'POD Studio', 'AI Agents', 'Task Queue', 'Reports', 'Settings'];
-const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'AI Agents': '✧', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
+const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Task Queue', 'Reports', 'Settings'];
+const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
+
+const EARNING_SOURCES = [
+  { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Language & AI data tasks', note: 'Public India listings show ₹2 per approved recording on the last scan. ID verification and quality acceptance apply.' },
+  { name: 'CrowdGen by Appen', url: 'https://crowdgen.com/', kind: 'AI data & evaluation projects', note: 'Project-specific qualification, rates and availability. Never pay to join.' },
+  { name: 'Clickworker', url: 'https://www.clickworker.com/clickworker/', kind: 'Microtasks & data work', note: 'Check India availability and supported payout method before investing time.' },
+  { name: 'OneForma', url: 'https://www.oneforma.com/jobs/', kind: 'Language & AI projects', note: 'Project requirements, rates and recruitment status vary. Confirm that a listing fits your location and skills.' },
+  { name: 'TELUS Digital AI Community', url: 'https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india', kind: 'Rating & evaluation roles', note: 'Often application/qualification based, not instant microtask cash.' },
+  { name: 'Microworkers', url: 'https://www.microworkers.com/', kind: 'Small online tasks', note: 'KYC and withdrawal conditions apply. Use only genuine tasks and proof.' },
+  { name: 'Toloka', url: 'https://toloka.ai/tolokers/', kind: 'Data annotation', note: 'Check current country and project restrictions, which can change.' },
+  { name: 'Gitcoin Bounties', url: 'https://gitcoin.co/mechanisms/bounties', kind: 'Open-source & skill bounties', note: 'Acceptance is competitive; check the live amount, deadline, requirements and payout terms.' }
+];
+
+const EARNING_LEADS = [
+  {
+    id: 'karmyug-hindi', title: 'Hindi Script Recording Project', source: 'Karmyug AI',
+    url: 'https://work.karmyug.in/jobs/d6f10b46-7249-4484-b114-c8008519acbf',
+    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: 'Below target',
+    detail: 'Live page currently shows ₹2 per approved recording and an apply-by date of 31 Oct 2026. Task slots change; confirm the current count, eligibility and payout terms on the official page. Your own Hindi recording must pass quality review.'
+  },
+  {
+    id: 'karmyug-english', title: 'English Script Recording Project', source: 'Karmyug AI',
+    url: 'https://work.karmyug.in/jobs/df3d4bf3-c11b-449c-abd6-97e382c5bdf9',
+    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: 'Below target',
+    detail: 'Live page currently shows ₹2 per approved recording and an apply-by date of 31 Oct 2026. Task slots change; confirm the current count, eligibility and payout terms on the official page. Your own English recording must pass quality review.'
+  },
+  {
+    id: 'karmyug-bengali', title: 'Bengali Script Recording Project', source: 'Karmyug AI',
+    url: 'https://work.karmyug.in/jobs/ed08603e-04a2-4e5e-a053-65c45980bc47',
+    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: '0 tasks last checked',
+    detail: 'The last public page check showed zero task slots, so this is not an immediate lead. Re-check the official page before applying.'
+  },
+  {
+    id: 'crowdgen-coffee', title: 'Project Coffee — India Data Labeling', source: 'CrowdGen by Appen',
+    url: 'https://crowdgen.com/coffee-en-in/',
+    rate: 'US$2/hour (site advertises about ₹175/hour)', ratePerTaskInr: null, badge: 'Hourly, not per task',
+    detail: 'Potentially better hourly value, but recruitment status must be confirmed. Published requirements include India residence, fluent English, laptop/PC, up to 20 hours/week and passing qualification/identity checks. Do not treat this as ₹175 per task.'
+  }
+];
+
+const EARNING_STATUSES = ['Lead found', 'Applied', 'Qualification pending', 'Approved to work', 'Work submitted', 'Accepted', 'Rejected', 'Payment pending', 'Paid'];
 const readStore = (key, fallback) => {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
 };
@@ -26,9 +66,16 @@ function App() {
   const [productFilter, setProductFilter] = React.useState('All products');
   const [stageFilter, setStageFilter] = React.useState('All stages');
   const [notice, setNotice] = React.useState('');
+  const [earningsLog, setEarningsLog] = React.useState(() => readStore('aps-earnings-log', []));
+  const [earningTitle, setEarningTitle] = React.useState('');
+  const [earningSource, setEarningSource] = React.useState('Karmyug AI');
+  const [earningRate, setEarningRate] = React.useState('');
+  const [earningUrl, setEarningUrl] = React.useState('');
+  const [earningStatus, setEarningStatus] = React.useState('Lead found');
 
   React.useEffect(() => { localStorage.setItem('aps-notes', JSON.stringify(notes)); }, [notes]);
   React.useEffect(() => { localStorage.setItem('aps-pod-state', JSON.stringify(podState)); }, [podState]);
+  React.useEffect(() => { localStorage.setItem('aps-earnings-log', JSON.stringify(earningsLog)); }, [earningsLog]);
 
   function add() {
     if (!task.trim()) return;
@@ -53,6 +100,49 @@ function App() {
     saveDownload('autopilot-pod-concepts.csv', '\ufeff' + rows.join('\r\n'));
     setNotice('CSV exported. Research ideas are hypotheses, not verified search-volume data.');
   }
+  function addEarning() {
+    if (!earningTitle.trim()) {
+      setNotice('Enter a task title first.');
+      return;
+    }
+    const entry = {
+      id: String(Date.now()),
+      title: earningTitle.trim(),
+      source: earningSource,
+      claimedRateInr: earningRate.trim(),
+      url: earningUrl.trim(),
+      status: earningStatus,
+      earnedInr: '',
+      payoutInr: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    setEarningsLog(prev => [entry, ...prev]);
+    setEarningTitle('');
+    setEarningRate('');
+    setEarningUrl('');
+    setEarningStatus('Lead found');
+    setNotice('Task saved on this device. No application or task submission was made.');
+  }
+  function updateEarning(id, field, value) {
+    setEarningsLog(prev => prev.map(item => item.id === id ? { ...item, [field]: value, updatedAt: new Date().toISOString() } : item));
+  }
+  function exportEarnings() {
+    const cols = ['id','source','title','claimed_rate_inr','status','actual_earned_inr','payout_received_inr','url','created_at','updated_at'];
+    const rows = [
+      cols.map(csvCell).join(','),
+      ...earningsLog.map(item => [item.id,item.source,item.title,item.claimedRateInr,item.status,item.earnedInr,item.payoutInr,item.url,item.createdAt,item.updatedAt].map(csvCell).join(','))
+    ];
+    saveDownload('autopilot-earnings-tracker.csv', '\ufeff' + rows.join('\r\n'));
+    setNotice('Earnings tracker CSV exported. It contains only entries saved on this device.');
+  }
+  function deleteEarning(id) {
+    setEarningsLog(prev => prev.filter(item => item.id !== id));
+    setNotice('Tracker entry removed from this device.');
+  }
+  const earnedTotal = earningsLog.reduce((sum, item) => sum + (Number(item.earnedInr) || 0), 0);
+  const payoutTotal = earningsLog.reduce((sum, item) => sum + (Number(item.payoutInr) || 0), 0);
+  const targetLeadCount = EARNING_LEADS.filter(item => item.ratePerTaskInr !== null && item.ratePerTaskInr >= 50 && item.ratePerTaskInr <= 200).length;
   const productTypes = ['All products', ...new Set(POD_CONCEPTS.flatMap(x => x.product.split(' / ')))];
   const filtered = POD_CONCEPTS.filter(item => {
     const query = search.trim().toLowerCase();
@@ -67,7 +157,7 @@ function App() {
     <aside>
       <div className="brand"><span className="logo">✦</span><div><b>AutoPilot</b><small>STUDIO</small></div></div>
       <nav>{NAV.map(x => <button className={tab === x ? 'active' : ''} onClick={() => { setTab(x); setNotice(''); }} key={x}>{ICONS[x]}　{x}</button>)}</nav>
-      <div className="side-note"><span className="dot"/> Local workspace<br/><small>Backend not connected</small></div>
+      <div className="side-note"><span className="dot"/> Local workspace<br/><small>Daily public scan · no auto-submit</small></div>
     </aside>
     <main>
       <header><div><small>WORKSPACE / AUTOPILOT</small><h1>{tab}</h1></div><div className="avatar">AS</div></header>
@@ -118,13 +208,72 @@ function App() {
         <div className="notice"><b>Before publishing</b><p>Search the exact phrase and close variants in relevant trademark registers; inspect every pixel for malformed text; confirm print dimensions, transparent background, colour contrast, product margin, platform-specific rules and any AI/production-partner disclosures. Never use famous characters, logos, team names or copied artwork.</p></div>
       </section>}
 
+      {tab === 'Earnings Hunter' && <section className="earning-workspace">
+        <section className="earning-hero">
+          <div><p className="eyebrow">CROSS-PLATFORM MICROTASKS</p><h2>Hunt real work. Track every rupee.</h2><p>Daily public-page scans, rate evidence, scam-risk checks and a private task-to-payout ledger. This is separate from POD.</p></div>
+          <div className="earning-hero-actions">
+            <a className="primary earning-link-button" href="https://github.com/kumbipakam29-dev/autopilot-studio/actions/workflows/earnings-hunter.yml" target="_blank" rel="noreferrer">Open latest hunt ↗</a>
+            <button className="secondary" onClick={exportEarnings}>Export tracker ↓</button>
+          </div>
+        </section>
+
+        <div className="earning-stats">
+          <article><small>PUBLIC SOURCES SCANNED</small><b>8</b><span>Last verified scan: 24 Oct 2026</span></article>
+          <article><small>₹50–₹200 PER TASK</small><b>{targetLeadCount}</b><span>Exact public INR rates in this lead snapshot</span></article>
+          <article><small>ACTUAL EARNED</small><b>₹{earnedTotal.toFixed(2)}</b><span>Only what you record as accepted</span></article>
+          <article><small>PAYOUT RECEIVED</small><b>₹{payoutTotal.toFixed(2)}</b><span>Enter only when money really arrives</span></article>
+        </div>
+
+        <div className="notice"><b>Honest hunt result — 24 October 2026</b><p>The latest run on this branch's baseline scan emitted 30 leads and found <strong>zero verified public rates in the ₹50–₹200 per-task target band</strong>. Karmyug's live page currently shows ₹2 per approved recording, with task counts changing over time; CrowdGen Project Coffee advertises about ₹175/hour, not ₹175 per task, and requires a laptop/PC and qualification. Open the source to confirm current slots and terms before doing any work.</p></div>
+
+        <section className="earning-section">
+          <div className="earning-section-head"><div><h3>Specific leads found</h3><p>Rate and availability here reflect the last scan; verify live details before applying.</p></div><span className="status warn">No target-rate task verified</span></div>
+          <div className="earning-lead-grid">{EARNING_LEADS.map(lead => <article className="earning-lead" key={lead.id}>
+            <div className="earning-lead-top"><span className={'status ' + (lead.ratePerTaskInr === 2 ? 'warn' : '')}>{lead.badge}</span><small>{lead.source}</small></div>
+            <h4>{lead.title}</h4><div className="earning-rate">{lead.rate}</div><p>{lead.detail}</p>
+            <div className="earning-actions"><a href={lead.url} target="_blank" rel="noreferrer">Open official listing ↗</a><button className="secondary" onClick={() => { setEarningTitle(lead.title); setEarningSource(lead.source); setEarningRate(lead.ratePerTaskInr === null ? '' : String(lead.ratePerTaskInr)); setEarningUrl(lead.url); setNotice('Lead added to the form below. Review it and save your tracker entry.'); document.getElementById('earning-tracker-form')?.scrollIntoView({behavior:'smooth', block:'start'}); }}>Track this lead +</button></div>
+          </article>)}</div>
+        </section>
+
+        <section className="earning-section">
+          <div className="earning-section-head"><div><h3>Where the hunter looks</h3><p>Official starting points only. It does not log in, claim tasks or submit proof.</p></div></div>
+          <div className="earning-source-grid">{EARNING_SOURCES.map(source => <article className="earning-source" key={source.name}>
+            <h4>{source.name}</h4><span>{source.kind}</span><p>{source.note}</p><a href={source.url} target="_blank" rel="noreferrer">Open source ↗</a>
+          </article>)}</div>
+        </section>
+
+        <section className="earning-section" id="earning-tracker-form">
+          <div className="earning-section-head"><div><h3>Task → acceptance → payout tracker</h3><p>Saved only on this device. Keep passwords, OTPs, government-ID numbers and payment details out of it.</p></div></div>
+          <form className="earning-form" onSubmit={e => { e.preventDefault(); addEarning(); }}>
+            <label>Task title<input value={earningTitle} onChange={e => setEarningTitle(e.target.value)} placeholder="e.g. Hindi data labeling task" required /></label>
+            <label>Source<select value={earningSource} onChange={e => setEarningSource(e.target.value)}>{[...EARNING_SOURCES.map(s => s.name), 'Other / new source'].map(name => <option key={name}>{name}</option>)}</select></label>
+            <label>Claimed rate (₹/task, if stated)<input type="number" min="0" step="0.01" value={earningRate} onChange={e => setEarningRate(e.target.value)} placeholder="Leave blank if unknown" /></label>
+            <label>Official task URL<input type="url" value={earningUrl} onChange={e => setEarningUrl(e.target.value)} placeholder="https://…" /></label>
+            <label>Status<select value={earningStatus} onChange={e => setEarningStatus(e.target.value)}>{EARNING_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label>
+            <button className="primary" type="submit">Save tracker entry</button>
+          </form>
+          {notice && <div className="inline-notice" role="status">{notice}</div>}
+          {earningsLog.length ? <div className="earning-log-list">{earningsLog.map(item => <article className="earning-log" key={item.id}>
+            <div className="earning-log-head"><div><b>{item.title}</b><small>{item.source} · Added {new Date(item.createdAt).toLocaleDateString()}</small></div>{item.url && <a href={item.url} target="_blank" rel="noreferrer">Open task ↗</a>}</div>
+            <div className="earning-log-fields">
+              <label>Status<select value={item.status} onChange={e => updateEarning(item.id, 'status', e.target.value)}>{EARNING_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label>
+              <label>Actual earned (₹)<input type="number" min="0" step="0.01" value={item.earnedInr} onChange={e => updateEarning(item.id, 'earnedInr', e.target.value)} placeholder="0.00" /></label>
+              <label>Received in payout (₹)<input type="number" min="0" step="0.01" value={item.payoutInr} onChange={e => updateEarning(item.id, 'payoutInr', e.target.value)} placeholder="0.00" /></label>
+              <button className="secondary" type="button" onClick={() => deleteEarning(item.id)}>Remove</button>
+            </div>
+          </article>)}</div> : <div className="empty">No tasks tracked yet. Add a verified lead above; the app does not auto-apply or mark anything as paid.</div>}
+        </section>
+
+        <div className="notice"><b>First-payment playbook</b><p>Use only official pages, confirm the payout method and minimum withdrawal before starting, do not pay a joining/deposit/unlock fee, do the real task yourself, follow its AI-assistance rules, and record “Accepted” or “Paid” only when the platform confirms it. Fake reviews, fake proof, duplicate accounts, location spoofing and CAPTCHA bypass are out.</p></div>
+      </section>}
+
       {tab === 'AI Agents' && <section className="panel"><h3>Agent connections</h3><p className="muted">No live agents are connected yet. The POD concept library is a local planning module, not a running autonomous agent.</p>{['Trend & Demand Research Agent','Original Design Brief Agent','Listing SEO Agent','IP & Print QA Agent','Publishing Queue Agent','Sales Learning Agent'].map(a => <div className="task" key={a}><span className="task-icon">✧</span><div><b>{a}</b><small>Backend integration required</small></div><span className="status warn">Not connected</span></div>)}</section>}
 
       {tab === 'Task Queue' && <section className="panel"><h3>Add a task</h3><p className="muted">Tasks are stored locally; they are not executed automatically.</p><form onSubmit={e => { e.preventDefault(); add(); }} className="task-form"><input value={task} onChange={e => setTask(e.target.value)} placeholder="Describe a task to track…" aria-label="Task description"/><button className="primary">Add task</button></form>{notes.map((n,i) => <div className="task" key={i}><span className="task-icon">☷</span><div><b>{n.text}</b><small>{n.time}</small></div><span className="status">{n.status}</span></div>)}</section>}
 
       {tab === 'Reports' && <section className="panel"><h3>Reports</h3><p className="muted">Reports will appear after a backend or data source is connected.</p><div className="empty">No sales or marketplace reports available yet.</div></section>}
-      {tab === 'Settings' && <section className="panel"><h3>Settings</h3><p className="muted">This prototype stores task notes and POD workflow stages in this browser. It has no login, cloud database, AI image API, marketplace account, or secrets manager.</p><div className="notice"><b>Integration requirements</b><p>Use official platform APIs and secure server-side credential storage. Never place seller secrets inside the Android app or in public source code.</p></div><button className="secondary" onClick={() => exportConcepts()}>Export POD concept library</button></section>}
-      <footer>AutoPilot Studio <span>Local workspace · no live marketplace connection</span></footer>
+      {tab === 'Settings' && <section className="panel"><h3>Settings</h3><p className="muted">Task notes, POD stages and the Earnings Hunter ledger are stored locally on this device. A scheduled GitHub Actions job scans public opportunity pages daily, but the app has no worker-account login, cloud database, AI image API, marketplace credentials or payment integration.</p><div className="notice"><b>Integration requirements</b><p>Use official platform APIs and secure server-side credential storage. Never place seller secrets inside the Android app or in public source code.</p></div><button className="secondary" onClick={() => exportConcepts()}>Export POD concept library</button></section>}
+      <footer>AutoPilot Studio <span>Public leads only · manual work and payout verification</span></footer>
     </main>
   </div>;
 }
