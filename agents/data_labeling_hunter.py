@@ -46,6 +46,7 @@ class Source:
     official: bool = True
     region: str = "Check listing"
     notes: str = "Verify current eligibility and payout terms on the official listing."
+    specific_page: bool = False
 
 @dataclass
 class Lead:
@@ -64,6 +65,10 @@ class Lead:
     risk_flags: str
     status: str
     caveat: str
+    eligibility_evidence: str = ""
+    fit_hint: str = "ELIGIBILITY_UNKNOWN_VERIFY"
+    priority_score: int = 0
+    priority_reason: str = ""
 
 SOURCES = [
     Source("Karmyug AI Jobs", "https://work.karmyug.in/jobs", "voice/data collection", notes="Public task page; task-specific acceptance/rate must be checked."),
@@ -77,11 +82,11 @@ SOURCES = [
     Source("Prolific Participant Help", "https://participant-help.prolific.com/en/articles/445007-who-can-participate-in-studies-on-prolific", "research studies", notes="Study participation must be genuine human participation."),
     Source("uTest India Projects", "https://www.utest.com/projects?country=India&tab=all", "software QA/testing", notes="Specific projects may be invite-only; reject any deposit request."),
     Source("Gitcoin Bounties", "https://gitcoin.co/mechanisms/bounties", "open-source bounties", notes="Check exact bounty terms, skills and payout conditions."),
-    Source("YPAI Data Annotator India", "https://freelancer.ypai.ai/jobs/openings/data-annotator-in", "image/video/audio/text annotation", region="India; 18+; project qualification required", notes="Official page advertises typical project pay INR 550-800/hour; only the selected project invitation confirms the actual rate and work availability."),
-    Source("YPAI Model Evaluator India", "https://freelancer.ypai.ai/jobs/openings/model-evaluator-in", "AI answer evaluation and fact-checking", region="India; 18+; strong reading comprehension required", notes="Official page advertises typical project pay INR 550-800/hour; application review and project availability are not guaranteed."),
-    Source("YPAI Data Collection Contributor India", "https://freelancer.ypai.ai/jobs/openings/data-contributor-in", "audio/video/image/text data collection", region="India; 18+; device/project requirements apply", notes="Official page advertises typical project pay INR 550-800/hour and biweekly payments after approval; check the project's exact offer."),
+    Source("YPAI Data Annotator India", "https://freelancer.ypai.ai/jobs/openings/data-annotator-in", "image/video/audio/text annotation", region="India; 18+; project qualification required", notes="Official page advertises typical project pay INR 550-800/hour; only the selected project invitation confirms the actual rate and work availability.", specific_page=True),
+    Source("YPAI Model Evaluator India", "https://freelancer.ypai.ai/jobs/openings/model-evaluator-in", "AI answer evaluation and fact-checking", region="India; 18+; strong reading comprehension required", notes="Official page advertises typical project pay INR 550-800/hour; application review and project availability are not guaranteed.", specific_page=True),
+    Source("YPAI Data Collection Contributor India", "https://freelancer.ypai.ai/jobs/openings/data-contributor-in", "audio/video/image/text data collection", region="India; 18+; device/project requirements apply", notes="Official page advertises typical project pay INR 550-800/hour and biweekly payments after approval; check the project's exact offer.", specific_page=True),
     Source("HumanSignal AI Training Contributors", "https://onboard.humansignal.com/", "expert AI training and data labeling", region="100+ countries claimed; check India eligibility and skills", notes="Rates are shown to matched eligible contributors; do not assume work or a rate before matching."),
-    Source("OpenTrain Python Software Engineering LLM Evaluator", "https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/", "specialist code evaluation", region="India listed among eligible countries; English and relevant Python/software judgment required", notes="Specialist role; posted pay and requirements must be rechecked on the individual listing."),
+    Source("OpenTrain Python Software Engineering LLM Evaluator", "https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/", "specialist code evaluation", region="India listed among eligible countries; English and relevant Python/software judgment required", notes="Specialist role; posted pay and requirements must be rechecked on the individual listing.", specific_page=True),
 ]
 
 def utc_now() -> str:
@@ -185,23 +190,93 @@ def classify_risk(text: str) -> list[str]:
                 flags.add(name)
     return sorted(flags)
 
+def is_task_detail_url(source: Source, url: str) -> bool:
+    if url == source.url and source.specific_page:
+        return True
+    path = urllib.parse.urlparse(url).path.lower().rstrip("/")
+    if re.search(r"/jobs/openings/[^/]+$", path):
+        return True
+    if re.search(r"/(?:jobs|projects|tasks)/[^/]+$", path) and not path.endswith(("/jobs/index", "/projects/index", "/tasks/index")):
+        return True
+    return False
+
+def extract_eligibility_evidence(text: str) -> str:
+    pattern = re.compile(r"India|Indian residents?|United States|U\\.S\\.|physician|medical doctor|laptop|PC required|fluent English|18 years|country|resident|located in|based in|eligible", re.I)
+    lines = [clean_text(line) for line in re.split(r"[\\n.]+", text) if pattern.search(line)]
+    seen = []
+    for line in lines:
+        if line and line not in seen:
+            seen.append(line[:220])
+        if len(seen) >= 4:
+            break
+    return " | ".join(seen)[:600]
+
+def assess_fit(source: Source, title: str, body: str) -> str:
+    sample = (title + "\\n" + body[:6000])
+    if re.search(r"physicians? in the United States|U\\.S\\.-only|United States only|must (?:be|reside) in the United States|for U\\.S\\. residents", sample, re.I):
+        return "LIKELY_NOT_ELIGIBLE_INDIA"
+    if re.search(r"\\b(?:physician|licensed doctor|medical doctor)\\b", title + " " + body[:2000], re.I):
+        return "SPECIALIST_QUALIFICATION_REVIEW"
+    if "India" in source.region or re.search(r"\\bIndia\\b|India-based|remote, India", title + " " + body[:1500], re.I):
+        return "INDIA_RELEVANT_VERIFY"
+    return "ELIGIBILITY_UNKNOWN_VERIFY"
+
+def triage_priority(status: str, currency: str, amount: str, unit: str, evidence: str, risks: list[str], fit: str) -> tuple[int, str]:
+    if risks:
+        return 0, "Risk-language quarantine"
+    if status != "200":
+        return 0, "Source unavailable; retry or manually verify"
+    if fit == "LIKELY_NOT_ELIGIBLE_INDIA":
+        return 0, "Listing appears location-restricted outside India"
+    if fit == "SPECIALIST_QUALIFICATION_REVIEW":
+        return 5, "Specialist qualification appears required"
+    score = 15 if fit == "INDIA_RELEVANT_VERIFY" else 5
+    if not evidence or not unit:
+        return score, "No task-specific rate extracted; verify before applying"
+    try:
+        lower_rate = float(re.split(r"[-–]", amount, maxsplit=1)[0].replace(",", "").strip())
+    except (TypeError, ValueError):
+        lower_rate = 0.0
+    unit_l = unit.lower()
+    if currency == "INR" and "hour" in unit_l:
+        score += 45 if lower_rate >= 500 else 32 if lower_rate >= 200 else 18 if lower_rate >= 50 else 5
+        return min(score, 100), "INR hourly rate evidence; verify project offer and actual work volume"
+    if currency == "INR" and ("task" in unit_l or "recording" in unit_l):
+        score += 32 if lower_rate >= 50 else 10 if lower_rate >= 5 else 2
+        return min(score, 100), "INR per-task rate evidence; acceptance rules and task time remain unknown"
+    if currency == "USD":
+        score += 12
+        return min(score, 100), "Foreign-currency rate; no INR conversion or payout guarantee"
+    return min(score + 5, 100), "Rate evidence found; verify unit, eligibility and payout terms"
+
 def make_lead(source: Source, url: str, status: str, raw: str, error: str = "") -> Lead:
     title, body = strip_html(raw.encode("utf-8")) if raw else ("", "")
+    detail_page = is_task_detail_url(source, url)
     cur, amount, unit, evidence = extract_pay_evidence(body)
+    if evidence and not detail_page:
+        cur, amount, unit, evidence = "", "", "", ""
     risks = classify_risk(body)
+    fit = assess_fit(source, title, body)
+    eligibility = extract_eligibility_evidence(title + "\\n" + body)
+    priority_score, priority_reason = triage_priority(status, cur, amount, unit, evidence, risks, fit)
     if risks:
         state = "quarantined_risk_review"
     elif status != "200":
         state = "source_unavailable"
+    elif fit == "LIKELY_NOT_ELIGIBLE_INDIA":
+        state = "eligibility_mismatch_review"
     elif cur and unit and evidence:
         state = "rate_evidence_found_verify_current_listing"
     else:
         state = "lead_found_rate_unverified"
     caveats = [source.notes]
     if error: caveats.append(error)
-    if not evidence: caveats.append("No task-specific rate evidence extracted; do not assume pay.")
+    if not evidence:
+        caveats.append("No task-specific rate evidence extracted; do not assume pay.")
+        if any(m in body.lower() for m in ("per hour", "per task", "per approved task", "per recording")):
+            caveats.append("A rate-like amount appeared on a broad page and was not promoted to a task-specific rate.")
     if status != "200": caveats.append("Fetch status is not success; retry later or open official page manually.")
-    return Lead(source.name, source.category, url, utc_now(), status, title, body[:700], cur, amount, unit, evidence, url if evidence else "", ";".join(risks), state, " ".join(caveats))
+    return Lead(source.name, source.category, url, utc_now(), status, title, body[:700], cur, amount, unit, evidence, url if evidence else "", ";".join(risks), state, " ".join(caveats), eligibility, fit, priority_score, priority_reason)
 
 def scan(sources: Iterable[Source], max_detail_pages: int = 3) -> list[Lead]:
     leads = []
@@ -224,7 +299,7 @@ def scan(sources: Iterable[Source], max_detail_pages: int = 3) -> list[Lead]:
             pages += 1
             if pages == 1 and status == "200" and not lead.risk_flags:
                 queue.extend(find_links(url, raw, limit=max_detail_pages))
-    return leads
+    return sorted(leads, key=lambda lead: (lead.priority_score, lead.status == "rate_evidence_found_verify_current_listing", lead.fetched_at), reverse=True)
 
 def write_outputs(leads: list[Lead], out_dir: Path) -> tuple[Path, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
