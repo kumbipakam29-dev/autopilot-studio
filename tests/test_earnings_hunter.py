@@ -72,7 +72,7 @@ class EarningsHunterTests(unittest.TestCase):
         facts = earnings.relevant_detail_facts(parser)
         self.assertNotIn("$150", facts)
         self.assertNotIn("$130", facts)
-        self.assertIn("labeling", facts.lower())
+        self.assertIn("qualification", facts.lower())
 
     def test_rate_after_long_generic_page_chrome_is_not_promoted(self):
         parser = earnings.PageParser()
