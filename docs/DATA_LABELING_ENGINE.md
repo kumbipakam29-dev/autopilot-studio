@@ -15,6 +15,14 @@ This folder contains a **lead discovery and work-tracking prototype**, not a pay
 - [YPAI Data Annotator — India](https://freelancer.ypai.ai/jobs/openings/data-annotator-in): page advertises typical INR 550–800/hour for projects; annotation includes image/video/audio/text labeling. Applicant review, initial tests, project availability and exact rate in the invitation still apply.
 - [YPAI Model Evaluator — India](https://freelancer.ypai.ai/jobs/openings/model-evaluator-in): page advertises typical INR 550–800/hour; requires strong reading comprehension, rubric-based evaluation and evidence-backed reasoning. Work depends on project supply.
 - [YPAI Data Collection Contributor — India](https://freelancer.ypai.ai/jobs/openings/data-contributor-in): page advertises typical INR 550–800/hour; device, consent and project-specific capture conditions apply.
+ 
+- [YPAI Text and NLP Annotator — India](https://freelancer.ypai.ai/jobs/openings/text-annotator-in): typical INR 550–800/hour; requires native or near-native language ability and project-rubric accuracy.
+- [YPAI Image Annotator — India](https://freelancer.ypai.ai/jobs/openings/image-annotator-in): typical INR 550–800/hour; boxes, polygons, masks or keypoints, with quality review.
+- [YPAI Pose and Keypoint Annotator — India](https://freelancer.ypai.ai/jobs/openings/pose-keypoint-annotator-in): typical INR 550–800/hour; computer/screen required.
+- [YPAI Transcriber with Diarization — India](https://freelancer.ypai.ai/jobs/openings/transcriber-diarization-in): typical INR 550–800/hour; native/near-native language, accurate typing and headphones required.
+- [YPAI Diarization Specialist — India](https://freelancer.ypai.ai/jobs/openings/diarization-specialist-in): typical INR 550–800/hour; requires precision on speaker turns, overlap and crosstalk.
+- [Outlier Coding Expertise — India](https://app.outlier.ai/opportunities/4486931005): official opportunity page lists an average USD 13.75/hour for coding experts in India. This is specialist work and requires genuine software/coding ability.
+- [RWS TrainAI Community](https://www.rws.com/artificial-intelligence/train-ai-data-services/trainai-community/): project-matched task-paid opportunities, with PayPal or bank payout; rates are disclosed per project and computer requirements may apply.
 - [HumanSignal contributor portal](https://onboard.humansignal.com/): application and identity verification precede matching; rates apply only to eligible projects.
 - [OpenTrain Python Software Engineering LLM Evaluator](https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/): specialist coding-evaluation role listed for India, but requires real Python/software engineering judgment; do not apply with invented experience.
 

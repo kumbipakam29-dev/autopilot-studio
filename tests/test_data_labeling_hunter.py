@@ -137,6 +137,34 @@ class HighValueSourceTests(unittest.TestCase):
         self.assertIn("YPAI Data Collection Contributor India", names)
         self.assertIn("HumanSignal AI Training Contributors", names)
 
+    def test_expanded_ypai_roles_are_registered(self):
+        sources = {source.name: source for source in hunter.SOURCES}
+        expected = [
+            "YPAI Text and NLP Annotator India",
+            "YPAI Image Annotator India",
+            "YPAI Pose and Keypoint Annotator India",
+            "YPAI Transcriber with Diarization India",
+            "YPAI Diarization Specialist India",
+        ]
+        for name in expected:
+            self.assertIn(name, sources)
+            self.assertTrue(sources[name].specific_page)
+
+    def test_outlier_india_rate_stays_usd_hourly(self):
+        source = next(s for s in hunter.SOURCES if s.name == "Outlier Coding Expertise — India")
+        raw = "<html><title>Coding Expertise for AI Training - India</title><p>Core project work coding experts in India average USD $13.75 per hour. Experienced software engineers required.</p></html>"
+        lead = hunter.make_lead(source, source.url, "200", raw)
+        self.assertEqual((lead.currency, lead.amount, lead.pay_unit), ("USD", "13.75", "per hour"))
+        self.assertEqual(lead.fit_hint, "INDIA_RELEVANT_VERIFY")
+
+    def test_rws_source_does_not_claim_a_fixed_rate(self):
+        source = next(s for s in hunter.SOURCES if s.name == "RWS TrainAI Community")
+        self.assertFalse(source.specific_page)
+        raw = "<html><title>TrainAI Community</title><p>Payment depends on each project and tasks are paid per task.</p></html>"
+        lead = hunter.make_lead(source, source.url, "200", raw)
+        self.assertEqual(lead.currency, "")
+        self.assertEqual(lead.amount, "")
+
     def test_open_train_specialist_role_is_labelled_as_specialist(self):
         source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
         self.assertIn("specialist", source.notes.lower())
