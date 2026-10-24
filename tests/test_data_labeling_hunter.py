@@ -9,6 +9,9 @@ class PayEvidenceTests(unittest.TestCase):
     def test_inr_per_accepted_task(self):
         self.assertEqual(hunter.extract_pay_evidence("Payment: ₹2 per accepted task"), ("INR", "2", "per accepted task", "Payment: ₹2 per accepted task"))
 
+    def test_inr_per_approved_task(self):
+        self.assertEqual(hunter.extract_pay_evidence("Hindi recording pays ₹2 per approved task"), ("INR", "2", "per approved task", "Hindi recording pays ₹2 per approved task"))
+
     def test_usd_per_hour_is_not_per_task(self):
         cur, amount, unit, evidence = hunter.extract_pay_evidence("Pay is USD $2 per hour")
         self.assertEqual((cur, amount, unit), ("USD", "2", "per hour"))
@@ -23,6 +26,15 @@ class PayEvidenceTests(unittest.TestCase):
 class RiskTests(unittest.TestCase):
     def test_upfront_fee_quarantined(self):
         self.assertIn("upfront_fee", hunter.classify_risk("Pay registration fee to start."))
+
+    def test_official_no_fee_warning_not_quarantined(self):
+        text = "We never charge to join. There is no registration fee or deposit. Never pay to unlock tasks."
+        self.assertEqual(hunter.classify_risk(text), [])
+
+    def test_denial_does_not_hide_a_separate_scam_offer(self):
+        text = "No fee is required for this platform. Pay an activation deposit to unlock this specific job."
+        flags = hunter.classify_risk(text)
+        self.assertIn("deposit", flags)
 
     def test_account_rental_flagged(self):
         self.assertIn("account_rental", hunter.classify_risk("Rent your account for money."))
@@ -47,6 +59,11 @@ class HtmlTests(unittest.TestCase):
         raw = '<a href="/jobs/1">one</a><a href="https://evil.example/x">offsite</a><a href="http://example.com/no">http</a>'
         links = hunter.find_links("https://example.com/jobs", raw)
         self.assertEqual(links, ["https://example.com/jobs/1"])
+
+    def test_login_and_register_links_are_excluded(self):
+        raw = '<a href="/login">login</a><a href="/register">register</a><a href="/jobs/abc">task</a>'
+        links = hunter.find_links("https://example.com/jobs", raw)
+        self.assertEqual(links, ["https://example.com/jobs/abc"])
 
     def test_invalid_url_blocked(self):
         _, status, _ = hunter.fetch_public("http://example.com")
