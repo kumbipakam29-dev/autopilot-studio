@@ -157,7 +157,7 @@ function App() {
     <aside>
       <div className="brand"><span className="logo">✦</span><div><b>AutoPilot</b><small>STUDIO</small></div></div>
       <nav>{NAV.map(x => <button className={tab === x ? 'active' : ''} onClick={() => { setTab(x); setNotice(''); }} key={x}>{ICONS[x]}　{x}</button>)}</nav>
-      <div className="side-note"><span className="dot"/> Local workspace<br/><small>Backend not connected</small></div>
+      <div className="side-note"><span className="dot"/> Local workspace<br/><small>Daily public scan · no auto-submit</small></div>
     </aside>
     <main>
       <header><div><small>WORKSPACE / AUTOPILOT</small><h1>{tab}</h1></div><div className="avatar">AS</div></header>
@@ -272,8 +272,8 @@ function App() {
       {tab === 'Task Queue' && <section className="panel"><h3>Add a task</h3><p className="muted">Tasks are stored locally; they are not executed automatically.</p><form onSubmit={e => { e.preventDefault(); add(); }} className="task-form"><input value={task} onChange={e => setTask(e.target.value)} placeholder="Describe a task to track…" aria-label="Task description"/><button className="primary">Add task</button></form>{notes.map((n,i) => <div className="task" key={i}><span className="task-icon">☷</span><div><b>{n.text}</b><small>{n.time}</small></div><span className="status">{n.status}</span></div>)}</section>}
 
       {tab === 'Reports' && <section className="panel"><h3>Reports</h3><p className="muted">Reports will appear after a backend or data source is connected.</p><div className="empty">No sales or marketplace reports available yet.</div></section>}
-      {tab === 'Settings' && <section className="panel"><h3>Settings</h3><p className="muted">This prototype stores task notes and POD workflow stages in this browser. It has no login, cloud database, AI image API, marketplace account, or secrets manager.</p><div className="notice"><b>Integration requirements</b><p>Use official platform APIs and secure server-side credential storage. Never place seller secrets inside the Android app or in public source code.</p></div><button className="secondary" onClick={() => exportConcepts()}>Export POD concept library</button></section>}
-      <footer>AutoPilot Studio <span>Local workspace · no live marketplace connection</span></footer>
+      {tab === 'Settings' && <section className="panel"><h3>Settings</h3><p className="muted">Task notes, POD stages and the Earnings Hunter ledger are stored locally on this device. A scheduled GitHub Actions job scans public opportunity pages daily, but the app has no worker-account login, cloud database, AI image API, marketplace credentials or payment integration.</p><div className="notice"><b>Integration requirements</b><p>Use official platform APIs and secure server-side credential storage. Never place seller secrets inside the Android app or in public source code.</p></div><button className="secondary" onClick={() => exportConcepts()}>Export POD concept library</button></section>}
+      <footer>AutoPilot Studio <span>Public leads only · manual work and payout verification</span></footer>
     </main>
   </div>;
 }
