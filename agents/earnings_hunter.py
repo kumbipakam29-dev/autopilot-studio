@@ -131,6 +131,19 @@ def eligibility_evidence(text):
     snippets = re.findall(r"[^.!?\n]{0,80}(?:India|Indian|resident|residents|country|eligible|eligibility|location|remote|worldwide|US only|United States|language requirement)[^.!?\n]{0,100}", text, re.I)
     return clean_text(" | ".join(snippets[:5]))[:700]
 
+def task_link_priority(label, url):
+    text = clean_text(label + " " + urllib.parse.urlparse(url).path).lower()
+    score = 0
+    preferred = ("hindi", "india", "indian", "local maps", "local search", "online-data-labeling", "search-evaluation", "language", "translation", "bilingual", "recording", "transcription", "ai-evaluation", "data-labeling", "speech", "annotat", "evaluator")
+    excluded = ("physician", "clinical", "ehr-cases", "doctor", "las-vegas", "nevada", "3d-home-capture", "overnight-home-video", "us-only")
+    score += sum(18 for phrase in preferred if phrase in text)
+    score -= sum(100 for phrase in excluded if phrase in text)
+    if "/jobs/" in urllib.parse.urlparse(url).path.lower() or "/projects/" in urllib.parse.urlparse(url).path.lower():
+        score += 5
+    if label.strip().lower() == "apply":
+        score -= 2
+    return score
+
 def discover_source(source, offline=False):
     base = make_candidate(source, source["name"] + " — official starting point", source["url"], source["type"] + ". " + source["payout_note"], "offline mode", "PLATFORM_LEAD")
     if offline:
@@ -145,9 +158,10 @@ def discover_source(source, offline=False):
     except Exception: pass
     page_title = clean_text(" ".join(parser.title_parts)) or source["name"] + " public page"
     rows = [make_candidate(source, page_title, source["url"], source["type"] + ". " + source["payout_note"], status, "OFFICIAL_PAGE_SCAN")]
-    # Only fetch a few public, same-domain task/project detail pages. No logins, forms or claim actions.
+    # Prioritize likely India/language/data tasks and avoid spending the small fetch budget on visibly US-only or credential-gated specialties.
+    ordered_links = sorted(parser.links, key=lambda item: task_link_priority(item[0], urllib.parse.urljoin(source["url"], item[1])), reverse=True)
     seen, count, detail_count = {source["url"]}, 0, 0
-    for label, href in parser.links:
+    for label, href in ordered_links:
         url = urllib.parse.urljoin(source["url"], href)
         parsed = urllib.parse.urlparse(url)
         if not allowed_same_site_url(url, source["url"]): continue
@@ -157,7 +171,7 @@ def discover_source(source, offline=False):
         path = parsed.path.lower().rstrip("/")
         is_detail = ("/jobs/" in path and path.rsplit("/jobs/",1)[-1] not in {"", "index"}) or ("/projects/" in path and path.rsplit("/projects/",1)[-1] not in {"", "index"})
         detail_body, detail_status = (None, "not attempted")
-        if is_detail and detail_count < 4:
+        if is_detail and detail_count < 5:
             detail_body, detail_status = fetch_public_page(url)
             detail_count += 1
         if detail_body:
