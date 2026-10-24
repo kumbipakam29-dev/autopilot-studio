@@ -121,6 +121,23 @@ class EligibilityAndPriorityTests(unittest.TestCase):
         self.assertIn("broad page", lead.caveat)
 
 class HighValueSourceTests(unittest.TestCase):
+    def test_suffix_usd_currency_keeps_hour_unit(self):
+        result = hunter.extract_pay_evidence("The hourly earnings are 8 USD per hour")
+        self.assertEqual(result, ("USD", "8", "per hour", "The hourly earnings are 8 USD per hour"))
+
+    def test_telus_hindi_role_rate_is_hourly_and_india_relevant(self):
+        source = next(s for s in hunter.SOURCES if s.name == "TELUS QA Rater Hindi India")
+        raw = "<html><title>Quality Assurance Rater Hindi India</title><p>The hourly earnings are 8 USD per hour. Payment is based on completed tasks. Must have lived in India for five consecutive years and use a smartphone and personal computer.</p></html>"
+        lead = hunter.make_lead(source, source.url, "200", raw)
+        self.assertEqual((lead.currency, lead.amount, lead.pay_unit), ("USD", "8", "per hour"))
+        self.assertEqual(lead.fit_hint, "INDIA_RELEVANT_VERIFY")
+
+    def test_telus_qa_rater_sources_are_specific_pages(self):
+        sources = {s.name: s for s in hunter.SOURCES}
+        self.assertTrue(sources["TELUS QA Rater Hindi India"].specific_page)
+        self.assertTrue(sources["TELUS QA Rater English India"].specific_page)
+        self.assertIn("5 consecutive years", sources["TELUS QA Rater Hindi India"].region)
+
     def test_ypai_rate_range_keeps_hour_unit(self):
         cur, amount, unit, evidence = hunter.extract_pay_evidence("Typical project pay INR 550-800 per hour")
         self.assertEqual((cur, amount, unit), ("INR", "550-800", "per hour"))

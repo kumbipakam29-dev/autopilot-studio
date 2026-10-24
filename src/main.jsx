@@ -23,6 +23,8 @@ const EARNING_SOURCES = [
   { name: 'CrowdGen by Appen', url: 'https://crowdgen.com/coffee-en-in/', kind: 'AI data and evaluation projects', note: 'Re-check recruitment status and payout conditions; laptop/PC may be required.' },
   { name: 'Clickworker', url: 'https://www.clickworker.com/clickworker/', kind: 'Microtasks and data work', note: 'Verify India registration availability and supported payout route before investing time.' },
   { name: 'OneForma', url: 'https://www.oneforma.com/jobs/', kind: 'Language and AI projects', note: 'Requirements and recruitment vary by project; reject country/qualification mismatches.' },
+  { name: 'TELUS QA Rater Hindi India', url: 'https://jobs.telusdigital.com/jobs/17840995-quality-assurance-rater-hindi-india', kind: 'Hindi+English search-quality rating', note: 'Official listing states USD $8/hour, 10–20 hours/week; five consecutive years living in India, smartphone + PC, and qualification/identity checks required.' },
+  { name: 'TELUS QA Rater English India', url: 'https://jobs.telusdigital.com/jobs/17840908-quality-assurance-rater-english-india', kind: 'English search-quality rating', note: 'Official listing states USD $8/hour, 10–20 hours/week; five consecutive years living in India, smartphone + PC, and qualification/identity checks required.' },
   { name: 'TELUS Digital AI Community', url: 'https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india', kind: 'Rating and evaluation roles', note: 'Official India search shows language-specific assessor/rater roles; application and assessment required.' },
   { name: 'Microworkers', url: 'https://www.microworkers.com/', kind: 'Small online tasks', note: 'KYC and withdrawal conditions apply; use only legitimate tasks and truthful proof.' },
   { name: 'Toloka', url: 'https://toloka.ai/tolokers/', kind: 'Data annotation and related work', note: 'Check current country/project restrictions and supported payment route.' },
@@ -109,6 +111,18 @@ const EARNING_LEADS = [
     rate: 'US$2/hour (previously advertised)', ratePerTaskInr: null, rateValue: '2', rateUnit: 'Per hour', rateCurrency: 'USD', badge: 'Recheck status',
     detail: 'This project page has sometimes been unavailable to the automated scan. Confirm recruitment status, device requirements and payout terms.'
   }
+  {
+    id: 'telus-hindi-qa', title: 'Quality Assurance Rater — Hindi India', source: 'TELUS QA Rater Hindi India',
+    url: 'https://jobs.telusdigital.com/jobs/17840995-quality-assurance-rater-hindi-india',
+    rate: 'US$8/hour', ratePerTaskInr: null, rateValue: '8', rateUnit: 'Per hour', rateCurrency: 'USD', badge: 'Hindi+English; PC required',
+    detail: 'Official page lists US$8/hour and 10–20 hours/week. Requires Hindi and English, five consecutive years resident in India, smartphone + personal computer, and qualification/identity checks. Payment is based on completed tasks; verify the current listing before applying.'
+  },
+  {
+    id: 'telus-english-qa', title: 'Quality Assurance Rater — English India', source: 'TELUS QA Rater English India',
+    url: 'https://jobs.telusdigital.com/jobs/17840908-quality-assurance-rater-english-india',
+    rate: 'US$8/hour', ratePerTaskInr: null, rateValue: '8', rateUnit: 'Per hour', rateCurrency: 'USD', badge: 'English; PC required',
+    detail: 'Official page lists US$8/hour and 10–20 hours/week. Requires English, five consecutive years resident in India, smartphone + personal computer, and qualification/identity checks. Payment is based on completed tasks; verify the current listing before applying.'
+  },
 ];
 
 const EARNING_STATUSES = ['Lead found', 'Applied', 'Qualification pending', 'Approved to work', 'Work submitted', 'Accepted', 'Rejected', 'Payment pending', 'Paid'];

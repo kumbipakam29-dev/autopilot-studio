@@ -26,6 +26,9 @@ This folder contains a **lead discovery and work-tracking prototype**, not a pay
 - [HumanSignal contributor portal](https://onboard.humansignal.com/): application and identity verification precede matching; rates apply only to eligible projects.
 - [OpenTrain Python Software Engineering LLM Evaluator](https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/): specialist coding-evaluation role listed for India, but requires real Python/software engineering judgment; do not apply with invented experience.
 
+- [TELUS Quality Assurance Rater — Hindi India](https://jobs.telusdigital.com/jobs/17840995-quality-assurance-rater-hindi-india): official page states **US$8/hour**, 10–20 hours/week, payment based on completed tasks. It requires Hindi and English, five consecutive years resident in India, smartphone + personal computer, and qualification/identity checks.
+- [TELUS Quality Assurance Rater — English India](https://jobs.telusdigital.com/jobs/17840908-quality-assurance-rater-english-india): official page states **US$8/hour**, with similar 10–20 hour weekly range, five-year India residency, smartphone/PC and qualification requirements.
+
 **Rate interpretation:** these provider pages advertise typical rates or a posted role, not a guaranteed personal offer, accepted hours, or payout date. Confirm the current rate, work volume, selection process, fees (should be zero upfront), payout method, and payment schedule in the actual project invitation before accepting work. The scanner preserves a displayed range such as INR 550–800/hour instead of silently reducing it to a single number. Source pages can change; check the live page at the time of application.
 
 ## Run

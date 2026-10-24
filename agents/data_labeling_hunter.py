@@ -34,7 +34,7 @@ RISK_PATTERNS = {
     "captcha_bypass": re.compile(r"\b(captcha bypass|solve captchas? at scale|bypass captcha)\b", re.I),
     "guaranteed_income": re.compile(r"\bguaranteed\s+(income|earnings|profit)\b", re.I),
 }
-CURRENCY = re.compile(r"(?:(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?)|\$\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?))", re.I)
+CURRENCY = re.compile(r"(?:(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?)|\$\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?|\b([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)\s*(?:USD|US\$)\b)", re.I)
 UNIT = re.compile(r"\b(per\s+(?:(?:approved|accepted)\s+)?(?:task|recording|hour|hr|minute|batch|project|image|audio|page)|/\s*(?:task|hour|hr|batch|image|page)|each\s+(?:(?:approved|accepted)\s+)?(?:task|recording|image|page)|for\s+\d+\s+(?:tasks|images|minutes|hours|pages|prompts))\b", re.I)
 RISK_TEXT_LIMIT = 6000
 
@@ -76,6 +76,8 @@ SOURCES = [
     Source("Corpshore/Jwuma India", "https://platform.corpshore.ai/india", "data annotation/AI evaluation", region="India listing; verify project"),
     Source("Clickworker", "https://www.clickworker.com/clickworker/", "microtasks/data work", notes="Registration and payout methods can vary by country."),
     Source("TELUS Digital AI Community India", "https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india", "AI evaluation", region="India"),
+Source("TELUS QA Rater Hindi India", "https://jobs.telusdigital.com/jobs/17840995-quality-assurance-rater-hindi-india", "AI/search-result quality rating", region="India; 5 consecutive years resident; Hindi+English; smartphone+PC", notes="Official listing states USD 8/hour, 10–20 hours/week, payment based on completed tasks, and qualification/identity checks.", specific_page=True),
+    Source("TELUS QA Rater English India", "https://jobs.telusdigital.com/jobs/17840908-quality-assurance-rater-english-india", "AI/search-result quality rating", region="India; 5 consecutive years resident; English; smartphone+PC", notes="Official listing states USD 8/hour, 10–20 hours/week, payment based on completed tasks, and qualification/identity checks.", specific_page=True),
     Source("OneForma Jobs", "https://www.oneforma.com/jobs/", "data collection/annotation", notes="Project and language eligibility vary."),
     Source("Toloka Tolokers", "https://toloka.ai/tolokers/", "microtasks/data labeling", notes="Availability and payout vary by region."),
     Source("Microworkers", "https://www.microworkers.com/", "microtasks", notes="Check task legality and minimum payout."),
@@ -123,8 +125,10 @@ def extract_pay_evidence(text: str) -> tuple[str, str, str, str]:
                 currency, raw_amount = "INR", m.group(1)
             elif m.group(2):
                 currency, raw_amount = "USD", m.group(2)
-            else:
+            elif m.group(3):
                 currency, raw_amount = "USD", m.group(3)
+            else:
+                currency, raw_amount = "USD", m.group(4)
             amount = re.sub(r"\s*(?:-|–|to)\s*", "-", raw_amount, flags=re.I).replace(",", "")
             return currency, amount, re.sub(r"\s+", " ", u.group(1)).strip(), line[:500]
     return "", "", "", ""
