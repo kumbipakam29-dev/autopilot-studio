@@ -1,0 +1,192 @@
+#!/usr/bin/env python3
+"""Public-source microtask discovery and safe triage. Does not log in or submit work."""
+from __future__ import annotations
+import argparse, csv, datetime as dt, html, re, sys, urllib.error, urllib.parse, urllib.request
+from html.parser import HTMLParser
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "output"
+USER_AGENT = "AutoPilotStudio-EarningsHunter/1.0 (+public page discovery; no login or form submissions)"
+MAX_BYTES, TIMEOUT = 450_000, 12
+
+# Official starting points only; each specific job's existence/rate still needs verification.
+SOURCES = [
+ {"name":"Karmyug AI","url":"https://work.karmyug.in/","type":"AI data tasks / language recording / transcription","region":"India","payout_note":"Check each task's stated rate and approval rules; rate varies."},
+ {"name":"TELUS Digital AI Community - India","url":"https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india","type":"AI rating / search evaluation / language projects","region":"India","payout_note":"Project/role-specific; read the official listing before applying."},
+ {"name":"Clickworker","url":"https://www.clickworker.com/clickworker/","type":"Microtasks / AI data / UHRS when available","region":"Availability varies by country","payout_note":"Confirm country and payout method are supported in the account before working."},
+ {"name":"Microworkers","url":"https://www.microworkers.com/","type":"Small online tasks","region":"Availability and task rules vary","payout_note":"KYC and withdrawal threshold apply; never submit fabricated proof."},
+ {"name":"Toloka","url":"https://toloka.ai/tolokers/","type":"Data annotation / evaluation tasks","region":"Check current country and project eligibility","payout_note":"Task availability and payment eligibility vary; check current terms."},
+ {"name":"OneForma","url":"https://www.oneforma.com/jobs/","type":"Data collection / language / AI projects","region":"Project-specific","payout_note":"Read project rate, qualification, and payment terms before starting."},
+ {"name":"CrowdGen by Appen","url":"https://crowdgen.com/","type":"AI data / rating / language projects","region":"Project-specific","payout_note":"Project-specific; verify pay, country eligibility, and payment method."},
+ {"name":"Gitcoin / Buidlbox bounty ecosystem","url":"https://gitcoin.co/mechanisms/bounties","type":"Scoped open-source, research, design, and development bounties","region":"Global; wallet/tax/payment terms may apply","payout_note":"Confirm live amount, deadline, acceptance criteria, and payout terms."},
+]
+TASK_WORDS = re.compile(r"task|job|project|bount|microtask|annotat|transcri|recording|rater|assessor|analyst|evaluator|data collection|label|earn|apply|work from|contributor", re.I)
+RISK_WORDS = re.compile(r"pay\s*(?:a|an|the)?\s*(?:deposit|fee|joining fee|registration fee)|upfront\s*(?:payment|fee)|guaranteed\s+income|fake\s+(?:review|rating|proof|account)|buy\s+(?:followers|likes|reviews)|captcha\s*(?:bypass|solver)|otp\s*sharing|share\s+(?:your\s+)?password|crypto\s+deposit|investment\s+required|install\s+an\s+unknown\s+apk", re.I)
+RUPEE_AMOUNT = re.compile(r"(?:₹|INR\s*|Rs\.?\s*)(\d[\d,]*(?:\.\d{1,2})?)", re.I)
+FOREIGN_AMOUNT = re.compile(r"(?:\$|USD\s*|€|EUR\s*|£|GBP\s*)(\d[\d,]*(?:\.\d{1,2})?)", re.I)
+INR_MIN, INR_MAX = 50.0, 200.0
+
+def clean_text(value: str) -> str:
+    return re.sub(r"\s+", " ", html.unescape(value or "")).strip()
+
+def get_host(url: str) -> str:
+    return (urllib.parse.urlparse(url).hostname or "").lower()
+
+def allowed_same_site_url(url: str, base_url: str) -> bool:
+    parsed = urllib.parse.urlparse(urllib.parse.urljoin(base_url, url))
+    base_host, host = get_host(base_url), (parsed.hostname or "").lower()
+    bad_ext = (".pdf", ".doc", ".docx", ".zip", ".png", ".jpg", ".jpeg")
+    return parsed.scheme == "https" and bool(host) and (host == base_host or host.endswith("." + base_host)) and not parsed.path.lower().endswith(bad_ext)
+
+class PageParser(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.title_parts, self.text_parts, self.links = [], [], []
+        self.in_title, self.anchor_href, self.anchor_text, self.skip_depth = False, None, [], 0
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "title": self.in_title = True
+        if tag in {"script", "style", "noscript", "svg"}: self.skip_depth += 1
+        if tag == "a" and attrs.get("href"):
+            self.anchor_href, self.anchor_text = attrs["href"], []
+    def handle_endtag(self, tag):
+        if tag == "title": self.in_title = False
+        if tag in {"script", "style", "noscript", "svg"} and self.skip_depth: self.skip_depth -= 1
+        if tag == "a" and self.anchor_href:
+            label = clean_text(" ".join(self.anchor_text))
+            if label: self.links.append((label, self.anchor_href))
+            self.anchor_href, self.anchor_text = None, []
+    def handle_data(self, data):
+        if self.skip_depth: return
+        value = clean_text(data)
+        if not value: return
+        self.text_parts.append(value)
+        if self.in_title: self.title_parts.append(value)
+        if self.anchor_href: self.anchor_text.append(value)
+
+def fetch_public_page(url: str) -> tuple[str | None, str]:
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"})
+    try:
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
+            if get_host(response.geturl()) != get_host(url): return None, "redirected to different host; skipped"
+            ctype = response.headers.get("Content-Type", "").lower()
+            if "text/html" not in ctype and "application/xhtml+xml" not in ctype: return None, "not HTML; skipped"
+            data = response.read(MAX_BYTES + 1)[:MAX_BYTES]
+            return data.decode(response.headers.get_content_charset() or "utf-8", errors="replace"), "fetched"
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+        return None, f"unavailable ({type(exc).__name__})"
+
+def extract_amount(text: str) -> tuple[str, str, str]:
+    rupees, foreign = RUPEE_AMOUNT.findall(text), FOREIGN_AMOUNT.findall(text)
+    if rupees:
+        values = []
+        for raw in rupees:
+            try: values.append(float(raw.replace(",", "")))
+            except ValueError: pass
+        if values:
+            in_range = [v for v in values if INR_MIN <= v <= INR_MAX]
+            return "INR", ", ".join(f"₹{v:g}" for v in values[:4]), "TARGET_RANGE_MATCH" if in_range else "INR_AMOUNT_OUTSIDE_TARGET"
+    if foreign:
+        return "FOREIGN_CURRENCY_UNCONVERTED", ", ".join(clean_text(v) for v in foreign[:4]), "CURRENCY_CONVERSION_AND_PAYOUT_CHECK_REQUIRED"
+    return "", "", "NO_PUBLIC_AMOUNT_FOUND"
+
+def score_candidate(title: str, snippet: str, source_name: str, source_region: str):
+    joined = clean_text(f"{title} {snippet}")
+    risk = RISK_WORDS.search(joined)
+    currency, amount, signal = extract_amount(joined)
+    score, reasons = 0, []
+    if currency == "INR" and signal == "TARGET_RANGE_MATCH": score += 40; reasons.append("explicit INR amount in target range")
+    elif currency == "INR": score += 20; reasons.append("explicit INR amount")
+    elif currency == "FOREIGN_CURRENCY_UNCONVERTED": score += 8; reasons.append("foreign amount found; not converted")
+    if TASK_WORDS.search(joined): score += 12; reasons.append("task/work wording")
+    if "India" in source_region or re.search(r"\bIndia\b|\bIN\b", joined): score += 10; reasons.append("India relevance signal")
+    if source_name: score += 8; reasons.append("curated official source")
+    if risk: score -= 100; reasons.append("risk phrase detected; quarantine")
+    status = "QUARANTINE_RISK_REVIEW" if risk else ("AMOUNT_FOUND_REVIEW_TERMS" if amount else "NO_PUBLIC_AMOUNT_FOUND")
+    return score, amount, currency, signal, status + (" — " + "; ".join(reasons) if reasons else "")
+
+def make_candidate(source, title, url, snippet, page_status, kind):
+    score, amount, currency, signal, note = score_candidate(title, snippet, source["name"], source["region"])
+    if page_status != "fetched": score -= 5
+    status = "QUARANTINE_RISK_REVIEW" if "QUARANTINE_RISK_REVIEW" in note else ("REVIEW_TERMS" if amount else "LEAD_ONLY")
+    return {
+      "discovered_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "source":source["name"],
+      "candidate_type":kind,"title":clean_text(title)[:180],"url":url,"region_or_eligibility":source["region"],
+      "task_type":source["type"],"public_amount_text":amount,"currency":currency,"payment_signal":signal,
+      "triage_score":str(score),"triage_status":status,"score_notes":note,"payout_or_eligibility_note":source["payout_note"],
+      "page_fetch_status":page_status,"required_next_step":"Open official page; confirm current task, rate, eligibility, deadline and payout before deciding manually.",
+      "automation_status":"DISCOVERY_ONLY_NO_LOGIN_NO_SUBMISSION"}
+
+def discover_source(source, offline=False):
+    base = make_candidate(source, source["name"] + " — official starting point", source["url"], source["type"] + ". " + source["payout_note"], "offline mode", "PLATFORM_LEAD")
+    if offline: return [base], {"source":source["name"],"fetch_status":"offline mode","candidate_links_extracted":"0"}
+    body, status = fetch_public_page(source["url"])
+    if not body:
+        base["page_fetch_status"] = status
+        base["triage_score"] = str(int(base["triage_score"])-5)
+        return [base], {"source":source["name"],"fetch_status":status,"candidate_links_extracted":"0"}
+    parser = PageParser()
+    try: parser.feed(body)
+    except Exception: pass
+    page_title = clean_text(" ".join(parser.title_parts)) or source["name"] + " public page"
+    page_text = clean_text(" ".join(parser.text_parts))[:1200]
+    rows = [make_candidate(source, page_title, source["url"], page_text, status, "OFFICIAL_PAGE_SCAN")]
+    seen, count = {source["url"]}, 0
+    for label, href in parser.links:
+        url = urllib.parse.urljoin(source["url"], href)
+        parsed = urllib.parse.urlparse(url)
+        if not allowed_same_site_url(url, source["url"]): continue
+        url = urllib.parse.urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", parsed.query, ""))
+        if url in seen or len(seen) >= 45 or not TASK_WORDS.search(label): continue
+        seen.add(url)
+        rows.append(make_candidate(source,label,url,(label+". "+source["type"]+". "+source["payout_note"])[:500],status,"SAME_SITE_LINK_LEAD"))
+        count += 1
+    return rows, {"source":source["name"],"fetch_status":status,"candidate_links_extracted":str(count)}
+
+def write_csv(path, rows, columns):
+    with path.open("w",encoding="utf-8-sig",newline="") as handle:
+        writer=csv.DictWriter(handle,fieldnames=columns,extrasaction="ignore")
+        writer.writeheader(); writer.writerows(rows)
+
+def run_hunt(offline=False, limit=30):
+    OUT.mkdir(parents=True,exist_ok=True)
+    candidates, source_report = [], []
+    for source in SOURCES:
+        try:
+            rows, report = discover_source(source,offline)
+            candidates.extend(rows); source_report.append(report)
+        except Exception as exc:
+            source_report.append({"source":source["name"],"fetch_status":f"error ({type(exc).__name__})","candidate_links_extracted":"0"})
+    candidates.sort(key=lambda r:(r["triage_status"]!="QUARANTINE_RISK_REVIEW",int(r["triage_score"])),reverse=True)
+    candidates = candidates[:max(1,min(200,limit))]
+    run_id=dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S-UTC")
+    columns=["discovered_at_utc","source","candidate_type","title","url","region_or_eligibility","task_type","public_amount_text","currency","payment_signal","triage_score","triage_status","score_notes","payout_or_eligibility_note","page_fetch_status","required_next_step","automation_status"]
+    write_csv(OUT/"earnings_opportunities.csv",candidates,columns)
+    write_csv(OUT/"source_status.csv",source_report,["source","fetch_status","candidate_links_extracted"])
+    tracker_cols=["candidate_url","source","task_title","status","claimed_rate","actual_time_minutes","proof_link_or_note","approval_status","amount_earned_inr","payout_received_inr","next_follow_up"]
+    tracker=[{"candidate_url":r["url"],"source":r["source"],"task_title":r["title"],"status":"NEW_NOT_STARTED","claimed_rate":r["public_amount_text"],"actual_time_minutes":"","proof_link_or_note":"","approval_status":"NOT_SUBMITTED","amount_earned_inr":"","payout_received_inr":"","next_follow_up":"Verify eligibility and task terms before starting."} for r in candidates if r["triage_status"]!="QUARANTINE_RISK_REVIEW"]
+    write_csv(OUT/"earnings_tracker_template.csv",tracker,tracker_cols)
+    target_hits=sum(r["payment_signal"]=="TARGET_RANGE_MATCH" and r["triage_status"]=="REVIEW_TERMS" for r in candidates)
+    with (OUT/"earnings_hunt_report.md").open("w",encoding="utf-8") as f:
+        f.write(f"# AutoPilot Studio — Earnings Hunter Run\n\n- Run ID: {run_id}\n- Official starting points checked: {len(SOURCES)}\n- Candidate rows emitted: {len(candidates)}\n- Rows with public INR amount in ₹50–₹200: {target_hits}\n- Mode: {'offline test run' if offline else 'public-page discovery'}\n\n")
+        f.write("## How ranking works\n\nExplicit public INR amounts in ₹50–₹200 get a boost. India relevance and task wording may add points. Foreign currency is not silently converted. Risk phrases (deposits, fake reviews/proofs, credential sharing, captcha bypass, risky APK installation) are quarantined.\n\n")
+        f.write("## Important limits\n\nA platform link is a lead, not proof a specific task is open, that you are eligible, or that it will pay. This workflow only fetches public HTML pages. It does not create accounts, log in, click claim/apply, submit surveys, solve CAPTCHAs, fake proof, upload work, or initiate payouts. A provider decides eligibility, acceptance and payment. No income or first-payment guarantee. Keep identity documents, passwords, OTPs and payment details out of the tracker.\n\n## Public page scan\n\n")
+        for item in source_report: f.write(f"- {item['source']}: {item['fetch_status']}; same-site task/job links extracted: {item['candidate_links_extracted']}\n")
+        f.write("\n## Output files\n\n- earnings_opportunities.csv — ranked leads and source evidence.\n- source_status.csv — public page fetch status.\n- earnings_tracker_template.csv — local tracking template for actual work and payout.\n")
+    print(f"source_count={len(SOURCES)}")
+    print(f"candidate_rows={len(candidates)}")
+    print(f"target_range_public_amount_rows={target_hits}")
+    print(f"report={OUT/'earnings_hunt_report.md'}")
+    return OUT/"earnings_opportunities.csv"
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--offline",action="store_true",help="Skip network access for tests")
+    parser.add_argument("--limit",type=int,default=30,help="Maximum candidate rows, 1..200")
+    args=parser.parse_args()
+    try: run_hunt(args.offline,args.limit); return 0
+    except (OSError,RuntimeError,ValueError) as exc:
+        print(f"earnings_hunt_failed: {exc}",file=sys.stderr); return 1
+
+if __name__=="__main__": raise SystemExit(main())
