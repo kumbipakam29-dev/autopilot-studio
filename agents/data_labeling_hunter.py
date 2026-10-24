@@ -202,7 +202,7 @@ def is_task_detail_url(source: Source, url: str) -> bool:
 
 def extract_eligibility_evidence(text: str) -> str:
     pattern = re.compile(r"India|Indian residents?|United States|U\.S\.|physician|medical doctor|laptop|PC required|fluent English|18 years|country|resident|located in|based in|eligible", re.I)
-    lines = [clean_text(line) for line in re.split(r"[\n.]+", text) if pattern.search(line)]
+    lines = [re.sub(r"\s+", " ", html.unescape(line)).strip() for line in re.split(r"[\n.]+", text) if pattern.search(line)]
     seen = []
     for line in lines:
         if line and line not in seen:
