@@ -5,8 +5,11 @@ on:
     branches: [main]
   pull_request:
     paths:
-      - 'agents/data_labeling_hunter.py'
-      - 'tests/test_data_labeling_hunter.py'
+      - 'agents/**'
+      - 'tests/**'
+      - 'portfolio/**'
+      - 'docs/DATA_LABELING_ENGINE.md'
+      - 'docs/DIRECT_CLIENT_MICROGIG_EXPERIMENT.md'
       - '.github/workflows/data-labeling-hunter.yml'
   workflow_dispatch:
   schedule:
@@ -16,7 +19,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: data-labeling-hunter-${{ github.ref }}
+  group: data-labeling-hunter-\${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -30,6 +33,8 @@ jobs:
           python-version: "3.12"
       - name: Run offline tests
         run: python -m unittest discover -s tests -v
+      - name: Validate synthetic portfolio sample
+        run: python agents/annotation_quality_check.py --input portfolio/synthetic_customer_feedback_labeled.csv --report output/annotation-qa-report.json
       - name: Scan official public listings
         run: python agents/data_labeling_hunter.py --output-dir output
       - name: Upload CSV and JSON lead report

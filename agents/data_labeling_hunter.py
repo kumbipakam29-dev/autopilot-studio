@@ -140,34 +140,49 @@ def fetch_public(url: str) -> tuple[str, str, str]:
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
         return "", "fetch_error", str(exc)[:240]
 
+def is_probable_detail_path(url: str) -> bool:
+    """Reject job-board indexes while allowing concrete job/project/task slugs."""
+    path = urllib.parse.urlparse(url).path.lower().rstrip("/")
+    parts = [part for part in path.split("/") if part]
+    if not parts:
+        return False
+    if len(parts) >= 3 and parts[-3] == "jobs" and parts[-2] == "openings":
+        slug = parts[-1]
+    elif len(parts) >= 2 and parts[-2] in {"jobs", "projects", "tasks"}:
+        slug = parts[-1]
+    else:
+        return False
+    generic_slugs = {
+        "openings", "opening", "index", "search", "list", "all", "open",
+        "remote", "india", "latest", "category", "categories", "browse",
+        "remote-jobs", "all-jobs", "job-board", "open-freelance-roles",
+    }
+    if slug in generic_slugs or slug.endswith("-jobs") or "job-board" in slug:
+        return False
+    return bool(slug)
+
 def find_links(page_url: str, raw_html: str, limit: int = 8) -> list[str]:
-    """Prefer task/project detail pages; do not waste crawl budget on account pages."""
+    """Return only same-host task-detail-looking URLs, ranked ahead of other links."""
     base = urllib.parse.urlparse(page_url)
     found = []
     seen = {page_url}
     excluded_path = re.compile(r"/(?:login|log-in|signin|sign-in|register|signup|sign-up|account|privacy|terms|cookies?)(?:/|$)", re.I)
     for href in re.findall(r"""(?is)<a\b[^>]*?href\s*=\s*["']([^"'#]+)["']""", raw_html):
         full = urllib.parse.urljoin(page_url, html.unescape(href))
-        p = urllib.parse.urlparse(full)
-        if p.scheme != "https" or p.hostname != base.hostname:
+        parsed = urllib.parse.urlparse(full)
+        if parsed.scheme != "https" or parsed.hostname != base.hostname:
             continue
-        path = p.path.lower()
-        if p.path.lower().endswith((".pdf", ".png", ".jpg", ".jpeg", ".zip", ".exe", ".apk")):
+        path = parsed.path.lower()
+        if path.endswith((".pdf", ".png", ".jpg", ".jpeg", ".zip", ".exe", ".apk")):
             continue
-        if excluded_path.search(path):
+        if excluded_path.search(path) or not is_probable_detail_path(full):
             continue
         if full not in seen:
             seen.add(full)
             found.append(full)
     def priority(url: str) -> tuple[int, int]:
         path = urllib.parse.urlparse(url).path.lower().rstrip("/")
-        if re.search(r"/(?:jobs|projects|openings|tasks)/[^/]+$", path):
-            score = 100
-        elif any(term in path for term in ("/jobs/", "/projects/", "/openings/", "/tasks/")):
-            score = 60
-        else:
-            score = 10
-        return (score, -len(path))
+        return (100 if is_probable_detail_path(url) else 0, -len(path))
     return sorted(found, key=priority, reverse=True)[:max(0, limit)]
 
 def classify_risk(text: str) -> list[str]:
@@ -193,12 +208,7 @@ def classify_risk(text: str) -> list[str]:
 def is_task_detail_url(source: Source, url: str) -> bool:
     if url == source.url and source.specific_page:
         return True
-    path = urllib.parse.urlparse(url).path.lower().rstrip("/")
-    if re.search(r"/jobs/openings/[^/]+$", path):
-        return True
-    if re.search(r"/(?:jobs|projects|tasks)/[^/]+$", path) and not path.endswith(("/jobs/index", "/projects/index", "/tasks/index")):
-        return True
-    return False
+    return is_probable_detail_path(url)
 
 def extract_eligibility_evidence(text: str) -> str:
     pattern = re.compile(r"India|Indian residents?|United States|U\.S\.|physician|medical doctor|laptop|PC required|fluent English|18 years|country|resident|located in|based in|eligible", re.I)
@@ -211,13 +221,17 @@ def extract_eligibility_evidence(text: str) -> str:
             break
     return " | ".join(seen)[:600]
 
-def assess_fit(source: Source, title: str, body: str) -> str:
+def assess_fit(source: Source, title: str, body: str, url: str) -> str:
     sample = (title + "\n" + body[:6000])
     if re.search(r"physicians? in the United States|U\.S\.-only|United States only|must (?:be|reside) in the United States|for U\.S\. residents", sample, re.I):
         return "LIKELY_NOT_ELIGIBLE_INDIA"
     if re.search(r"\b(?:physician|licensed doctor|medical doctor)\b", title + " " + body[:2000], re.I):
         return "SPECIALIST_QUALIFICATION_REVIEW"
-    if "India" in source.region or re.search(r"\bIndia\b|India-based|remote, India", title + " " + body[:1500], re.I):
+    # Only inherit the registry region for its exact seed URL. Child job pages
+    # must contain their own India/location evidence rather than inheriting it.
+    if url == source.url and "India" in source.region:
+        return "INDIA_RELEVANT_VERIFY"
+    if re.search(r"\bIndia\b|India-based|remote, India|Indian residents?", sample, re.I):
         return "INDIA_RELEVANT_VERIFY"
     return "ELIGIBILITY_UNKNOWN_VERIFY"
 
@@ -256,7 +270,7 @@ def make_lead(source: Source, url: str, status: str, raw: str, error: str = "") 
     if evidence and not detail_page:
         cur, amount, unit, evidence = "", "", "", ""
     risks = classify_risk(body)
-    fit = assess_fit(source, title, body)
+    fit = assess_fit(source, title, body, url)
     eligibility = extract_eligibility_evidence(title + "\n" + body)
     priority_score, priority_reason = triage_priority(status, cur, amount, unit, evidence, risks, fit)
     if risks:
