@@ -226,6 +226,18 @@ def write_csv(path, rows, columns):
         writer=csv.DictWriter(handle,fieldnames=columns,extrasaction="ignore")
         writer.writeheader(); writer.writerows(rows)
 
+def count_verified_target_rate_rows(candidates):
+    # A generic platform homepage mentioning a rupee amount is not a paid task offer.
+    # Count only a specific detail page with visible evidence for that exact task.
+    return sum(
+        r.get("candidate_type") == "TASK_DETAIL_PAGE"
+        and r.get("payment_signal") == "TARGET_RANGE_MATCH"
+        and r.get("triage_status") == "REVIEW_TERMS"
+        and bool(r.get("public_detail_evidence"))
+        and bool(RUPEE_AMOUNT.search(r.get("public_detail_evidence", "")))
+        for r in candidates
+    )
+
 def run_hunt(offline=False, limit=30):
     OUT.mkdir(parents=True,exist_ok=True)
     candidates, source_report = [], []
@@ -244,9 +256,9 @@ def run_hunt(offline=False, limit=30):
     tracker_cols=["candidate_url","source","task_title","status","claimed_rate","actual_time_minutes","proof_link_or_note","approval_status","amount_earned_inr","payout_received_inr","next_follow_up"]
     tracker=[{"candidate_url":r["url"],"source":r["source"],"task_title":r["title"],"status":"NEW_NOT_STARTED","claimed_rate":r["public_amount_text"],"actual_time_minutes":"","proof_link_or_note":"","approval_status":"NOT_SUBMITTED","amount_earned_inr":"","payout_received_inr":"","next_follow_up":"Verify eligibility and task terms before starting."} for r in candidates if r["triage_status"]!="QUARANTINE_RISK_REVIEW"]
     write_csv(OUT/"earnings_tracker_template.csv",tracker,tracker_cols)
-    target_hits=sum(r["payment_signal"]=="TARGET_RANGE_MATCH" and r["triage_status"]=="REVIEW_TERMS" for r in candidates)
+    target_hits=count_verified_target_rate_rows(candidates)
     with (OUT/"earnings_hunt_report.md").open("w",encoding="utf-8") as f:
-        f.write(f"# AutoPilot Studio — Earnings Hunter Run\n\n- Run ID: {run_id}\n- Official starting points checked: {len(SOURCES)}\n- Candidate rows emitted: {len(candidates)}\n- Rows with public INR amount in ₹50–₹200: {target_hits}\n- Mode: {'offline test run' if offline else 'public-page discovery'}\n\n")
+        f.write(f"# AutoPilot Studio — Earnings Hunter Run\n\n- Run ID: {run_id}\n- Official starting points checked: {len(SOURCES)}\n- Candidate rows emitted: {len(candidates)}\n- Specific task-detail pages with public INR amount in ₹50–₹200: {target_hits}\n- Mode: {'offline test run' if offline else 'public-page discovery'}\n\n")
         f.write("## How ranking works\n\nExplicit public INR amounts in ₹50–₹200 get a boost. India relevance and task wording may add points. Foreign currency is not silently converted. Risk phrases (deposits, fake reviews/proofs, credential sharing, captcha bypass, risky APK installation) are quarantined.\n\n")
         f.write("## Important limits\n\nA platform link is a lead, not proof a specific task is open, that you are eligible, or that it will pay. This workflow only fetches public HTML pages. It does not create accounts, log in, click claim/apply, submit surveys, solve CAPTCHAs, fake proof, upload work, or initiate payouts. A provider decides eligibility, acceptance and payment. No income or first-payment guarantee. Keep identity documents, passwords, OTPs and payment details out of the tracker.\n\n## Public page scan\n\n")
         for item in source_report: f.write(f"- {item['source']}: {item['fetch_status']}; same-site task/job links extracted: {item['candidate_links_extracted']}\n")
