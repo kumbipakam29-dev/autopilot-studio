@@ -120,7 +120,7 @@ def make_candidate(source, title, url, snippet, page_status, kind):
 
 def relevant_detail_facts(parser):
     facts = []
-    fact_pattern = re.compile(r"(₹|INR|Rs\\.?|\\$|USD|€|EUR|£|GBP|per\\s+(?:approved\\s+)?(?:task|recording|image|minute|hour)|payment|payout|paid|rate|reward|compensation|eligib|India|resident|country|deadline|minimum|qualification|weekly|monthly)", re.I)
+    fact_pattern = re.compile(r"(₹|INR|Rs\.?|\$|USD|€|EUR|£|GBP|per\s+(?:approved\s+)?(?:task|recording|image|minute|hour)|payment|payout|paid|rate|reward|compensation|eligib|India|resident|country|deadline|minimum|qualification|weekly|monthly)", re.I)
     for part in parser.text_parts:
         cleaned = clean_text(part)
         if cleaned and fact_pattern.search(cleaned) and cleaned not in facts:
@@ -128,7 +128,7 @@ def relevant_detail_facts(parser):
     return " ".join(facts)[:1800]
 
 def eligibility_evidence(text):
-    snippets = re.findall(r"[^.!?\\n]{0,80}(?:India|Indian|resident|residents|country|eligible|eligibility|location|remote|worldwide|US only|United States|language requirement)[^.!?\\n]{0,100}", text, re.I)
+    snippets = re.findall(r"[^.!?\n]{0,80}(?:India|Indian|resident|residents|country|eligible|eligibility|location|remote|worldwide|US only|United States|language requirement)[^.!?\n]{0,100}", text, re.I)
     return clean_text(" | ".join(snippets[:5]))[:700]
 
 def discover_source(source, offline=False):
