@@ -34,7 +34,7 @@ RISK_PATTERNS = {
     "captcha_bypass": re.compile(r"\b(captcha bypass|solve captchas? at scale|bypass captcha)\b", re.I),
     "guaranteed_income": re.compile(r"\bguaranteed\s+(income|earnings|profit)\b", re.I),
 }
-CURRENCY = re.compile(r"(?:(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?)|\$\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?))", re.I)
+CURRENCY = re.compile(r"(?:(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*\$?[0-9]+(?:\.[0-9]+)?)?)|\$\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*\$?[0-9]+(?:\.[0-9]+)?)?)|\b([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)\s*(?:USD|US\$)\b)", re.I)
 UNIT = re.compile(r"\b(per\s+(?:(?:approved|accepted)\s+)?(?:task|recording|hour|hr|minute|batch|project|image|audio|page)|/\s*(?:task|hour|hr|batch|image|page)|each\s+(?:(?:approved|accepted)\s+)?(?:task|recording|image|page)|for\s+\d+\s+(?:tasks|images|minutes|hours|pages|prompts))\b", re.I)
 RISK_TEXT_LIMIT = 6000
 
@@ -76,6 +76,8 @@ SOURCES = [
     Source("Corpshore/Jwuma India", "https://platform.corpshore.ai/india", "data annotation/AI evaluation", region="India listing; verify project"),
     Source("Clickworker", "https://www.clickworker.com/clickworker/", "microtasks/data work", notes="Registration and payout methods can vary by country."),
     Source("TELUS Digital AI Community India", "https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india", "AI evaluation", region="India"),
+Source("TELUS QA Rater Hindi India", "https://jobs.telusdigital.com/jobs/17840995-quality-assurance-rater-hindi-india", "AI/search-result quality rating", region="India; 5 consecutive years resident; Hindi+English; smartphone+PC", notes="Official listing states USD 8/hour, 10–20 hours/week, payment based on completed tasks, and qualification/identity checks.", specific_page=True),
+    Source("TELUS QA Rater English India", "https://jobs.telusdigital.com/jobs/17840908-quality-assurance-rater-english-india", "AI/search-result quality rating", region="India; 5 consecutive years resident; English; smartphone+PC", notes="Official listing states USD 8/hour, 10–20 hours/week, payment based on completed tasks, and qualification/identity checks.", specific_page=True),
     Source("OneForma Jobs", "https://www.oneforma.com/jobs/", "data collection/annotation", notes="Project and language eligibility vary."),
     Source("Toloka Tolokers", "https://toloka.ai/tolokers/", "microtasks/data labeling", notes="Availability and payout vary by region."),
     Source("Microworkers", "https://www.microworkers.com/", "microtasks", notes="Check task legality and minimum payout."),
@@ -85,8 +87,15 @@ SOURCES = [
     Source("YPAI Data Annotator India", "https://freelancer.ypai.ai/jobs/openings/data-annotator-in", "image/video/audio/text annotation", region="India; 18+; project qualification required", notes="Official page advertises typical project pay INR 550-800/hour; only the selected project invitation confirms the actual rate and work availability.", specific_page=True),
     Source("YPAI Model Evaluator India", "https://freelancer.ypai.ai/jobs/openings/model-evaluator-in", "AI answer evaluation and fact-checking", region="India; 18+; strong reading comprehension required", notes="Official page advertises typical project pay INR 550-800/hour; application review and project availability are not guaranteed.", specific_page=True),
     Source("YPAI Data Collection Contributor India", "https://freelancer.ypai.ai/jobs/openings/data-contributor-in", "audio/video/image/text data collection", region="India; 18+; device/project requirements apply", notes="Official page advertises typical project pay INR 550-800/hour and biweekly payments after approval; check the project's exact offer.", specific_page=True),
+    Source("YPAI Text and NLP Annotator India", "https://freelancer.ypai.ai/jobs/openings/text-annotator-in", "intent/sentiment/entity labeling", region="India; 18+; native or near-native language required", notes="Official page advertises typical project pay INR 550-800/hour; language and project availability vary.", specific_page=True),
+    Source("YPAI Image Annotator India", "https://freelancer.ypai.ai/jobs/openings/image-annotator-in", "image boxes/polygons/masks", region="India; 18+; project tool and review required", notes="Official page advertises typical project pay INR 550-800/hour; batches are quality reviewed.", specific_page=True),
+    Source("YPAI Pose and Keypoint Annotator India", "https://freelancer.ypai.ai/jobs/openings/pose-keypoint-annotator-in", "pose/keypoint image and video labeling", region="India; 18+; computer and screen required", notes="Official page advertises typical project pay INR 550-800/hour; requires careful per-frame annotation.", specific_page=True),
+    Source("YPAI Transcriber with Diarization India", "https://freelancer.ypai.ai/jobs/openings/transcriber-diarization-in", "transcription and speaker/timestamp labels", region="India; 18+; native/near-native language and headphones required", notes="Official page advertises typical project pay INR 550-800/hour; language availability and accuracy review apply.", specific_page=True),
+    Source("YPAI Diarization Specialist India", "https://freelancer.ypai.ai/jobs/openings/diarization-specialist-in", "speaker segmentation and diarization", region="India; 18+; strong listening and headset required", notes="Official page advertises typical project pay INR 550-800/hour; project invitation and quality approval determine actual work.", specific_page=True),
+    Source("Outlier Coding Expertise — India", "https://app.outlier.ai/opportunities/4486931005", "specialist AI code evaluation", region="India; experienced software/coding judgement required", notes="Official opportunity page lists average USD 13.75/hour for India coding experts; project rates vary by skill assessment and tasking phase.", specific_page=True),
+    Source("RWS TrainAI Community", "https://www.rws.com/artificial-intelligence/train-ai-data-services/trainai-community/", "AI training data collection/annotation/rating", region="Global community; check India project invitations", notes="Official community says task-based pay via PayPal or bank; rates and invitations depend on project fit; computer requirements can apply."),
     Source("HumanSignal AI Training Contributors", "https://onboard.humansignal.com/", "expert AI training and data labeling", region="100+ countries claimed; check India eligibility and skills", notes="Rates are shown to matched eligible contributors; do not assume work or a rate before matching."),
-    Source("OpenTrain Python Software Engineering LLM Evaluator", "https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/", "specialist code evaluation", region="India listed among eligible countries; English and relevant Python/software judgment required", notes="Specialist role; posted pay and requirements must be rechecked on the individual listing.", specific_page=True),
+    Source("OpenTrain C++ LLM Evaluation Engineer", "https://www.opentrain.ai/jobs/c-llm-evaluation-software-engineer--cmroc4vh4000x04l2jaulstct/", "specialist code evaluation", region="Remote; country eligibility must be confirmed", notes="Specific listing advertises USD 60-120/hour for a C++ LLM evaluation engineer; specialist role; verify current availability, country eligibility and exact offer.", specific_page=True),
 ]
 
 def utc_now() -> str:
@@ -116,8 +125,10 @@ def extract_pay_evidence(text: str) -> tuple[str, str, str, str]:
                 currency, raw_amount = "INR", m.group(1)
             elif m.group(2):
                 currency, raw_amount = "USD", m.group(2)
-            else:
+            elif m.group(3):
                 currency, raw_amount = "USD", m.group(3)
+            else:
+                currency, raw_amount = "USD", m.group(4)
             amount = re.sub(r"\s*(?:-|–|to)\s*", "-", raw_amount, flags=re.I).replace(",", "")
             return currency, amount, re.sub(r"\s+", " ", u.group(1)).strip(), line[:500]
     return "", "", "", ""
@@ -311,7 +322,7 @@ def scan(sources: Iterable[Source], max_detail_pages: int = 3) -> list[Lead]:
             lead = make_lead(source, url, status, raw, error)
             leads.append(lead)
             pages += 1
-            if pages == 1 and status == "200" and not lead.risk_flags:
+            if pages == 1 and status == "200" and not lead.risk_flags and not source.specific_page:
                 queue.extend(find_links(url, raw, limit=max_detail_pages))
     return sorted(leads, key=lambda lead: (lead.priority_score, lead.status == "rate_evidence_found_verify_current_listing", lead.fetched_at), reverse=True)
 

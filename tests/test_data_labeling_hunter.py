@@ -1,5 +1,6 @@
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "agents"))
@@ -81,11 +82,11 @@ class EligibilityAndPriorityTests(unittest.TestCase):
         self.assertEqual(lead.amount, "")
 
     def test_generic_slug_ending_in_jobs_is_not_detail(self):
-        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain C++"))
         self.assertFalse(hunter.is_task_detail_url(source, "https://www.opentrain.ai/jobs/remote-ai-code-evaluator-jobs"))
 
     def test_specific_job_slug_is_detail(self):
-        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain C++"))
         self.assertTrue(hunter.is_task_detail_url(source, "https://www.opentrain.ai/jobs/c-llm-evaluation-engineer-cm123"))
 
     def test_child_job_does_not_inherit_india_from_parent_source(self):
@@ -121,6 +122,23 @@ class EligibilityAndPriorityTests(unittest.TestCase):
         self.assertIn("broad page", lead.caveat)
 
 class HighValueSourceTests(unittest.TestCase):
+    def test_suffix_usd_currency_keeps_hour_unit(self):
+        result = hunter.extract_pay_evidence("The hourly earnings are 8 USD per hour")
+        self.assertEqual(result, ("USD", "8", "per hour", "The hourly earnings are 8 USD per hour"))
+
+    def test_telus_hindi_role_rate_is_hourly_and_india_relevant(self):
+        source = next(s for s in hunter.SOURCES if s.name == "TELUS QA Rater Hindi India")
+        raw = "<html><title>Quality Assurance Rater Hindi India</title><p>The hourly earnings are 8 USD per hour. Payment is based on completed tasks. Must have lived in India for five consecutive years and use a smartphone and personal computer.</p></html>"
+        lead = hunter.make_lead(source, source.url, "200", raw)
+        self.assertEqual((lead.currency, lead.amount, lead.pay_unit), ("USD", "8", "per hour"))
+        self.assertEqual(lead.fit_hint, "INDIA_RELEVANT_VERIFY")
+
+    def test_telus_qa_rater_sources_are_specific_pages(self):
+        sources = {s.name: s for s in hunter.SOURCES}
+        self.assertTrue(sources["TELUS QA Rater Hindi India"].specific_page)
+        self.assertTrue(sources["TELUS QA Rater English India"].specific_page)
+        self.assertIn("5 consecutive years", sources["TELUS QA Rater Hindi India"].region)
+
     def test_ypai_rate_range_keeps_hour_unit(self):
         cur, amount, unit, evidence = hunter.extract_pay_evidence("Typical project pay INR 550-800 per hour")
         self.assertEqual((cur, amount, unit), ("INR", "550-800", "per hour"))
@@ -137,9 +155,55 @@ class HighValueSourceTests(unittest.TestCase):
         self.assertIn("YPAI Data Collection Contributor India", names)
         self.assertIn("HumanSignal AI Training Contributors", names)
 
+    def test_expanded_ypai_roles_are_registered(self):
+        sources = {source.name: source for source in hunter.SOURCES}
+        expected = [
+            "YPAI Text and NLP Annotator India",
+            "YPAI Image Annotator India",
+            "YPAI Pose and Keypoint Annotator India",
+            "YPAI Transcriber with Diarization India",
+            "YPAI Diarization Specialist India",
+        ]
+        for name in expected:
+            self.assertIn(name, sources)
+            self.assertTrue(sources[name].specific_page)
+
+    def test_outlier_india_rate_stays_usd_hourly(self):
+        source = next(s for s in hunter.SOURCES if s.name == "Outlier Coding Expertise — India")
+        raw = "<html><title>Coding Expertise for AI Training - India</title><p>Core project work coding experts in India average USD $13.75 per hour. Experienced software engineers required.</p></html>"
+        lead = hunter.make_lead(source, source.url, "200", raw)
+        self.assertEqual((lead.currency, lead.amount, lead.pay_unit), ("USD", "13.75", "per hour"))
+        self.assertEqual(lead.fit_hint, "INDIA_RELEVANT_VERIFY")
+
+    def test_rws_source_does_not_claim_a_fixed_rate(self):
+        source = next(s for s in hunter.SOURCES if s.name == "RWS TrainAI Community")
+        self.assertFalse(source.specific_page)
+        raw = "<html><title>TrainAI Community</title><p>Payment depends on each project and tasks are paid per task.</p></html>"
+        lead = hunter.make_lead(source, source.url, "200", raw)
+        self.assertEqual(lead.currency, "")
+        self.assertEqual(lead.amount, "")
+
     def test_open_train_specialist_role_is_labelled_as_specialist(self):
-        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain C++"))
         self.assertIn("specialist", source.notes.lower())
+        self.assertIn("country eligibility", source.notes.lower())
+
+    def test_open_train_specific_role_keeps_rate_but_does_not_assume_india(self):
+        source = next(s for s in hunter.SOURCES if s.name == "OpenTrain C++ LLM Evaluation Engineer")
+        raw = "<html><title>C++ LLM Evaluation Engineer</title><p>This remote contractor role offers USD $60 to $120 per hour for C++ and LLM evaluation. Applicants must verify country eligibility.</p></html>"
+        lead = hunter.make_lead(source, source.url, "200", raw)
+        self.assertEqual((lead.currency, lead.amount, lead.pay_unit), ("USD", "60-120", "per hour"))
+        self.assertEqual(lead.fit_hint, "ELIGIBILITY_UNKNOWN_VERIFY")
+
+    def test_specific_role_does_not_crawl_sibling_listings_under_wrong_source_name(self):
+        source = next(s for s in hunter.SOURCES if s.name == "YPAI Data Annotator India")
+        raw = "<html><title>Data Annotator, India</title><p>Typical project pay INR 550-800 per hour.</p></html>"
+        with patch.object(hunter, "fetch_public", return_value=(raw, "200", "")) as fetch, patch.object(hunter, "find_links") as links:
+            leads = hunter.scan([source], max_detail_pages=3)
+        self.assertEqual(fetch.call_count, 1)
+        links.assert_not_called()
+        self.assertEqual(len(leads), 1)
+
 
 
 if __name__ == "__main__":
