@@ -22,19 +22,19 @@ const EARNING_LEADS = [
     id: 'karmyug-hindi', title: 'Hindi Script Recording Project', source: 'Karmyug AI',
     url: 'https://work.karmyug.in/jobs/d6f10b46-7249-4484-b114-c8008519acbf',
     rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: 'Below target',
-    detail: 'On the 24 Oct 2026 scan: 186 tasks available; apply-by date shown as 31 Oct 2026. Work must be your own Hindi recording and pass quality review. Check live slots and payout terms on the official page.'
+    detail: 'Live page currently shows ₹2 per approved recording and an apply-by date of 31 Oct 2026. Task slots change; confirm the current count, eligibility and payout terms on the official page. Your own Hindi recording must pass quality review.'
   },
   {
     id: 'karmyug-english', title: 'English Script Recording Project', source: 'Karmyug AI',
     url: 'https://work.karmyug.in/jobs/df3d4bf3-c11b-449c-abd6-97e382c5bdf9',
     rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: 'Below target',
-    detail: 'On the 24 Oct 2026 scan: 129 tasks available; apply-by date shown as 31 Oct 2026. Requires your original English recording and acceptance by quality checks. Verify current availability first.'
+    detail: 'Live page currently shows ₹2 per approved recording and an apply-by date of 31 Oct 2026. Task slots change; confirm the current count, eligibility and payout terms on the official page. Your own English recording must pass quality review.'
   },
   {
     id: 'karmyug-bengali', title: 'Bengali Script Recording Project', source: 'Karmyug AI',
     url: 'https://work.karmyug.in/jobs/ed08603e-04a2-4e5e-a053-65c45980bc47',
     rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: '0 tasks last checked',
-    detail: 'The same scan showed zero tasks available. Included for completeness, not as a recommended immediate task. Re-check the official page before applying.'
+    detail: 'The last public page check showed zero task slots, so this is not an immediate lead. Re-check the official page before applying.'
   },
   {
     id: 'crowdgen-coffee', title: 'Project Coffee — India Data Labeling', source: 'CrowdGen by Appen',
@@ -224,7 +224,7 @@ function App() {
           <article><small>PAYOUT RECEIVED</small><b>₹{payoutTotal.toFixed(2)}</b><span>Enter only when money really arrives</span></article>
         </div>
 
-        <div className="notice"><b>Honest hunt result — 24 October 2026</b><p>The latest scan emitted 30 leads but found <strong>zero verified public rates in the ₹50–₹200 per-task target band</strong>. Three current Karmyug recording pages showed ₹2 per approved recording; CrowdGen Project Coffee advertises about ₹175/hour, not ₹175 per task, and requires a laptop/PC and qualification. Listings can change, so open the source and confirm the current terms before doing any work.</p></div>
+        <div className="notice"><b>Honest hunt result — 24 October 2026</b><p>The latest run on this branch's baseline scan emitted 30 leads and found <strong>zero verified public rates in the ₹50–₹200 per-task target band</strong>. Karmyug's live page currently shows ₹2 per approved recording, with task counts changing over time; CrowdGen Project Coffee advertises about ₹175/hour, not ₹175 per task, and requires a laptop/PC and qualification. Open the source to confirm current slots and terms before doing any work.</p></div>
 
         <section className="earning-section">
           <div className="earning-section-head"><div><h3>Specific leads found</h3><p>Rate and availability here reflect the last scan; verify live details before applying.</p></div><span className="status warn">No target-rate task verified</span></div>
