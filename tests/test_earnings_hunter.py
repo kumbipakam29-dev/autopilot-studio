@@ -92,6 +92,24 @@ class EarningsHunterTests(unittest.TestCase):
         facts = earnings.relevant_detail_facts(parser)
         self.assertNotIn("$150", facts)
 
+    def test_generic_platform_amount_is_not_counted_as_task_rate(self):
+        rows = [{
+            "candidate_type": "OFFICIAL_PAGE_SCAN",
+            "payment_signal": "TARGET_RANGE_MATCH",
+            "triage_status": "REVIEW_TERMS",
+            "public_detail_evidence": "",
+        }]
+        self.assertEqual(earnings.count_verified_target_rate_rows(rows), 0)
+
+    def test_target_rate_requires_specific_task_detail_evidence(self):
+        rows = [{
+            "candidate_type": "TASK_DETAIL_PAGE",
+            "payment_signal": "TARGET_RANGE_MATCH",
+            "triage_status": "REVIEW_TERMS",
+            "public_detail_evidence": "₹150 per approved task",
+        }]
+        self.assertEqual(earnings.count_verified_target_rate_rows(rows), 1)
+
     def test_offline_run_writes_expected_files(self):
         old_out = earnings.OUT
         try:
