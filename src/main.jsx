@@ -7,40 +7,76 @@ const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Task Que
 const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
 
 const EARNING_SOURCES = [
-  { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Language & AI data tasks', note: 'Public India listings show ₹2 per approved recording on the last scan. ID verification and quality acceptance apply.' },
-  { name: 'CrowdGen by Appen', url: 'https://crowdgen.com/', kind: 'AI data & evaluation projects', note: 'Project-specific qualification, rates and availability. Never pay to join.' },
+  { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Phone-based voice/data tasks', note: 'Last checked listings showed ₹2 per approved recording. Easy to start, but below the ₹50–₹200 task target; verify available tasks and payout terms.' },
+  { name: 'YPAI Data Annotator India', url: 'https://freelancer.ypai.ai/jobs/openings/data-annotator-in', kind: 'Image/video/audio/text annotation', note: 'Official India role page advertises typical INR 550–800/hour. Selection, project volume and exact invitation rate are not guaranteed.' },
+  { name: 'YPAI Model Evaluator India', url: 'https://freelancer.ypai.ai/jobs/openings/model-evaluator-in', kind: 'AI answer evaluation and fact-checking', note: 'Official India role page advertises typical INR 550–800/hour. Requires rubric-based judgement and clear written reasoning; selection is required.' },
+  { name: 'YPAI Data Collection Contributor India', url: 'https://freelancer.ypai.ai/jobs/openings/data-contributor-in', kind: 'Audio/video/image/text data collection', note: 'Official India role page advertises typical INR 550–800/hour. Device, consent and project-specific instructions apply.' },
+  { name: 'HumanSignal AI Training Contributors', url: 'https://onboard.humansignal.com/', kind: 'AI training and data labeling', note: 'Rates appear after matching to an eligible project. Location, skills, ID checks and project availability apply.' },
+  { name: 'Corpshore/Jwuma India', url: 'https://platform.corpshore.ai/india', kind: 'AI annotation, evaluation and transcription', note: 'Public pages may show USD per-task examples; the exact accepted task and rate must be confirmed before starting.' },
+  { name: 'CrowdGen by Appen', url: 'https://crowdgen.com/coffee-en-in/', kind: 'AI data & evaluation projects', note: 'Project availability and payout requirements change; if the project page is unavailable, use the official main site and re-check eligibility.' },
   { name: 'Clickworker', url: 'https://www.clickworker.com/clickworker/', kind: 'Microtasks & data work', note: 'Check India availability and supported payout method before investing time.' },
-  { name: 'OneForma', url: 'https://www.oneforma.com/jobs/', kind: 'Language & AI projects', note: 'Project requirements, rates and recruitment status vary. Confirm that a listing fits your location and skills.' },
-  { name: 'TELUS Digital AI Community', url: 'https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india', kind: 'Rating & evaluation roles', note: 'Often application/qualification based, not instant microtask cash.' },
+  { name: 'OneForma', url: 'https://www.oneforma.com/jobs/', kind: 'Language & AI projects', note: 'Project requirements, rates and recruitment status vary. Avoid jobs whose country or professional qualifications do not fit you.' },
+  { name: 'TELUS Digital AI Community', url: 'https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india', kind: 'Rating & evaluation roles', note: 'Application and qualification based; not instant task income.' },
   { name: 'Microworkers', url: 'https://www.microworkers.com/', kind: 'Small online tasks', note: 'KYC and withdrawal conditions apply. Use only genuine tasks and proof.' },
-  { name: 'Toloka', url: 'https://toloka.ai/tolokers/', kind: 'Data annotation', note: 'Check current country and project restrictions, which can change.' },
+  { name: 'Toloka', url: 'https://toloka.ai/tolokers/', kind: 'Data annotation and related work', note: 'Check current country/project restrictions and payment route.' },
+  { name: 'OpenTrain Python Software Engineering LLM Evaluator', url: 'https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/', kind: 'Specialist coding evaluation', note: 'A specialist listing has advertised high per-task pay, but only apply if your real Python/software evaluation skills match the requirements; verify live terms.' },
   { name: 'Gitcoin Bounties', url: 'https://gitcoin.co/mechanisms/bounties', kind: 'Open-source & skill bounties', note: 'Acceptance is competitive; check the live amount, deadline, requirements and payout terms.' }
 ];
 
 const EARNING_LEADS = [
   {
+    id: 'ypai-annotator', title: 'Data Annotator — India', source: 'YPAI Data Annotator India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/data-annotator-in',
+    rate: '₹550–₹800/hour typical project rate', ratePerTaskInr: null, rateValue: '550-800', rateUnit: 'Per hour', rateCurrency: 'INR', badge: 'High-value; application required',
+    detail: 'The official India page advertises typical project pay of INR 550–800/hour and biweekly payments after approved work. This is not a guaranteed offer: application review, qualification, project supply and exact invitation rate apply.'
+  },
+  {
+    id: 'ypai-evaluator', title: 'Model Evaluator — India', source: 'YPAI Model Evaluator India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/model-evaluator-in',
+    rate: '₹550–₹800/hour typical project rate', ratePerTaskInr: null, rateValue: '550-800', rateUnit: 'Per hour', rateCurrency: 'INR', badge: 'High-value; judgement required',
+    detail: 'Rate is a typical project range shown by the provider, not guaranteed work. The role requires reading AI answers against project rubrics and explaining why an answer is correct or wrong.'
+  },
+  {
+    id: 'ypai-contributor', title: 'Data Collection Contributor — India', source: 'YPAI Data Collection Contributor India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/data-contributor-in',
+    rate: '₹550–₹800/hour typical project rate', ratePerTaskInr: null, rateValue: '550-800', rateUnit: 'Per hour', rateCurrency: 'INR', badge: 'Device/project requirements',
+    detail: 'The provider advertises typical INR 550–800/hour with payment every two weeks after approved work. Follow project capture instructions and consent requirements; exact pay and work volume depend on the invitation.'
+  },
+  {
+    id: 'humansignal', title: 'HumanSignal AI Training Contributor', source: 'HumanSignal AI Training Contributors',
+    url: 'https://onboard.humansignal.com/',
+    rate: 'Rate shown after eligible project matching', ratePerTaskInr: null, rateValue: '', rateUnit: 'Unknown', rateCurrency: 'INR', badge: 'Profile and matching required',
+    detail: 'Create a truthful profile, verify your identity and see if eligible projects are available in your location and skill areas. No rate or work is promised before matching.'
+  },
+  {
+    id: 'jwuma-india', title: 'AI Annotation & Evaluation Tasks — India', source: 'Corpshore/Jwuma India',
+    url: 'https://platform.corpshore.ai/india',
+    rate: 'Public pages have shown USD per-task examples; exact task rate varies', ratePerTaskInr: null, rateValue: '', rateUnit: 'Unknown', rateCurrency: 'USD', badge: 'Verify exact offer',
+    detail: 'The provider lists annotation, evaluation and transcription work. Confirm the exact available task, payment unit, currency, qualification and payout method in your own offer before starting.'
+  },
+  {
     id: 'karmyug-hindi', title: 'Hindi Script Recording Project', source: 'Karmyug AI',
     url: 'https://work.karmyug.in/jobs/d6f10b46-7249-4484-b114-c8008519acbf',
-    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: 'Below target',
-    detail: 'Live page currently shows ₹2 per approved recording and an apply-by date of 31 Oct 2026. Task slots change; confirm the current count, eligibility and payout terms on the official page. Your own Hindi recording must pass quality review.'
+    rate: '₹2 per approved recording', ratePerTaskInr: 2, rateValue: '2', rateUnit: 'Per approved task', rateCurrency: 'INR', badge: 'Below target',
+    detail: 'Public listing shows ₹2 per approved recording. Current task slots, deadline, quality acceptance and payout terms must be confirmed on the official page.'
   },
   {
     id: 'karmyug-english', title: 'English Script Recording Project', source: 'Karmyug AI',
     url: 'https://work.karmyug.in/jobs/df3d4bf3-c11b-449c-abd6-97e382c5bdf9',
-    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: 'Below target',
-    detail: 'Live page currently shows ₹2 per approved recording and an apply-by date of 31 Oct 2026. Task slots change; confirm the current count, eligibility and payout terms on the official page. Your own English recording must pass quality review.'
-  },
-  {
-    id: 'karmyug-bengali', title: 'Bengali Script Recording Project', source: 'Karmyug AI',
-    url: 'https://work.karmyug.in/jobs/ed08603e-04a2-4e5e-a053-65c45980bc47',
-    rate: '₹2 per approved recording', ratePerTaskInr: 2, badge: '0 tasks last checked',
-    detail: 'The last public page check showed zero task slots, so this is not an immediate lead. Re-check the official page before applying.'
+    rate: '₹2 per approved recording', ratePerTaskInr: 2, rateValue: '2', rateUnit: 'Per approved task', rateCurrency: 'INR', badge: 'Below target',
+    detail: 'Public listing shows ₹2 per approved recording. Current task slots, deadline, quality acceptance and payout terms must be confirmed on the official page.'
   },
   {
     id: 'crowdgen-coffee', title: 'Project Coffee — India Data Labeling', source: 'CrowdGen by Appen',
     url: 'https://crowdgen.com/coffee-en-in/',
-    rate: 'US$2/hour (site advertises about ₹175/hour)', ratePerTaskInr: null, badge: 'Hourly, not per task',
-    detail: 'Potentially better hourly value, but recruitment status must be confirmed. Published requirements include India residence, fluent English, laptop/PC, up to 20 hours/week and passing qualification/identity checks. Do not treat this as ₹175 per task.'
+    rate: 'US$2/hour (page previously advertised about ₹175/hour)', ratePerTaskInr: null, rateValue: '2', rateUnit: 'Per hour', rateCurrency: 'USD', badge: 'Hourly, not per task',
+    detail: 'The project page has sometimes been unavailable in automated scans. Published requirements included India residence, fluent English and laptop/PC. Re-check the live page and recruitment status; this is an hourly USD rate, not ₹175 per task.'
+  },
+  {
+    id: 'opentrain-python', title: 'Python Software Engineering LLM Evaluator', source: 'OpenTrain Python Software Engineering LLM Evaluator',
+    url: 'https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/',
+    rate: '$100 per task advertised in the specific role listing', ratePerTaskInr: null, rateValue: '100', rateUnit: 'Per task', rateCurrency: 'USD', badge: 'Specialist only',
+    detail: 'A public listing described a coding-evaluation contract and India among eligible countries. It requires genuine Python/software-engineering judgement and strong English. Verify the current live rate and only apply if your real experience matches; no skills are assumed.'
   }
 ];
 
