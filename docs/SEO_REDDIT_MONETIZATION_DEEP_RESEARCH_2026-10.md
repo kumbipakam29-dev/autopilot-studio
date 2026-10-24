@@ -89,6 +89,53 @@ Suggested first clusters:
 
 Every article should make its own contribution: e.g. a runnable sample, tested step sequence, cost estimate with assumptions, benchmark table, failure-case log, or a clear comparison based on primary documentation.
 
+
+### First 30-page validation batch (ideas, not auto-publish instructions)
+
+Publish only after testing each topic's search intent, competition, primary sources, and the usefulness of the proposed artifact.
+
+**Agent trust and reliability**
+1. How to verify an AI agent really completed a task (evidence checklist)
+2. AI agent audit logs: a practical event schema
+3. How to stop duplicate actions when an agent retries
+4. Human approval gates for high-impact agent actions
+5. How to test tool-calling reliability with a repeatable scorecard
+6. Why an agent says “done” when the external action failed
+7. Safe recovery patterns for interrupted multi-step workflows
+8. A checklist for reviewing agent output before it reaches customers
+
+**Small-business workflows**
+9. Automate quote preparation from an intake form: sample workflow and limits
+10. A safer invoice-reminder workflow with approval before sending
+11. Turn meeting notes into follow-up tasks without silently inventing commitments
+12. FAQ triage for small businesses: when rules beat an LLM
+13. Spreadsheet cleanup: validation checks before an AI agent edits data
+14. Lead intake automation: deduplication, consent, and handoff checklist
+15. Email triage benchmarks: compare rules, templates, and agents honestly
+
+**Browser/API operations**
+16. When to use an official API instead of browser automation
+17. Browser agent blocked by a login or CAPTCHA: safe troubleshooting and handoff
+18. How to make browser automations observable and reversible
+19. Design a task state machine for an agent that uses external tools
+20. Idempotency keys and duplicate prevention in business automations
+
+**Budget and tool decisions**
+21. True cost of a “free” AI agent: inference, hosting, retries, and human review
+22. Spreadsheet vs no-code automation vs an AI agent: decision matrix
+23. Self-hosted and free-tier agent stacks: limits and maintenance checklist
+24. A reproducible comparison of agent evaluation harnesses
+25. Open-source agent projects: how to check license, activity, and security before use
+
+**Current events/news explainers—only when there is original analysis**
+26. What a new AI-agent safety incident means for ordinary users (timeline, official statements, practical implications)
+27. A new agent framework release: tested changes, migration risk, and who should care
+28. A model/tool update: benchmark what changed instead of repeating the announcement
+29. New AI agent regulation or platform policy: affected workflows and primary-source links
+30. A weekly “what actually changed” AI-agent digest with source timestamps and an explicit corrections log
+
+**Editorial rule:** never turn one news item into dozens of near-duplicate keyword pages. A news page must include a dated primary-source timeline, what is verifiably new, what remains uncertain, user-level implications, and at least one original test or useful resource when feasible. Otherwise it remains a research note, not an indexable page.
+
 ## Reddit demand research: what people appear to need
 
 These public threads are useful discovery leads, not statistically representative survey results:
@@ -107,6 +154,18 @@ These public threads are useful discovery leads, not statistically representativ
 A public thread is not proof that users will pay. Validate with a handful of authentic replies/interviews, a small demo, sign-up or download counts, and ideally one paying pilot.
 
 ## Reddit participation policy
+
+## Reddit's official Contributor Program: a real but uncertain extra route
+
+Reddit's official Contributor Program states that eligible contributors in India can earn from qualifying posts/comments when other users award qualifying Gold. This is **not payment per comment** and not a reliable microtask rate. Eligibility includes being at least 18, being in a supported country, keeping the account in good standing, completing enrollment and identity/tax/payout setup, and meeting the program's contribution/karma and award requirements. The published enrollment guidance includes at least 100 karma and at least US$10 in qualifying award earnings; payouts have a minimum threshold and rates vary by contributor tier and qualifying Gold. Confirm the live terms before relying on them.
+
+Official references:
+- [Reddit: Earning money on Reddit / supported countries](https://support.reddithelp.com/hc/en-us/articles/37760672112660-Earning-money-on-Reddit)
+- [Reddit: Contributor Program eligibility](https://support.reddithelp.com/hc/en-us/articles/17331620007572-What-is-the-Contributor-Program-and-how-can-I-participate)
+- [Reddit: contributor earnings and payouts](https://support.reddithelp.com/hc/en-us/articles/17331720493972-Understanding-Contributor-Earnings-Payouts)
+
+This route has a legitimate but **low-confidence and audience-dependent** earning potential. The right strategy is to make unusually useful, authentic contributions in communities you actually understand, not to optimize for volume or manufacture karma. Advertising and repetitive self-promotion are not substitutes for eligible community contributions. Never automate comment posting, engagement, account creation, or award requests.
+
 
 Do **not** automate bulk comments, clone comments across subreddits, create accounts, or insert the website link in every answer. Reddit's current spam policy explicitly includes mass-posting repetitive content for exposure or financial gain and bots that continuously promote products. It recommends authentic participation in communities where the user has genuine interest. [Reddit spam policy](https://support.reddithelp.com/hc/en-us/articles/360043504051-Spam).
 
