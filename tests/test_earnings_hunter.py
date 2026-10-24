@@ -22,7 +22,14 @@ class EarningsHunterTests(unittest.TestCase):
     def test_foreign_currency_is_not_silently_converted(self):
         currency, amount, signal = earnings.extract_amount("$10 per task")
         self.assertEqual(currency, "FOREIGN_CURRENCY_UNCONVERTED")
+        self.assertIn("$10", amount)
         self.assertEqual(signal, "CURRENCY_CONVERSION_AND_PAYOUT_CHECK_REQUIRED")
+
+    def test_duplicate_rupee_mentions_are_deduplicated(self):
+        currency, amount, signal = earnings.extract_amount("₹2 per task, approved at ₹2; overall unrelated ₹7")
+        self.assertEqual(currency, "INR")
+        self.assertEqual(amount, "₹2, ₹7")
+        self.assertEqual(signal, "INR_AMOUNT_OUTSIDE_TARGET")
 
     def test_risky_fake_review_lead_is_quarantined(self):
         _, _, _, _, status = earnings.score_candidate("Earn ₹100: post fake reviews", "task", "Example", "India")
@@ -51,6 +58,27 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("weekly", facts)
         evidence = earnings.eligibility_evidence(facts)
         self.assertIn("India", evidence)
+
+    def test_unrelated_recommendation_rates_are_excluded(self):
+        parser = earnings.PageParser()
+        parser.text_parts = [
+            "Online Data Labeling and Search Evaluation Tasks",
+            "Work involves annotation and evaluation for supported languages.",
+            "Rates are shown after qualification.",
+            "Similar Projects",
+            "$150 USD per hour",
+            "$130 to $150 per hour",
+        ]
+        facts = earnings.relevant_detail_facts(parser)
+        self.assertNotIn("$150", facts)
+        self.assertNotIn("$130", facts)
+        self.assertIn("qualification", facts.lower())
+
+    def test_rate_after_long_generic_page_chrome_is_not_promoted(self):
+        parser = earnings.PageParser()
+        parser.text_parts = ["Navigation and generic website content " * 40, "$150 USD per hour"]
+        facts = earnings.relevant_detail_facts(parser)
+        self.assertNotIn("$150", facts)
 
     def test_offline_run_writes_expected_files(self):
         old_out = earnings.OUT
