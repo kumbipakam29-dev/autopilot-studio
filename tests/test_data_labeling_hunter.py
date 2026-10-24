@@ -52,5 +52,28 @@ class HtmlTests(unittest.TestCase):
         _, status, _ = hunter.fetch_public("http://example.com")
         self.assertEqual(status, "blocked_url")
 
+
+class HighValueSourceTests(unittest.TestCase):
+    def test_ypai_rate_range_keeps_hour_unit(self):
+        cur, amount, unit, evidence = hunter.extract_pay_evidence("Typical project pay INR 550-800 per hour")
+        self.assertEqual((cur, amount, unit), ("INR", "550-800", "per hour"))
+        self.assertIn("550-800", evidence)
+
+    def test_unicode_dash_range_normalizes(self):
+        cur, amount, unit, _ = hunter.extract_pay_evidence("Rate: INR 550–800 per hour")
+        self.assertEqual((cur, amount, unit), ("INR", "550-800", "per hour"))
+
+    def test_higher_value_sources_are_registered(self):
+        names = {source.name for source in hunter.SOURCES}
+        self.assertIn("YPAI Data Annotator India", names)
+        self.assertIn("YPAI Model Evaluator India", names)
+        self.assertIn("YPAI Data Collection Contributor India", names)
+        self.assertIn("HumanSignal AI Training Contributors", names)
+
+    def test_open_train_specialist_role_is_labelled_as_specialist(self):
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        self.assertIn("specialist", source.notes.lower())
+
+
 if __name__ == "__main__":
     unittest.main()
