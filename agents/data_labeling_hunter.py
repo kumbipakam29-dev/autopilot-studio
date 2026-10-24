@@ -35,7 +35,7 @@ RISK_PATTERNS = {
     "guaranteed_income": re.compile(r"\bguaranteed\s+(income|earnings|profit)\b", re.I),
 }
 CURRENCY = re.compile(r"(?:(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?)|\$\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?))", re.I)
-UNIT = re.compile(r"\b(per\s+(?:task|accepted task|hour|hr|minute|batch|project|recording|image|audio|page)|/\s*(?:task|hour|hr|batch|image|page)|each\s+(?:task|recording|image|page)|for\s+\d+\s+(?:tasks|images|minutes|hours|pages|prompts))\b", re.I)
+UNIT = re.compile(r"\b(per\s+(?:(?:approved|accepted)\s+)?(?:task|recording|hour|hr|minute|batch|project|image|audio|page)|/\s*(?:task|hour|hr|batch|image|page)|each\s+(?:(?:approved|accepted)\s+)?(?:task|recording|image|page)|for\s+\d+\s+(?:tasks|images|minutes|hours|pages|prompts))\b", re.I)
 RISK_TEXT_LIMIT = 6000
 
 @dataclass
@@ -136,22 +136,34 @@ def fetch_public(url: str) -> tuple[str, str, str]:
         return "", "fetch_error", str(exc)[:240]
 
 def find_links(page_url: str, raw_html: str, limit: int = 8) -> list[str]:
+    """Prefer task/project detail pages; do not waste crawl budget on account pages."""
     base = urllib.parse.urlparse(page_url)
     found = []
     seen = {page_url}
+    excluded_path = re.compile(r"/(?:login|log-in|signin|sign-in|register|signup|sign-up|account|privacy|terms|cookies?)(?:/|$)", re.I)
     for href in re.findall(r"""(?is)<a\b[^>]*?href\s*=\s*["']([^"'#]+)["']""", raw_html):
         full = urllib.parse.urljoin(page_url, html.unescape(href))
         p = urllib.parse.urlparse(full)
         if p.scheme != "https" or p.hostname != base.hostname:
             continue
+        path = p.path.lower()
         if p.path.lower().endswith((".pdf", ".png", ".jpg", ".jpeg", ".zip", ".exe", ".apk")):
+            continue
+        if excluded_path.search(path):
             continue
         if full not in seen:
             seen.add(full)
             found.append(full)
-        if len(found) >= limit:
-            break
-    return found
+    def priority(url: str) -> tuple[int, int]:
+        path = urllib.parse.urlparse(url).path.lower().rstrip("/")
+        if re.search(r"/(?:jobs|projects|openings|tasks)/[^/]+$", path):
+            score = 100
+        elif any(term in path for term in ("/jobs/", "/projects/", "/openings/", "/tasks/")):
+            score = 60
+        else:
+            score = 10
+        return (score, -len(path))
+    return sorted(found, key=priority, reverse=True)[:max(0, limit)]
 
 def classify_risk(text: str) -> list[str]:
     """Flag risky asks, but do not mistake a platform's explicit anti-scam warning for an offer."""
