@@ -201,8 +201,8 @@ def is_task_detail_url(source: Source, url: str) -> bool:
     return False
 
 def extract_eligibility_evidence(text: str) -> str:
-    pattern = re.compile(r"India|Indian residents?|United States|U\\.S\\.|physician|medical doctor|laptop|PC required|fluent English|18 years|country|resident|located in|based in|eligible", re.I)
-    lines = [clean_text(line) for line in re.split(r"[\\n.]+", text) if pattern.search(line)]
+    pattern = re.compile(r"India|Indian residents?|United States|U\.S\.|physician|medical doctor|laptop|PC required|fluent English|18 years|country|resident|located in|based in|eligible", re.I)
+    lines = [clean_text(line) for line in re.split(r"[\n.]+", text) if pattern.search(line)]
     seen = []
     for line in lines:
         if line and line not in seen:
@@ -212,12 +212,12 @@ def extract_eligibility_evidence(text: str) -> str:
     return " | ".join(seen)[:600]
 
 def assess_fit(source: Source, title: str, body: str) -> str:
-    sample = (title + "\\n" + body[:6000])
-    if re.search(r"physicians? in the United States|U\\.S\\.-only|United States only|must (?:be|reside) in the United States|for U\\.S\\. residents", sample, re.I):
+    sample = (title + "\n" + body[:6000])
+    if re.search(r"physicians? in the United States|U\.S\.-only|United States only|must (?:be|reside) in the United States|for U\.S\. residents", sample, re.I):
         return "LIKELY_NOT_ELIGIBLE_INDIA"
-    if re.search(r"\\b(?:physician|licensed doctor|medical doctor)\\b", title + " " + body[:2000], re.I):
+    if re.search(r"\b(?:physician|licensed doctor|medical doctor)\b", title + " " + body[:2000], re.I):
         return "SPECIALIST_QUALIFICATION_REVIEW"
-    if "India" in source.region or re.search(r"\\bIndia\\b|India-based|remote, India", title + " " + body[:1500], re.I):
+    if "India" in source.region or re.search(r"\bIndia\b|India-based|remote, India", title + " " + body[:1500], re.I):
         return "INDIA_RELEVANT_VERIFY"
     return "ELIGIBILITY_UNKNOWN_VERIFY"
 
@@ -257,7 +257,7 @@ def make_lead(source: Source, url: str, status: str, raw: str, error: str = "") 
         cur, amount, unit, evidence = "", "", "", ""
     risks = classify_risk(body)
     fit = assess_fit(source, title, body)
-    eligibility = extract_eligibility_evidence(title + "\\n" + body)
+    eligibility = extract_eligibility_evidence(title + "\n" + body)
     priority_score, priority_reason = triage_priority(status, cur, amount, unit, evidence, risks, fit)
     if risks:
         state = "quarantined_risk_review"
