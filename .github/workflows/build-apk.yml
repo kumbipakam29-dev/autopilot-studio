@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
 permissions:
-  contents: read
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,9 +31,36 @@ jobs:
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
+      - name: Copy APK with friendly filename
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk AutoPilot-Studio-POD.apk
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: AutoPilot-Studio-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: AutoPilot-Studio-POD.apk
           if-no-files-found: error
+      - name: Check whether this commit is still the main branch tip
+        id: current
+        shell: bash
+        run: |
+          LATEST_SHA="$(git ls-remote origin refs/heads/main | cut -f1)"
+          if [ "$LATEST_SHA" = "$GITHUB_SHA" ]; then
+            echo "is_latest=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_latest=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish latest APK download
+        if: steps.current.outputs.is_latest == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: autopilot-studio-build-${{ github.run_number }}
+          name: AutoPilot Studio POD Workspace ${{ github.run_number }}
+          body: |
+            Auto-built APK from the current main branch.
+            
+            This build adds a local POD concept workspace. Trend feeds, image-generation APIs, seller accounts and live marketplace publishing are not connected.
+            
+            Note: this is a debug-signed APK. If Android refuses to update a previous build, uninstall the previous build and install this APK.
+          files: AutoPilot-Studio-POD.apk
+          make_latest: true
+          fail_on_unmatched_files: true
