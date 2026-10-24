@@ -29,7 +29,7 @@ RISK_PATTERNS = {
     "upfront_fee": re.compile(r"\b(upfront|registration|joining|unlock|activation)\s+(fee|payment|deposit)\b|pay\s+(first|to start|to unlock)", re.I),
     "deposit": re.compile(r"\bdeposit\b|\bpay\s+to\s+work\b", re.I),
     "account_rental": re.compile(r"\b(rent|lease|sell|buy)\s+(your\s+)?(account|profile)\b", re.I),
-    "credential_request": re.compile(r"\b(otp|one.time password|password|seed phrase)\b.{0,45}\b(send|share|provide|message|give)\b", re.I),
+    "credential_request": re.compile(r"\b(?:otp|one.time password|password|seed phrase)\b.{0,45}\b(?:send|share|provide|message|give)\b|\b(?:send|share|provide|message|give)\b.{0,45}\b(?:otp|one.time password|password|seed phrase)\b", re.I),
     "fake_reviews": re.compile(r"\b(fake|paid)\s+reviews?\b|\b5.star review\s+for\s+money\b", re.I),
     "captcha_bypass": re.compile(r"\b(captcha bypass|solve captchas? at scale|bypass captcha)\b", re.I),
     "guaranteed_income": re.compile(r"\bguaranteed\s+(income|earnings|profit)\b", re.I),
