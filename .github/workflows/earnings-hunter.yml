@@ -10,7 +10,7 @@ on:
         default: "30"
         required: true
   push:
-    branches: [main, earnings-hunter-mvp-2026-10, earnings-hunter-detail-crawl-2026-10, earnings-hunter-evidence-quality-2026-10, earnings-hunter-currency-fix-2026-10, earnings-hunter-india-sources-2026-10]
+    branches: [main, earnings-hunter-mvp-2026-10, earnings-hunter-detail-crawl-2026-10, earnings-hunter-evidence-quality-2026-10, earnings-hunter-currency-fix-2026-10, earnings-hunter-india-sources-2026-10, earnings-hunter-target-proof-2026-10]
   schedule:
     - cron: "15 4 * * *"
 
