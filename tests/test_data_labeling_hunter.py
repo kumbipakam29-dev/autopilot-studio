@@ -1,5 +1,6 @@
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "agents"))
@@ -183,8 +184,26 @@ class HighValueSourceTests(unittest.TestCase):
         self.assertEqual(lead.amount, "")
 
     def test_open_train_specialist_role_is_labelled_as_specialist(self):
-        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain Python"))
+        source = next(s for s in hunter.SOURCES if s.name.startswith("OpenTrain C++"))
         self.assertIn("specialist", source.notes.lower())
+        self.assertIn("country eligibility", source.notes.lower())
+
+    def test_open_train_specific_role_keeps_rate_but_does_not_assume_india(self):
+        source = next(s for s in hunter.SOURCES if s.name == "OpenTrain C++ LLM Evaluation Engineer")
+        raw = "<html><title>C++ LLM Evaluation Engineer</title><p>This remote contractor role offers USD $60 to $120 per hour for C++ and LLM evaluation. Applicants must verify country eligibility.</p></html>"
+        lead = hunter.make_lead(source, source.url, "200", raw)
+        self.assertEqual((lead.currency, lead.amount, lead.pay_unit), ("USD", "60-120", "per hour"))
+        self.assertEqual(lead.fit_hint, "ELIGIBILITY_UNKNOWN_VERIFY")
+
+    def test_specific_role_does_not_crawl_sibling_listings_under_wrong_source_name(self):
+        source = next(s for s in hunter.SOURCES if s.name == "YPAI Data Annotator India")
+        raw = "<html><title>Data Annotator, India</title><p>Typical project pay INR 550-800 per hour.</p></html>"
+        with patch.object(hunter, "fetch_public", return_value=(raw, "200", "")) as fetch, patch.object(hunter, "find_links") as links:
+            leads = hunter.scan([source], max_detail_pages=3)
+        self.assertEqual(fetch.call_count, 1)
+        links.assert_not_called()
+        self.assertEqual(len(leads), 1)
+
 
 
 if __name__ == "__main__":

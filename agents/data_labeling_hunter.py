@@ -95,7 +95,7 @@ Source("TELUS QA Rater Hindi India", "https://jobs.telusdigital.com/jobs/1784099
     Source("Outlier Coding Expertise — India", "https://app.outlier.ai/opportunities/4486931005", "specialist AI code evaluation", region="India; experienced software/coding judgement required", notes="Official opportunity page lists average USD 13.75/hour for India coding experts; project rates vary by skill assessment and tasking phase.", specific_page=True),
     Source("RWS TrainAI Community", "https://www.rws.com/artificial-intelligence/train-ai-data-services/trainai-community/", "AI training data collection/annotation/rating", region="Global community; check India project invitations", notes="Official community says task-based pay via PayPal or bank; rates and invitations depend on project fit; computer requirements can apply."),
     Source("HumanSignal AI Training Contributors", "https://onboard.humansignal.com/", "expert AI training and data labeling", region="100+ countries claimed; check India eligibility and skills", notes="Rates are shown to matched eligible contributors; do not assume work or a rate before matching."),
-    Source("OpenTrain Python Software Engineering LLM Evaluator", "https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/", "specialist code evaluation", region="India listed among eligible countries; English and relevant Python/software judgment required", notes="Specialist role; posted pay and requirements must be rechecked on the individual listing.", specific_page=True),
+    Source("OpenTrain C++ LLM Evaluation Engineer", "https://www.opentrain.ai/jobs/c-llm-evaluation-software-engineer--cmroc4vh4000x04l2jaulstct/", "specialist code evaluation", region="Remote; country eligibility must be confirmed", notes="Specific listing advertises USD 60-120/hour for a C++ LLM evaluation engineer; specialist role; verify current availability, country eligibility and exact offer.", specific_page=True),
 ]
 
 def utc_now() -> str:
@@ -322,7 +322,7 @@ def scan(sources: Iterable[Source], max_detail_pages: int = 3) -> list[Lead]:
             lead = make_lead(source, url, status, raw, error)
             leads.append(lead)
             pages += 1
-            if pages == 1 and status == "200" and not lead.risk_flags:
+            if pages == 1 and status == "200" and not lead.risk_flags and not source.specific_page:
                 queue.extend(find_links(url, raw, limit=max_detail_pages))
     return sorted(leads, key=lambda lead: (lead.priority_score, lead.status == "rate_evidence_found_verify_current_listing", lead.fetched_at), reverse=True)
 

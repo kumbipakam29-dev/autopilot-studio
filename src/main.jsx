@@ -28,7 +28,7 @@ const EARNING_SOURCES = [
   { name: 'TELUS Digital AI Community', url: 'https://jobs.telusdigital.com/search/cfm5/ai-community/jobs/in/country/india', kind: 'Rating and evaluation roles', note: 'Official India search shows language-specific assessor/rater roles; application and assessment required.' },
   { name: 'Microworkers', url: 'https://www.microworkers.com/', kind: 'Small online tasks', note: 'KYC and withdrawal conditions apply; use only legitimate tasks and truthful proof.' },
   { name: 'Toloka', url: 'https://toloka.ai/tolokers/', kind: 'Data annotation and related work', note: 'Check current country/project restrictions and supported payment route.' },
-  { name: 'OpenTrain AI — Coding Evaluation', url: 'https://www.opentrain.ai/jobs/python-software-engineering-llm-evaluator--cmub37q18000d0agmbhe9iifm/', kind: 'Specialist code evaluation', note: 'Coding roles require genuine Python/software-engineering judgement; re-check the current listing and terms.' },
+  { name: 'OpenTrain C++ LLM Evaluation Engineer', url: 'https://www.opentrain.ai/jobs/c-llm-evaluation-software-engineer--cmroc4vh4000x04l2jaulstct/', kind: 'Specialist code evaluation', note: 'Specific listing advertises USD 60–120/hour for a C++/LLM role; country eligibility is not assumed and genuine C++ skills are required.' },
   { name: 'Gitcoin Bounties', url: 'https://gitcoin.co/mechanisms/bounties', kind: 'Open-source and skill bounties', note: 'Acceptance is competitive; confirm live reward, deadline, requirements and payout terms.' }
 ];
 
