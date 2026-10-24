@@ -43,6 +43,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: earnings-hunter-results-${{ github.run_number }}
-          path: output/earnings_*
+          path: |
+            output/earnings_*
+            output/source_status.csv
           if-no-files-found: error
           retention-days: 14
