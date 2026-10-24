@@ -1,0 +1,50 @@
+name: Earnings Hunter
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Maximum leads to keep in the report"
+        type: choice
+        options: ["20", "30", "60"]
+        default: "30"
+        required: true
+  push:
+    branches: [main, earnings-hunter-mvp-2026-10]
+  schedule:
+    - cron: "15 4 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: earnings-hunter-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  discover-and-rank:
+    name: Scan public pages and prepare a review-first task board
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      HUNT_LIMIT: ${{ github.event.inputs.limit || '30' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run offline tests
+        run: python -m unittest discover -s tests -v
+      - name: Discover public earning leads
+        run: python agents/earnings_hunter.py --limit "$HUNT_LIMIT"
+      - name: Upload opportunity board and tracker
+        uses: actions/upload-artifact@v4
+        with:
+          name: earnings-hunter-results-${{ github.run_number }}
+          path: |
+            output/earnings_*
+            output/source_status.csv
+          if-no-files-found: error
+          retention-days: 14
