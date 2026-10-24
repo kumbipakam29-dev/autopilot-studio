@@ -33,6 +33,11 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertEqual(candidate["automation_status"], "DISCOVERY_ONLY_NO_LOGIN_NO_SUBMISSION")
         self.assertIn("manually", candidate["required_next_step"])
 
+    def test_link_priority_prefers_general_language_work_over_us_only_specialty(self):
+        india_task = earnings.task_link_priority("Apply", "https://www.oneforma.com/projects/online-data-labeling-and-search-evaluation-tasks/")
+        us_specialty = earnings.task_link_priority("Apply", "https://www.oneforma.com/projects/physician-clinical-reasoning-reviewer-ehr-cases/")
+        self.assertGreater(india_task, us_specialty)
+
     def test_unsafe_external_link_not_allowed(self):
         self.assertFalse(earnings.allowed_same_site_url("https://evil.example/task", "https://work.karmyug.in/"))
         self.assertTrue(earnings.allowed_same_site_url("/jobs/", "https://work.karmyug.in/"))
