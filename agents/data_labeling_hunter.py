@@ -230,7 +230,7 @@ def triage_priority(status: str, currency: str, amount: str, unit: str, evidence
         return 0, "Listing appears location-restricted outside India"
     if fit == "SPECIALIST_QUALIFICATION_REVIEW":
         return 5, "Specialist qualification appears required"
-    score = 15 if fit == "INDIA_RELEVANT_VERIFY" else 5
+    score = 35 if fit == "INDIA_RELEVANT_VERIFY" else 10
     if not evidence or not unit:
         return score, "No task-specific rate extracted; verify before applying"
     try:
