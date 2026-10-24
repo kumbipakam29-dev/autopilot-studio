@@ -37,6 +37,16 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertFalse(earnings.allowed_same_site_url("https://evil.example/task", "https://work.karmyug.in/"))
         self.assertTrue(earnings.allowed_same_site_url("/jobs/", "https://work.karmyug.in/"))
 
+    def test_detail_page_extracts_rate_and_eligibility(self):
+        parser = earnings.PageParser()
+        parser.text_parts = ["Recording project", "₹150 per approved task", "Open to residents in India", "Payment weekly"]
+        facts = earnings.relevant_detail_facts(parser)
+        self.assertIn("₹150", facts)
+        self.assertIn("per approved task", facts)
+        self.assertIn("weekly", facts)
+        evidence = earnings.eligibility_evidence(facts)
+        self.assertIn("India", evidence)
+
     def test_offline_run_writes_expected_files(self):
         old_out = earnings.OUT
         try:
