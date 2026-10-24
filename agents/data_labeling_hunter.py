@@ -34,7 +34,7 @@ RISK_PATTERNS = {
     "captcha_bypass": re.compile(r"\b(captcha bypass|solve captchas? at scale|bypass captcha)\b", re.I),
     "guaranteed_income": re.compile(r"\bguaranteed\s+(income|earnings|profit)\b", re.I),
 }
-CURRENCY = re.compile(r"(?:(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9][0-9,]*(?:\.[0-9]+)?)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?)|\$\s*([0-9]+(?:\.[0-9]+)?(?:\s*(?:-|–|to)\s*[0-9]+(?:\.[0-9]+)?)?))", re.I)
+CURRENCY = re.compile(r"(?:₹|INR\s*|Rs\.?\s*)([0-9][0-9,]*(?:\.[0-9]+)?)|\bUSD\s*\$?\s*([0-9]+(?:\.[0-9]+)?)|\$\s*([0-9]+(?:\.[0-9]+)?)", re.I)
 UNIT = re.compile(r"\b(per\s+(?:(?:approved|accepted)\s+)?(?:task|recording|hour|hr|minute|batch|project|image|audio|page)|/\s*(?:task|hour|hr|batch|image|page)|each\s+(?:(?:approved|accepted)\s+)?(?:task|recording|image|page)|for\s+\d+\s+(?:tasks|images|minutes|hours|pages|prompts))\b", re.I)
 RISK_TEXT_LIMIT = 6000
 
