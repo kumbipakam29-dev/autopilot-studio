@@ -78,17 +78,29 @@ def fetch_public_page(url: str) -> tuple[str | None, str]:
         return None, f"unavailable ({type(exc).__name__})"
 
 def extract_amount(text: str) -> tuple[str, str, str]:
-    rupees, foreign = RUPEE_AMOUNT.findall(text), FOREIGN_AMOUNT.findall(text)
-    if rupees:
+    rupee_matches, foreign_matches = RUPEE_AMOUNT.findall(text), list(FOREIGN_AMOUNT.finditer(text))
+    if rupee_matches:
         values = []
-        for raw in rupees:
-            try: values.append(float(raw.replace(",", "")))
-            except ValueError: pass
+        seen = set()
+        for raw in rupee_matches:
+            try:
+                value = float(raw.replace(",", ""))
+            except ValueError:
+                continue
+            if value not in seen:
+                values.append(value)
+                seen.add(value)
         if values:
             in_range = [v for v in values if INR_MIN <= v <= INR_MAX]
             return "INR", ", ".join(f"₹{v:g}" for v in values[:4]), "TARGET_RANGE_MATCH" if in_range else "INR_AMOUNT_OUTSIDE_TARGET"
-    if foreign:
-        return "FOREIGN_CURRENCY_UNCONVERTED", ", ".join(clean_text(v) for v in foreign[:4]), "CURRENCY_CONVERSION_AND_PAYOUT_CHECK_REQUIRED"
+    if foreign_matches:
+        # Keep the currency marker; a bare "150" is not sufficient evidence of USD/EUR.
+        amounts = []
+        for match in foreign_matches:
+            label = clean_text(match.group(0))
+            if label and label not in amounts:
+                amounts.append(label)
+        return "FOREIGN_CURRENCY_UNCONVERTED", ", ".join(amounts[:4]), "CURRENCY_CONVERSION_AND_PAYOUT_CHECK_REQUIRED"
     return "", "", "NO_PUBLIC_AMOUNT_FOUND"
 
 def score_candidate(title: str, snippet: str, source_name: str, source_region: str):
@@ -119,13 +131,23 @@ def make_candidate(source, title, url, snippet, page_status, kind):
       "automation_status":"DISCOVERY_ONLY_NO_LOGIN_NO_SUBMISSION"}
 
 def relevant_detail_facts(parser):
-    facts = []
+    # Use the main page's leading content only. Job boards often append unrelated
+    # recommendation cards with high hourly rates; do not attach those to this task.
+    raw_text = clean_text(" ".join(parser.text_parts))
+    stop = re.search(r"\b(?:similar projects|related projects|recommended projects|more projects|you may also like|related opportunities|similar jobs|recommended jobs|related listings|featured jobs|other projects|you might also be interested)\b", raw_text, re.I)
+    if stop:
+        raw_text = raw_text[:stop.start()]
+    raw_text = raw_text[:1200]
     fact_pattern = re.compile(r"(₹|INR|Rs\.?|\$|USD|€|EUR|£|GBP|per\s+(?:approved\s+)?(?:task|recording|image|minute|hour)|payment|payout|paid|rate|reward|compensation|eligib|India|resident|country|deadline|minimum|qualification|weekly|monthly)", re.I)
-    for part in parser.text_parts:
-        cleaned = clean_text(part)
+    facts = []
+    # Keep a limited number of unique task facts in page order.
+    for sentence in re.split(r"(?<=[.!?])\s+|\s{2,}", raw_text):
+        cleaned = clean_text(sentence)
         if cleaned and fact_pattern.search(cleaned) and cleaned not in facts:
             facts.append(cleaned)
-    return " ".join(facts)[:1800]
+        if len(facts) >= 12:
+            break
+    return " ".join(facts)[:900]
 
 def eligibility_evidence(text):
     snippets = re.findall(r"[^.!?\n]{0,80}(?:India|Indian|resident|residents|country|eligible|eligibility|location|remote|worldwide|US only|United States|language requirement)[^.!?\n]{0,100}", text, re.I)
