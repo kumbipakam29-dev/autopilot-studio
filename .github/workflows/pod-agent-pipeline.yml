@@ -1,0 +1,55 @@
+name: POD Agent Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      region:
+        description: "Google Trends region"
+        type: choice
+        options: [IN, US, GB]
+        default: IN
+        required: true
+      limit:
+        description: "Number of existing concept briefs"
+        type: choice
+        options: ["10", "25"]
+        default: "25"
+        required: true
+  push:
+    branches: [main, agentic-pod-mvp-2026-10]
+  schedule:
+    - cron: "30 8 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pod-agent-pipeline-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  research-and-drafts:
+    name: Research, draft, validate and bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      POD_REGION: ${{ github.event.inputs.region || 'IN' }}
+      POD_LIMIT: ${{ github.event.inputs.limit || '25' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run offline unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Run POD pipeline
+        run: python agents/pod_pipeline.py --region "$POD_REGION" --limit "$POD_LIMIT"
+      - name: Upload reports and ZIP bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: pod-agent-results-${{ github.run_number }}
+          path: output/
+          if-no-files-found: error
+          retention-days: 7
