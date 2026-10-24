@@ -159,7 +159,7 @@ def is_probable_detail_path(url: str) -> bool:
     }
     if slug in generic_slugs or slug.endswith("-jobs") or "job-board" in slug:
         return False
-    return len(slug) >= 2
+    return bool(slug)
 
 def find_links(page_url: str, raw_html: str, limit: int = 8) -> list[str]:
     """Return only same-host task-detail-looking URLs, ranked ahead of other links."""
@@ -227,32 +227,11 @@ def assess_fit(source: Source, title: str, body: str, url: str) -> str:
         return "LIKELY_NOT_ELIGIBLE_INDIA"
     if re.search(r"\b(?:physician|licensed doctor|medical doctor)\b", title + " " + body[:2000], re.I):
         return "SPECIALIST_QUALIFICATION_REVIEW"
-    # Only inherit the registry's region for its exact seed URL. Child job pages
+    # Only inherit the registry region for its exact seed URL. Child job pages
     # must contain their own India/location evidence rather than inheriting it.
     if url == source.url and "India" in source.region:
         return "INDIA_RELEVANT_VERIFY"
     if re.search(r"\bIndia\b|India-based|remote, India|Indian residents?", sample, re.I):
-        return "INDIA_RELEVANT_VERIFY"
-    return "ELIGIBILITY_UNKNOWN_VERIFY"
-
-def extract_eligibility_evidence(text: str) -> str:
-    pattern = re.compile(r"India|Indian residents?|United States|U\.S\.|physician|medical doctor|laptop|PC required|fluent English|18 years|country|resident|located in|based in|eligible", re.I)
-    lines = [re.sub(r"\s+", " ", html.unescape(line)).strip() for line in re.split(r"[\n.]+", text) if pattern.search(line)]
-    seen = []
-    for line in lines:
-        if line and line not in seen:
-            seen.append(line[:220])
-        if len(seen) >= 4:
-            break
-    return " | ".join(seen)[:600]
-
-def assess_fit(source: Source, title: str, body: str) -> str:
-    sample = (title + "\n" + body[:6000])
-    if re.search(r"physicians? in the United States|U\.S\.-only|United States only|must (?:be|reside) in the United States|for U\.S\. residents", sample, re.I):
-        return "LIKELY_NOT_ELIGIBLE_INDIA"
-    if re.search(r"\b(?:physician|licensed doctor|medical doctor)\b", title + " " + body[:2000], re.I):
-        return "SPECIALIST_QUALIFICATION_REVIEW"
-    if "India" in source.region or re.search(r"\bIndia\b|India-based|remote, India", title + " " + body[:1500], re.I):
         return "INDIA_RELEVANT_VERIFY"
     return "ELIGIBILITY_UNKNOWN_VERIFY"
 
