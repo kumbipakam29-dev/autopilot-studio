@@ -2,7 +2,7 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, earnings-hunter-mobile-ui-2026-10]
 permissions:
   contents: write
 jobs:
