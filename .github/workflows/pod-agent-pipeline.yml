@@ -15,6 +15,8 @@ on:
         options: ["10", "25"]
         default: "25"
         required: true
+  push:
+    branches: [main, agentic-pod-mvp-2026-10]
   schedule:
     - cron: "30 8 * * *"
 
