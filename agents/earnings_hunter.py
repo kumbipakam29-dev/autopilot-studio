@@ -23,7 +23,7 @@ SOURCES = [
 ]
 TASK_WORDS = re.compile(r"task|job|project|bount|microtask|annotat|transcri|recording|rater|assessor|analyst|evaluator|data collection|label|earn|apply|work from|contributor", re.I)
 RISK_WORDS = re.compile(r"pay\s*(?:a|an|the)?\s*(?:deposit|fee|joining fee|registration fee)|upfront\s*(?:payment|fee)|guaranteed\s+income|fake\s+(?:review|rating|proof|account)|buy\s+(?:followers|likes|reviews)|captcha\s*(?:bypass|solver)|otp\s*sharing|share\s+(?:your\s+)?password|crypto\s+deposit|investment\s+required|install\s+an\s+unknown\s+apk", re.I)
-RUPEE_AMOUNT = re.compile(r"(?:₹|INR\s*|Rs\.?\s*)(\d[\d,]*(?:\.\d{1,2})?)", re.I)
+RUPEE_AMOUNT = re.compile(r"(?:₹|(?<![A-Za-z])INR\s*|(?<![A-Za-z])Rs\.?\s*)(\d[\d,]*(?:\.\d{1,2})?)", re.I)
 FOREIGN_AMOUNT = re.compile(r"(?:\$|USD\s*|€|EUR\s*|£|GBP\s*)(\d[\d,]*(?:\.\d{1,2})?)", re.I)
 INR_MIN, INR_MAX = 50.0, 200.0
 
