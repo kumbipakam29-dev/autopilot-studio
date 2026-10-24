@@ -130,8 +130,8 @@ def discover_source(source, offline=False):
     try: parser.feed(body)
     except Exception: pass
     page_title = clean_text(" ".join(parser.title_parts)) or source["name"] + " public page"
-    page_text = clean_text(" ".join(parser.text_parts))[:1200]
-    rows = [make_candidate(source, page_title, source["url"], page_text, status, "OFFICIAL_PAGE_SCAN")]
+    # Do not attribute amounts or warning text from an entire page to one specific task.
+    rows = [make_candidate(source, page_title, source["url"], source["type"] + ". " + source["payout_note"], status, "OFFICIAL_PAGE_SCAN")]
     seen, count = {source["url"]}, 0
     for label, href in parser.links:
         url = urllib.parse.urljoin(source["url"], href)
