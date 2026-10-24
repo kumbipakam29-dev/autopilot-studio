@@ -154,8 +154,24 @@ def find_links(page_url: str, raw_html: str, limit: int = 8) -> list[str]:
     return found
 
 def classify_risk(text: str) -> list[str]:
+    """Flag risky asks, but do not mistake a platform's explicit anti-scam warning for an offer."""
     sample = text[:RISK_TEXT_LIMIT]
-    return [name for name, pattern in RISK_PATTERNS.items() if pattern.search(sample)]
+    sentences = re.split(r"(?<=[.!?])\\s+|\\n+", sample)
+    flags = set()
+    denial = re.compile(
+        r"\\b(?:no|never|not|without|don't|do not|doesn't|does not|won't|will not|free)\\b"
+        r".{0,90}\\b(?:fee|deposit|upfront|joining|registration|unlock|money|pay|payment|charge)\\b",
+        re.I,
+    )
+    for sentence in sentences:
+        # These are clear anti-scam denials such as "we never charge a fee" or
+        # "there is no registration fee or deposit"; they should not be quarantined.
+        if denial.search(sentence):
+            continue
+        for name, pattern in RISK_PATTERNS.items():
+            if pattern.search(sentence):
+                flags.add(name)
+    return sorted(flags)
 
 def make_lead(source: Source, url: str, status: str, raw: str, error: str = "") -> Lead:
     title, body = strip_html(raw.encode("utf-8")) if raw else ("", "")
