@@ -5,14 +5,20 @@ on:
     branches: [feat/public-agent-chat-portal]
     paths:
       - 'agents/device_adaptive_router.py'
+      - 'agents/integrated_agent_router.py'
       - 'agents/model_profiles.json'
       - 'tests/test_device_adaptive_router.py'
+      - 'tests/test_integrated_agent_router.py'
       - '.github/workflows/device-adaptive-router-tests.yml'
   pull_request:
     paths:
       - 'agents/device_adaptive_router.py'
+      - 'agents/integrated_agent_router.py'
+      - 'agents/adaptive_factory.py'
       - 'agents/model_profiles.json'
       - 'tests/test_device_adaptive_router.py'
+      - 'tests/test_integrated_agent_router.py'
+      - 'tests/test_adaptive_factory.py'
       - '.github/workflows/device-adaptive-router-tests.yml'
   workflow_dispatch:
 
@@ -31,5 +37,9 @@ jobs:
         run: python -m json.tool agents/model_profiles.json > /dev/null
       - name: Run device-adaptive router tests
         run: python -m unittest discover -s tests -p 'test_device_adaptive_router.py' -v
+      - name: Run integrated agent factory-router tests
+        run: python -m unittest discover -s tests -p 'test_integrated_agent_router.py' -v
+      - name: Run adaptive factory regression tests
+        run: python -m unittest discover -s tests -p 'test_adaptive_factory.py' -v
       - name: Smoke-test CLI without network
         run: python agents/device_adaptive_router.py --task reasoning --ram-gb 24 --vram-gb 12
