@@ -14,7 +14,7 @@ class RuntimeTests(unittest.TestCase):
         self.temp.cleanup()
 
     def test_caption_handler_returns_reviewable_draft(self):
-        result = run_task("APS-SOCIAL-GROWTH-121", "draft a caption", {"business":"Cafe","offer":"fresh coffee"}, self.registry, self.ledger)
+        result = run_task("APS-SOCIAL-GROWTH-361", "draft a caption", {"business":"Cafe","offer":"fresh coffee"}, self.registry, self.ledger)
         self.assertEqual(result["status"], "completed")
         self.assertTrue(result["result"]["requires_human_review"])
         self.assertIn("Cafe", result["result"]["content"])
@@ -25,7 +25,7 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(result["error"], "handler_not_implemented")
 
     def test_sensitive_task_waits_for_approval(self):
-        result = run_task("APS-SOCIAL-GROWTH-121", "publish this post now", {}, self.registry, self.ledger)
+        result = run_task("APS-SOCIAL-GROWTH-361", "publish this post now", {}, self.registry, self.ledger)
         self.assertEqual(result["status"], "awaiting_approval")
         self.assertTrue(result["requires_approval"])
         self.assertIsNone(result["result"])
@@ -35,7 +35,7 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(result["status"], "blocked")
 
     def test_run_ledger_records_versions_and_status(self):
-        result = run_task("APS-SOCIAL-GROWTH-122", "draft reel", {"topic":"coffee"}, self.registry, self.ledger)
+        result = run_task("APS-SOCIAL-GROWTH-364", "draft reel", {"topic":"coffee"}, self.registry, self.ledger)
         status = get_status(self.ledger)
         self.assertEqual(result["status"], "completed")
         self.assertEqual(len(status["recent_runs"]), 1)
