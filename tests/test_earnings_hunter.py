@@ -57,6 +57,40 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("Corpshore / Jwuma India AI data work", names)
         self.assertIn("Prolific participant studies", names)
 
+    def test_new_direct_task_sources_are_registered(self):
+        by_name = {source["name"]: source for source in earnings.SOURCES}
+        for name in (
+            "YPAI — Data Annotator India",
+            "Perit — Hindi Freelance AI Data Annotator",
+            "TSMG — Hindi Audio Transcription Specialist",
+            "Sigma AI — Hindi, Bengali and English linguistic projects",
+            "Lionbridge — Hindi Transcriber",
+        ):
+            self.assertTrue(by_name[name].get("detail_page"), name)
+
+    def test_direct_source_extracts_visible_root_task_evidence(self):
+        source = {
+            "name": "Test direct task",
+            "url": "https://example.org/jobs/hindi-annotator",
+            "type": "Hindi annotation",
+            "region": "India",
+            "payout_note": "Confirm rate before accepting",
+            "detail_page": True,
+        }
+        original_fetch = earnings.fetch_public_page
+        try:
+            earnings.fetch_public_page = lambda url: (
+                "<html><title>Hindi Annotator</title><body><p>Rate ₹550–₹800 per hour. Remote in India. "
+                "Payment after validated work.</p></body></html>", "fetched"
+            )
+            rows, _ = earnings.discover_source(source)
+        finally:
+            earnings.fetch_public_page = original_fetch
+        self.assertEqual(rows[0]["candidate_type"], "TASK_DETAIL_PAGE")
+        self.assertIn("₹550", rows[0]["public_detail_evidence"])
+        self.assertIn("India", rows[0]["eligibility_evidence"])
+        self.assertEqual(rows[0]["payment_signal"], "INR_AMOUNT_OUTSIDE_TARGET")
+
     def test_unsafe_external_link_not_allowed(self):
         self.assertFalse(earnings.allowed_same_site_url("https://evil.example/task", "https://work.karmyug.in/"))
         self.assertTrue(earnings.allowed_same_site_url("/jobs/", "https://work.karmyug.in/"))
