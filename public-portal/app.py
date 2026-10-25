@@ -1,5 +1,6 @@
 """Safety-first public chat API for AutoPilot Studio."""
 from collections import defaultdict, deque
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 import hmac
 import os
@@ -81,6 +82,14 @@ def _connect_db():
     conn.commit()
     return conn
 
+@contextmanager
+def _db():
+    conn = _connect_db()
+    try:
+        yield conn
+    finally:
+        conn.close()
+
 def _cleanup_expired(conn):
     cutoff = (datetime.now(timezone.utc) - timedelta(days=APPROVAL_RETENTION_DAYS)).isoformat()
     conn.execute("DELETE FROM approvals WHERE created_at < ?", (cutoff,))
@@ -93,7 +102,7 @@ def _redact(message: str) -> str:
     return clean
 
 def _enqueue_approval(task_id: str, message: str) -> None:
-    with _connect_db() as conn:
+    with _db() as conn:
         _cleanup_expired(conn)
         conn.execute(
             "INSERT INTO approvals(task_id,message,status,created_at) VALUES(?,?,?,?)",
