@@ -11,14 +11,10 @@ python -m venv .venv
 # Windows: .venv\Scripts\activate
 # macOS/Linux: source .venv/bin/activate
 pip install -r public-portal/requirements.txt
-uvicorn public-portal.app:app --host 127.0.0.1 --port 8000
-```
-
-Then open http://127.0.0.1:8000. If Python rejects the hyphenated package path in the command above, run from the repository root with:
-
-```bash
 uvicorn app:app --app-dir public-portal --host 127.0.0.1 --port 8000
 ```
+
+Then open http://127.0.0.1:8000.
 
 Health endpoint: `/api/health`.
 
