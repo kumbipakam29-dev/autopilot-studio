@@ -30,9 +30,9 @@ jobs:
       HUNT_LIMIT: ${{ github.event.inputs.limit || '30' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Run offline tests
@@ -40,7 +40,7 @@ jobs:
       - name: Discover public earning leads
         run: python agents/earnings_hunter.py --limit "$HUNT_LIMIT"
       - name: Upload opportunity board and tracker
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: earnings-hunter-results-${{ github.run_number }}
           path: |
