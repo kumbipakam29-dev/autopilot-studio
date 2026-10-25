@@ -43,9 +43,9 @@ The upstream Earnings Hunter report and the loop queue appear to disagree on the
 
 ## Free-hand experiment permissions
 
-Allowed without further approval: public-page research within rate limits, local ranking, report generation, code/tests, draft creation, public business-level research, and non-destructive GitHub feature-branch commits.
+Allowed without further approval: public-page research within rate limits, local ranking, report generation, code/tests, draft creation, public business-level research, non-destructive GitHub feature-branch commits, and routine free signup steps where the service permits assisted automation, all data is accurate and known, and no sensitive verification or binding declaration is required. Agents may continue through permitted, reversible steps without repeatedly asking for approval.
 
-Not allowed automatically: spending money, creating accounts, accepting legal terms, sharing identity documents, completing identity/liveness checks, applying or submitting work under the owner's identity, sending DMs/emails/comments, publishing to public accounts or marketplaces, merging/deploying public services, deleting data, or initiating/confirming a payment without the owner's explicit confirmation.
+Stop for owner-only OTP/CAPTCHA, identity documents, selfie/liveness/biometrics, bank or payment credentials, legal attestations, fees, subscriptions, new sensitive permissions, or unclear terms. Do not invent missing profile facts. Do not send client outreach, publish publicly, apply/submit work in the owner's name, merge/deploy, delete data, or initiate/confirm payments unless the exact action is authorized and the platform permits it. See [Agent Identity & Signup Rules](AGENT_IDENTITY_AND_SIGNUP_RULES.md) and [Agent Training & Evaluation](AGENT_TRAINING_AND_EVALUATION.md).
 
 ## Status vocabulary
 
