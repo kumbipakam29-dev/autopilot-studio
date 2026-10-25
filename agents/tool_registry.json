@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "default_policy": "read_public_data_draft_locally_request_approval_for_external_side_effects",
+  "tools": [
+    {
+      "id": "official_public_page_fetch",
+      "category": "research",
+      "implementation": "agents/earnings_hunter.py::fetch_public_page",
+      "status": "implemented",
+      "access": "curated_https_sources_and_same_site_public_html",
+      "side_effects": false,
+      "limits": ["bounded_timeout", "bounded_response_size", "no_login", "no_form_submission", "no_captcha"]
+    },
+    {
+      "id": "task_rate_and_eligibility_extractor",
+      "category": "research",
+      "implementation": "agents/earnings_hunter.py::extract_amount and eligibility_evidence",
+      "status": "implemented",
+      "access": "public_page_text_only",
+      "side_effects": false,
+      "limits": ["evidence_is_not_a_guarantee", "foreign_currency_not_silently_converted"]
+    },
+    {
+      "id": "risk_keyword_quarantine",
+      "category": "safety",
+      "implementation": "agents/earnings_hunter.py::score_candidate",
+      "status": "implemented",
+      "access": "candidate_text",
+      "side_effects": false,
+      "limits": ["risky_leads_are_quarantined_not_promoted"]
+    },
+    {
+      "id": "opportunity_ranker",
+      "category": "planning",
+      "implementation": "agents/earnings_hunter.py::score_candidate",
+      "status": "implemented",
+      "access": "public_evidence",
+      "side_effects": false,
+      "limits": ["ranking_is_heuristic", "human_checks_terms_before_work"]
+    },
+    {
+      "id": "content_pack_drafter",
+      "category": "creation",
+      "implementation": "agents/runtime.py::HANDLERS",
+      "status": "implemented_deterministic_templates",
+      "access": "user_supplied_brief",
+      "side_effects": false,
+      "limits": ["requires_human_review", "not_a_live_external_model"]
+    },
+    {
+      "id": "client_prospect_import_and_pitch_drafter",
+      "category": "sales",
+      "implementation": "agents/work_win_payment_loop.py::draft_client_pitches",
+      "status": "implemented",
+      "access": "user_supplied_business_level_public_facts",
+      "side_effects": false,
+      "limits": ["no_personal_data_scraping", "draft_only", "no_messages_sent"]
+    },
+    {
+      "id": "work_status_ledger",
+      "category": "operations",
+      "implementation": "agents/work_win_payment_loop.py::update_lead_status",
+      "status": "implemented",
+      "access": "local_sqlite",
+      "side_effects": false,
+      "limits": ["does_not_apply_or_submit_work"]
+    },
+    {
+      "id": "user_confirmed_payment_ledger",
+      "category": "payments",
+      "implementation": "agents/work_win_payment_loop.py::confirm_payment",
+      "status": "implemented",
+      "access": "local_sqlite",
+      "side_effects": false,
+      "limits": ["requires_explicit_owner_confirmation_flag", "never_reads_bank_or_upi_apps", "stores_no_payment_credentials"]
+    },
+    {
+      "id": "approval_gate",
+      "category": "safety",
+      "implementation": "agents/runtime.py::run_task and public-portal approval queue",
+      "status": "implemented_review_only",
+      "access": "requested_action_text",
+      "side_effects": false,
+      "limits": ["approval_record_does_not_execute_the_action"]
+    },
+    {
+      "id": "public_business_search",
+      "category": "sales",
+      "implementation": null,
+      "status": "manual_source_or_provider_connection_required",
+      "access": "none",
+      "side_effects": false,
+      "limits": ["do_not_claim_automated_live_search_until_a_real_search_adapter_is_configured"]
+    },
+    {
+      "id": "external_outreach_sender",
+      "category": "sales",
+      "implementation": null,
+      "status": "disabled",
+      "access": "none",
+      "side_effects": true,
+      "approval_required": true,
+      "limits": ["no_automatic_dm_email_or_public_comment"]
+    },
+    {
+      "id": "work_submission_and_platform_login",
+      "category": "work",
+      "implementation": null,
+      "status": "disabled",
+      "access": "none",
+      "side_effects": true,
+      "approval_required": true,
+      "limits": ["no_account_creation", "no_identity_or_liveness_checks", "no_task_submission", "no_captcha_bypass"]
+    },
+    {
+      "id": "marketplace_publishing",
+      "category": "commerce",
+      "implementation": null,
+      "status": "disabled",
+      "access": "none",
+      "side_effects": true,
+      "approval_required": true,
+      "limits": ["no_listing_upload_or_publish"]
+    },
+    {
+      "id": "money_transfer_or_payment_initiation",
+      "category": "payments",
+      "implementation": null,
+      "status": "disabled",
+      "access": "none",
+      "side_effects": true,
+      "approval_required": true,
+      "limits": ["never_initiate_payment_or_transfer"]
+    }
+  ]
+}
