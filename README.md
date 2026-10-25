@@ -28,6 +28,13 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Agent training and evaluation playbook — quality gates, regression tests, safety metrics and release levels](docs/AGENT_TRAINING_AND_EVALUATION.md)
 - [Agent identity and signup rules — autonomous free steps, owner-only verification and privacy boundaries](docs/AGENT_IDENTITY_AND_SIGNUP_RULES.md)
 
+## Free-first learning and adaptive routing
+- [Free AI/ML/NLP/LLM/MLP/MLM and automation tool catalog](docs/FREE_AI_ML_NLP_AUTOMATION_TOOL_CATALOG.md)
+- [Self-improving free-resource Learning Mode design](docs/SELF_IMPROVING_FREE_RESOURCE_LEARNING_MODE.md)
+- [Device-adaptive model and agent factory architecture](docs/DEVICE_ADAPTIVE_MODEL_AND_AGENT_FACTORY.md)
+- [Device-adaptive router MVP and verification gates](docs/DEVICE_ADAPTIVE_ROUTER_MVP.md)
+- [Adaptive route recommendations and draft agent-spec generator](agents/adaptive_factory.py)
+
 ## Agent registry and versioning
 - [Safe runtime MVP — router, five deterministic handlers, SQLite run ledger, and approval gate](docs/AGENT_RUNTIME_MVP.md)
 - [500-agent registry — unique IDs, role/niche variants, model/agent versions and honest execution states](agents/registry.json)
