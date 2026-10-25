@@ -48,7 +48,7 @@ jobs:
       - name: Print safe status
         run: python agents/work_win_payment_loop.py status
       - name: Upload public-source action pack only
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: work-win-payment-loop-artifacts
           path: |
