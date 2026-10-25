@@ -4,6 +4,7 @@ Only deterministic, low-risk draft tasks run automatically. Sensitive requests
 are queued for human approval and never executed by this service.
 """
 from collections import defaultdict, deque
+from pathlib import Path
 from time import monotonic
 from typing import Literal
 import re
@@ -12,6 +13,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+
+BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI(
     title="AutoPilot Studio Public Agent Portal",
@@ -101,10 +104,10 @@ def _draft(task: str, message: str) -> str | None:
 
 @app.get("/")
 def home():
-    return FileResponse("public-portal/index.html")
+    return FileResponse(BASE_DIR / "index.html")
 
 
-app.mount("/assets", StaticFiles(directory="public-portal/assets"), name="assets")
+app.mount("/assets", StaticFiles(directory=BASE_DIR / "assets"), name="assets")
 
 
 @app.get("/api/health")
