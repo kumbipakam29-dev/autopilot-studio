@@ -4,6 +4,7 @@ This module recommends a route from declared, consented device capabilities. It
 does not probe devices, install models, call remote APIs, or execute generated agents.
 """
 from __future__ import annotations
+import math
 import re
 from typing import Any
 
@@ -54,8 +55,9 @@ def recommend_agent_profile(
 
 def _nonnegative_number(device: dict[str, Any], key: str) -> float:
     value = device.get(key, 0)
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
-        raise ValueError(f"{key} must be a non-negative number")
+    if (isinstance(value, bool) or not isinstance(value, (int, float))
+            or not math.isfinite(value) or value < 0):
+        raise ValueError(f"{key} must be a finite non-negative number")
     return float(value)
 
 
