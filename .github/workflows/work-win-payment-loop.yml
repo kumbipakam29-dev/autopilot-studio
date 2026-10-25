@@ -1,0 +1,82 @@
+name: Work → Win → Payment Loop
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Live public-page scan or offline smoke test"
+        type: choice
+        options: [live, offline]
+        default: live
+        required: true
+      limit:
+        description: "Maximum opportunity rows to keep"
+        type: choice
+        options: ["20", "30", "60"]
+        default: "30"
+        required: true
+  push:
+    branches: [feat/public-agent-chat-portal]
+    paths:
+      - "agents/earnings_hunter.py"
+      - "agents/tool_registry.json"
+      - "agents/work_win_payment_loop.py"
+      - "tests/test_work_win_payment_loop.py"
+      - ".github/workflows/work-win-payment-loop.yml"
+  pull_request:
+    paths:
+      - "agents/earnings_hunter.py"
+      - "agents/tool_registry.json"
+      - "agents/work_win_payment_loop.py"
+      - "tests/test_work_win_payment_loop.py"
+      - ".github/workflows/work-win-payment-loop.yml"
+  schedule:
+    - cron: "45 4 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: work-win-payment-loop-${ github.ref }
+  cancel-in-progress: false
+
+jobs:
+  safe-work-loop:
+    name: Discover public leads and prepare owner-action queue
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      LOOP_MODE: ${ inputs.mode || 'live' }
+      HUNT_LIMIT: ${ inputs.limit || '30' }
+      AUTOPILOT_PAYMENT_LEDGER: ${ runner.temp }/autopilot-payment-ledger.sqlite3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test tool registry and safe loop
+        run: python -m unittest discover -s tests -v
+      - name: Scan public pages and build work queue
+        shell: bash
+        run: |
+          if [ "$LOOP_MODE" = "offline" ]; then
+            python agents/work_win_payment_loop.py cycle --offline --limit "$HUNT_LIMIT"
+          else
+            python agents/work_win_payment_loop.py cycle --limit "$HUNT_LIMIT"
+          fi
+      - name: Print safe status
+        run: python agents/work_win_payment_loop.py status
+      - name: Upload public-source action pack only
+        uses: actions/upload-artifact@v4
+        with:
+          name: work-win-payment-loop-${ github.run_number }
+          path: |
+            output/earnings_opportunities.csv
+            output/source_status.csv
+            output/earnings_hunt_report.md
+            output/work_win_payment_queue.csv
+            output/work_win_payment_report.md
+          if-no-files-found: error
+          retention-days: 14
