@@ -61,11 +61,11 @@ class EarningsHunterTests(unittest.TestCase):
         by_name = {source["name"]: source for source in earnings.SOURCES}
         self.assertIn("YPAI — Hindi Annotation Roles", by_name)
         self.assertFalse(by_name["YPAI — Hindi Annotation Roles"].get("detail_page"))
+        self.assertFalse(by_name["Perit — Hindi Freelance AI Data Annotator"].get("detail_page"))
         for name in (
             "YPAI — Data Annotator India",
             "YPAI — Text and NLP Annotator India",
             "YPAI — Data Collection Contributor India",
-            "Perit — Hindi Freelance AI Data Annotator",
             "TSMG — Hindi Audio Transcription Specialist",
             "Sigma AI — Hindi, Bengali and English linguistic projects",
             "Lionbridge — Hindi Transcriber",
