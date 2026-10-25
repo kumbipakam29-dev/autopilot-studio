@@ -24,7 +24,7 @@ concurrency:
 jobs:
   discover-and-rank:
     name: Scan public pages and prepare a review-first task board
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     env:
       HUNT_LIMIT: ${{ github.event.inputs.limit || '30' }}
