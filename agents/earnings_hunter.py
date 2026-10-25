@@ -27,7 +27,10 @@ SOURCES = [
  {"name":"Corpshore / Jwuma India AI data work","url":"https://platform.corpshore.ai/india","type":"AI model evaluation / text annotation / transcription / quality assurance","region":"India; language and role qualification required","payout_note":"Official page lists India roles and work types; rate is not assumed and must be confirmed in the offer."},
  {"name":"Prolific participant studies","url":"https://participant-help.prolific.com/en/articles/445007-who-can-participate-in-studies-on-prolific","type":"Research studies and surveys","region":"India appears on the supported-country list; account verification and possible waitlist apply","payout_note":"Study supply varies and India eligibility does not guarantee immediate access; confirm current study pay and payout terms."},
  {"name":"YPAI — Hindi Annotation Roles","url":"https://freelancer.ypai.ai/jobs/hindi/annotation","type":"Hindi AI data annotation role directory","region":"India; remote, with language/project-specific eligibility","payout_note":"Some YPAI role pages list typical project pay around ₹550–₹800/hour; only use the rate shown on the exact role/invitation and verify the rate unit before accepting."},
- {"name":"Perit — Hindi Freelance AI Data Annotator","url":"https://perit.ai/careers/hindi-freelance-transcription","type":"Hindi transcription review and AI data annotation","region":"India; remote; laptop/desktop, headphones and strong Hindi writing required","payout_note":"Official career page says rate is confirmed on application and is per hour of audio output; no numeric rate is assumed.","detail_page":True},
+ {"name":"YPAI — Data Annotator India","url":"https://freelancer.ypai.ai/jobs/openings/data-annotator-in","type":"AI image, video, audio and text annotation","region":"India; remote; role-specific qualification","payout_note":"Public role page / project listings describe typical pay around ₹550–₹800/hour; verify on the current individual invitation. Payment terms are stated by provider after approved work.","detail_page":True},
+ {"name":"YPAI — Text and NLP Annotator India","url":"https://freelancer.ypai.ai/jobs/openings/text-annotator-in","type":"Text classification, entity, intent and sentiment annotation","region":"India; remote; native or near-native language and project-specific qualification","payout_note":"Public role page describes typical pay around ₹550–₹800/hour; exact rate and available hours are set in individual project invites.","detail_page":True},
+ {"name":"YPAI — Data Collection Contributor India","url":"https://freelancer.ypai.ai/jobs/openings/data-contributor-in","type":"Data collection and language contribution for AI projects","region":"India; remote; task-specific requirements","payout_note":"Confirm exact scope, numeric rate, acceptance criteria, and payout route in the current invitation before investing time.","detail_page":True},
+ {"name":"Perit — Hindi Freelance AI Data Annotator","url":"https://perit.ai/careers/hindi-freelance-transcription","type":"Hindi transcription review and AI data annotation","region":"India; remote; laptop/desktop, headphones and strong Hindi writing required","payout_note":"Official career page says rate is confirmed on application and is per hour of audio output; no numeric rate is assumed."},
  {"name":"TSMG — Hindi Audio Transcription Specialist","url":"https://jobs.lever.co/tsmg/6a9979b9-3929-4e1d-9689-97926bc65dd5","type":"Hindi audio data collection and transcription","region":"Remote in India; freelance/independent-contractor project terms","payout_note":"Official application says payment is based on validated work completed; confirm the rate and contract terms before accepting.","detail_page":True},
  {"name":"Sigma AI — Hindi, Bengali and English linguistic projects","url":"https://careers.sigma.ai/jobs/8569387-bengali-india-hindi-and-english-linguistic-projects-remote-sigma-ai","type":"Annotation, correction, transcription, evaluation, voice and localization tasks","region":"India; fully remote; apply only for languages genuinely spoken/proven","payout_note":"Recent official listing describes project types but does not state a numeric rate in the public excerpt; confirm rate and payout terms before accepting.","detail_page":True},
  {"name":"Lionbridge — Hindi Transcriber","url":"https://jobs.eu.lever.co/lionbridge/6108498b-2ae3-43cd-8629-7edb52dca516","type":"Hindi transcription and audio annotation","region":"Remote; listing includes India among eligible locations; shift and language requirements apply","payout_note":"Public listing has shown a $10–$16/hour range; verify that the role and range remain active and applicable to India before relying on it.","detail_page":True},
@@ -37,6 +40,8 @@ RISK_WORDS = re.compile(r"pay\s*(?:a|an|the)?\s*(?:deposit|fee|joining fee|regis
 RUPEE_AMOUNT = re.compile(r"(?:₹|(?<![A-Za-z])INR\s*|(?<![A-Za-z])Rs\.?\s*)(\d[\d,]*(?:\.\d{1,2})?)", re.I)
 FOREIGN_AMOUNT = re.compile(r"(?:\$|USD\s*|€|EUR\s*|£|GBP\s*)(\d[\d,]*(?:\.\d{1,2})?)", re.I)
 INR_MIN, INR_MAX = 50.0, 200.0
+HOURLY_RATE_WORDS = re.compile(r"\b(?:per\s+(?:approved\s+)?hour|hourly|/\s*hour|per hour of audio output)\b", re.I)
+PER_TASK_WORDS = re.compile(r"\bper\s+(?:approved\s+)?task\b", re.I)
 
 def clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(value or "")).strip()
@@ -126,6 +131,15 @@ def score_candidate(title: str, snippet: str, source_name: str, source_region: s
     if currency == "INR" and signal == "TARGET_RANGE_MATCH": score += 40; reasons.append("explicit INR amount in target range")
     elif currency == "INR": score += 20; reasons.append("explicit INR amount")
     elif currency == "FOREIGN_CURRENCY_UNCONVERTED": score += 8; reasons.append("foreign amount found; not converted")
+    if currency in {"INR", "FOREIGN_CURRENCY_UNCONVERTED"} and HOURLY_RATE_WORDS.search(joined):
+        boost = 22 if currency == "INR" else 12
+        score += boost
+        reasons.append("explicit hourly-rate unit; confirm task and payout terms")
+    if currency == "INR" and PER_TASK_WORDS.search(joined):
+        visible_values = [float(v.replace(",", "")) for v in RUPEE_AMOUNT.findall(joined)]
+        if visible_values and max(visible_values) < INR_MIN:
+            score -= 15
+            reasons.append("low per-task amount; calculate time and acceptance economics")
     if TASK_WORDS.search(joined): score += 12; reasons.append("task/work wording")
     if "India" in source_region or re.search(r"\bIndia\b|\bIN\b", joined): score += 10; reasons.append("India relevance signal")
     if source_name: score += 8; reasons.append("curated official source")
