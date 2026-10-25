@@ -59,8 +59,9 @@ class EarningsHunterTests(unittest.TestCase):
 
     def test_new_direct_task_sources_are_registered(self):
         by_name = {source["name"]: source for source in earnings.SOURCES}
+        self.assertIn("YPAI — Hindi Annotation Roles", by_name)
+        self.assertFalse(by_name["YPAI — Hindi Annotation Roles"].get("detail_page"))
         for name in (
-            "YPAI — Hindi Annotation Roles",
             "Perit — Hindi Freelance AI Data Annotator",
             "TSMG — Hindi Audio Transcription Specialist",
             "Sigma AI — Hindi, Bengali and English linguistic projects",
