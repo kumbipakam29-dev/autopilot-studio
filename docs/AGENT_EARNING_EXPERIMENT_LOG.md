@@ -16,6 +16,16 @@ Test whether the current AutoPilot agent tooling can discover legitimate public 
 - The ₹200 entry is a lead to verify, not confirmed work. The three ₹2 entries are small per-task amounts; unit, volume, acceptance, and payout must be checked on the official page.
 - No applications, messages, submissions, purchases, uploads, or payments were made. Confirmed revenue from this run: ₹0.
 
+## Fresh official-page cross-check (2026-10-26)
+
+A separate current web check found these details; they are not applications and do not imply acceptance:
+
+- YPAI Data Annotator, India: applications shown as open; typical project pay INR 550–800/hour, with batch/project gaps possible. Payment is every two weeks after approved work via PayPal, Wise or bank transfer. No fee should ever be paid. Official page: https://freelancer.ypai.ai/jobs/openings/data-annotator-in
+- UserTest Pro: the ₹200 extracted by the crawler is not a reliable fixed rate for this platform. Its current official page lists study ranges: video ₹300–₹2,500+, audio ₹200–₹1,500+, usability ₹400–₹3,000+, depending on study length and matching. Weekly reward payout is described via Tremendous; no guaranteed minimum invites or monthly income. Official page: https://www.usertestpro.com/get-paid-to-test
+- Karmyug AI: current jobs page lists Hindi and English recording at ₹2 per approved task, with positions shown for both; Bengali showed zero positions on the checked page. Approved-task rules and the live positions can change. Official page: https://work.karmyug.in/jobs
+
+The web cross-check corrects the crawler interpretation: do not treat the UserTest Pro ₹200 string as a fixed task rate. This is an extraction-quality bug to fix in a future version.
+
 ## Interpretation
 
 This run demonstrates a working discovery-to-queue pipeline, not an earning agent that can independently complete tasks. Most extracted rows are lead-only and need eligibility/rate/payout verification. The queue contains several category or language pages, so the next iteration should deduplicate parent/category pages against specific project pages, verify whether the work is currently open, and rank by expected net value rather than page title alone.
