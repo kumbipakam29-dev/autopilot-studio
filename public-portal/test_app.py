@@ -53,6 +53,21 @@ class PortalApiTests(unittest.TestCase):
     def setUpClass(cls):
         cls.client = TestClient(app)
 
+    def test_homepage_serves_agent_dashboard(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Agent status", response.text)
+        self.assertIn("refresh-agents", response.text)
+
+    def test_unsupported_auto_request_is_rejected(self):
+        response = self.client.post(
+            "/api/chat",
+            json={"message": "Please explain an unrelated task", "task": "auto"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["status"], "unsupported")
+        self.assertIsNone(response.json()["result"])
+
     def test_health_endpoint_reports_prototype_mode(self):
         response = self.client.get("/api/health")
         self.assertEqual(response.status_code, 200)
