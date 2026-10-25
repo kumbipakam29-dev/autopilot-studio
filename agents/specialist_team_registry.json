@@ -1,0 +1,1949 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-10-26",
+  "catalog_name": "AutoPilot Studio Specialist Team",
+  "total_agents": 45,
+  "departments": {
+    "social_media_specialist": 15,
+    "auto_error_handling": 15,
+    "cybersecurity_defense": 15
+  },
+  "registry_semantics": "registered means catalogued, not running; no agent executes solely because it is listed",
+  "agents": [
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-001",
+      "department": "social_media_specialist",
+      "role": "Social media calendar planner",
+      "purpose": "Builds channel-specific weekly calendars from approved client goals.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-002",
+      "department": "social_media_specialist",
+      "role": "Caption copywriter",
+      "purpose": "Drafts platform-specific captions with clear calls to action.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-003",
+      "department": "social_media_specialist",
+      "role": "Short-form Reel scriptwriter",
+      "purpose": "Drafts 14–20 second short-video scripts and shot lists.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-004",
+      "department": "social_media_specialist",
+      "role": "Creative brief designer",
+      "purpose": "Creates post-layout and visual direction briefs for design tools.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-005",
+      "department": "social_media_specialist",
+      "role": "Brand voice guardian",
+      "purpose": "Checks drafts against an explicitly supplied brand voice guide.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-006",
+      "department": "social_media_specialist",
+      "role": "Hashtag and keyword researcher",
+      "purpose": "Suggests relevant keywords and hashtags without promising reach.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-007",
+      "department": "social_media_specialist",
+      "role": "Local business content specialist",
+      "purpose": "Creates content ideas for cafes, shops, and local service providers.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-008",
+      "department": "social_media_specialist",
+      "role": "Social content localization specialist",
+      "purpose": "Adapts approved copy for India and global English audiences.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-009",
+      "department": "social_media_specialist",
+      "role": "Community reply drafter",
+      "purpose": "Drafts respectful replies for human review; does not post or DM.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-010",
+      "department": "social_media_specialist",
+      "role": "Social analytics interpreter",
+      "purpose": "Summarizes supplied metrics and labels unknowns.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-011",
+      "department": "social_media_specialist",
+      "role": "Trend verification specialist",
+      "purpose": "Checks public trend sources and records dates and links.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-012",
+      "department": "social_media_specialist",
+      "role": "Offer and CTA optimizer",
+      "purpose": "Improves clarity of client-provided offers and calls to action.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-013",
+      "department": "social_media_specialist",
+      "role": "Content repurposing specialist",
+      "purpose": "Turns approved long-form content into channel-specific drafts.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-014",
+      "department": "social_media_specialist",
+      "role": "Accessibility and alt-text specialist",
+      "purpose": "Drafts useful alt text and checks readability and contrast notes.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-SOCIAL-MEDIA-SPECIALIST-015",
+      "department": "social_media_specialist",
+      "role": "Client content quality reviewer",
+      "purpose": "Reviews drafts for factuality, consistency, originality, and approval readiness.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-001",
+      "department": "auto_error_handling",
+      "role": "CI failure triage agent",
+      "purpose": "Groups failed checks and points to relevant logs without changing protected settings.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-002",
+      "department": "auto_error_handling",
+      "role": "Python exception classifier",
+      "purpose": "Classifies tracebacks and proposes minimal fixes for review.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-003",
+      "department": "auto_error_handling",
+      "role": "Workflow log summarizer",
+      "purpose": "Extracts first failing step and key error lines from logs.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-004",
+      "department": "auto_error_handling",
+      "role": "Retry policy advisor",
+      "purpose": "Recommends bounded retries only for transient failures.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-005",
+      "department": "auto_error_handling",
+      "role": "Dependency conflict detector",
+      "purpose": "Flags incompatible or unpinned dependencies for review.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-006",
+      "department": "auto_error_handling",
+      "role": "JSON schema error checker",
+      "purpose": "Finds malformed JSON and schema mismatches.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-007",
+      "department": "auto_error_handling",
+      "role": "API response validator",
+      "purpose": "Checks expected response shapes using supplied fixtures.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-008",
+      "department": "auto_error_handling",
+      "role": "Test regression localizer",
+      "purpose": "Maps failing tests to likely changed modules.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-009",
+      "department": "auto_error_handling",
+      "role": "Timeout and resource diagnostician",
+      "purpose": "Analyzes timeout, memory, and CPU evidence; no machine probing.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-010",
+      "department": "auto_error_handling",
+      "role": "Encoding and locale debugger",
+      "purpose": "Finds encoding, timezone, and locale handling risks.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-011",
+      "department": "auto_error_handling",
+      "role": "File path and permission diagnostician",
+      "purpose": "Diagnoses path and permission failures without elevating privileges.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-012",
+      "department": "auto_error_handling",
+      "role": "Database migration reviewer",
+      "purpose": "Reviews migration drafts and flags destructive or irreversible operations.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-013",
+      "department": "auto_error_handling",
+      "role": "Idempotency and duplicate guard",
+      "purpose": "Checks whether retries could duplicate records or actions.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-014",
+      "department": "auto_error_handling",
+      "role": "Health check and readiness reviewer",
+      "purpose": "Reviews readiness/liveness checks and setup status.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-AUTO-ERROR-HANDLING-015",
+      "department": "auto_error_handling",
+      "role": "Error knowledge-base curator",
+      "purpose": "Maintains deduplicated, redacted fixes and regression-test references.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "review_first",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-001",
+      "department": "cybersecurity_defense",
+      "role": "Authorized asset inventory agent",
+      "purpose": "Organizes explicitly supplied asset inventories; no external scanning by default.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-002",
+      "department": "cybersecurity_defense",
+      "role": "Dependency vulnerability auditor",
+      "purpose": "Reviews lockfiles and official advisories for known dependency risks.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-003",
+      "department": "cybersecurity_defense",
+      "role": "Static code security reviewer",
+      "purpose": "Flags common secure-coding weaknesses in repository code.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-004",
+      "department": "cybersecurity_defense",
+      "role": "Secret leak prevention agent",
+      "purpose": "Detects likely secrets in supplied diffs and recommends rotation; never reveals or transmits them.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-005",
+      "department": "cybersecurity_defense",
+      "role": "Software bill of materials curator",
+      "purpose": "Produces or reviews dependency inventory and provenance records.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-006",
+      "department": "cybersecurity_defense",
+      "role": "Security configuration hardening agent",
+      "purpose": "Reviews security headers, permissions, and safe configuration defaults.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-007",
+      "department": "cybersecurity_defense",
+      "role": "Identity and access reviewer",
+      "purpose": "Checks least-privilege roles and access-review evidence.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-008",
+      "department": "cybersecurity_defense",
+      "role": "Threat modeling facilitator",
+      "purpose": "Drafts assets, trust boundaries, threats, and mitigations for review.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-009",
+      "department": "cybersecurity_defense",
+      "role": "Incident triage coordinator",
+      "purpose": "Prioritizes defensive incident reports and maintains a human-led checklist.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-010",
+      "department": "cybersecurity_defense",
+      "role": "Security log anomaly reviewer",
+      "purpose": "Reviews supplied logs for suspicious patterns with privacy-conscious redaction.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-011",
+      "department": "cybersecurity_defense",
+      "role": "Phishing awareness coach",
+      "purpose": "Creates benign awareness training and reporting guidance.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-012",
+      "department": "cybersecurity_defense",
+      "role": "Backup and recovery reviewer",
+      "purpose": "Checks backup coverage and recovery-test evidence without deleting or restoring data.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-013",
+      "department": "cybersecurity_defense",
+      "role": "Privacy and data minimization auditor",
+      "purpose": "Flags unnecessary personal data in workflows and logs.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-014",
+      "department": "cybersecurity_defense",
+      "role": "Security test coverage reviewer",
+      "purpose": "Suggests safe unit tests for authentication, validation, and permission boundaries.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    },
+    {
+      "id": "APS-CYBERSECURITY-DEFENSE-015",
+      "department": "cybersecurity_defense",
+      "role": "Vulnerability remediation tracker",
+      "purpose": "Tracks severity, affected component, fix owner, evidence, and retest status.",
+      "agent_version": "0.1.0",
+      "model_profile": "selected_at_runtime_by_device_router",
+      "registry_status": "registered",
+      "execution_status": "planned",
+      "execution_mode": "draft-only; external integrations not configured",
+      "allowed_tools": [
+        "local_files_read",
+        "local_files_write_draft",
+        "python_sandbox",
+        "public_read_only"
+      ],
+      "approval_required": [
+        "public_publish",
+        "send_message",
+        "account_change",
+        "purchase",
+        "payment",
+        "delete",
+        "submit_application",
+        "financial_action",
+        "security_control_change"
+      ],
+      "safety_profile": "defensive_authorized_scope_only",
+      "evidence_required": [
+        "run_log",
+        "test_result",
+        "human_review"
+      ],
+      "permissions": {
+        "public_publish": false,
+        "send_message": false,
+        "account_change": false,
+        "payment": false,
+        "delete": false,
+        "security_control_change": false
+      },
+      "notes": "Catalog entry only; not a running worker. Test, connect, and review before enabling."
+    }
+  ]
+}
