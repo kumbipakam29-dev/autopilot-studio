@@ -21,7 +21,7 @@
       "version": "candidate-1",
       "kind": "local_llm",
       "runtime": "ollama_or_compatible_runtime",
-      "tasks": ["language", "summarization", "drafting", "simple_reasoning", "classification"],
+      "tasks": ["language", "summarization", "drafting", "simple_reasoning", "classification", "simple_classification"],
       "min_ram_gb": 8,
       "min_vram_gb": 0,
       "requires_model_weights": true,
