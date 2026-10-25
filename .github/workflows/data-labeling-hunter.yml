@@ -27,8 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Run offline tests
@@ -38,7 +38,7 @@ jobs:
       - name: Scan official public listings
         run: python agents/data_labeling_hunter.py --output-dir output
       - name: Upload CSV and JSON lead report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: data-labeling-leads
           path: output/
