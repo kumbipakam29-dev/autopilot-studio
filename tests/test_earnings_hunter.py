@@ -16,6 +16,14 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("₹150", amount)
         self.assertEqual(signal, "TARGET_RANGE_MATCH")
 
+    def test_study_ranges_are_not_misclassified_as_fixed_target_rates(self):
+        currency, amount, signal = earnings.extract_amount(
+            "Video studies ₹300–₹2,500+, audio studies ₹200–₹1,500+ depending on duration"
+        )
+        self.assertEqual(currency, "INR")
+        self.assertIn("₹200", amount)
+        self.assertNotEqual(signal, "TARGET_RANGE_MATCH")
+
     def test_hour_abbreviation_is_not_a_rupee_symbol(self):
         self.assertEqual(earnings.extract_amount("Long-term remote work, 10 hr per week"), ("", "", "NO_PUBLIC_AMOUNT_FOUND"))
         self.assertEqual(earnings.extract_amount("Work requires 20 hrs per month"), ("", "", "NO_PUBLIC_AMOUNT_FOUND"))
