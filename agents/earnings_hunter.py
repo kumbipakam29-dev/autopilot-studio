@@ -98,11 +98,21 @@ def fetch_public_page(url: str, require_same_path: bool = False) -> tuple[str | 
         return None, f"unavailable ({type(exc).__name__})"
 
 def extract_amount(text: str) -> tuple[str, str, str]:
-    rupee_matches, foreign_matches = RUPEE_AMOUNT.findall(text), list(FOREIGN_AMOUNT.finditer(text))
-    if rupee_matches:
-        values = []
-        seen = set()
-        for raw in rupee_matches:
+    rupee_iter = list(RUPEE_AMOUNT.finditer(text))
+    foreign_matches = list(FOREIGN_AMOUNT.finditer(text))
+    if rupee_iter:
+        # A range endpoint is not a standalone rate. For example, ₹200–₹2,500+
+        # is a study range, not evidence that a fixed ₹200 task exists.
+        range_pattern = re.compile(
+            r"(?:₹|INR\\s*|Rs\\.?\\s*)\\s*\\d[\\d,]*(?:\\.\\d{1,2})?"
+            r"\\s*(?:-|–|—|\\bto\\b)\\s*"
+            r"(?:₹|INR\\s*|Rs\\.?\\s*)?\\s*\\d[\\d,]*(?:\\.\\d{1,2})?",
+            re.I,
+        )
+        range_spans = [match.span() for match in range_pattern.finditer(text)]
+        values, standalone_values, seen = [], [], set()
+        for match in rupee_iter:
+            raw = match.group(1)
             try:
                 value = float(raw.replace(",", ""))
             except ValueError:
@@ -110,8 +120,10 @@ def extract_amount(text: str) -> tuple[str, str, str]:
             if value not in seen:
                 values.append(value)
                 seen.add(value)
+            if not any(start <= match.start() and match.end() <= end for start, end in range_spans):
+                standalone_values.append(value)
         if values:
-            in_range = [v for v in values if INR_MIN <= v <= INR_MAX]
+            in_range = [v for v in standalone_values if INR_MIN <= v <= INR_MAX]
             return "INR", ", ".join(f"₹{v:g}" for v in values[:4]), "TARGET_RANGE_MATCH" if in_range else "INR_AMOUNT_OUTSIDE_TARGET"
     if foreign_matches:
         # Keep the currency marker; a bare "150" is not sufficient evidence of USD/EUR.
