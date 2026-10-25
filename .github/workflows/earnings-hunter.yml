@@ -40,7 +40,7 @@ jobs:
       - name: Discover public earning leads
         run: python agents/earnings_hunter.py --limit "$HUNT_LIMIT"
       - name: Upload opportunity board and tracker
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: earnings-hunter-results-${{ github.run_number }}
           path: |
