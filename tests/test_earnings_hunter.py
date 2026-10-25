@@ -62,6 +62,9 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("YPAI — Hindi Annotation Roles", by_name)
         self.assertFalse(by_name["YPAI — Hindi Annotation Roles"].get("detail_page"))
         for name in (
+            "YPAI — Data Annotator India",
+            "YPAI — Text and NLP Annotator India",
+            "YPAI — Data Collection Contributor India",
             "Perit — Hindi Freelance AI Data Annotator",
             "TSMG — Hindi Audio Transcription Specialist",
             "Sigma AI — Hindi, Bengali and English linguistic projects",
@@ -159,6 +162,21 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertEqual(child["currency"], "")
         self.assertEqual(child["payment_signal"], "NO_PUBLIC_AMOUNT_FOUND")
         self.assertIn("Not established", child["region_or_eligibility"])
+
+    def test_hourly_paid_roles_rank_above_very_low_per_task_rate(self):
+        hourly_score = earnings.score_candidate(
+            "AI Data Annotator",
+            "₹550–₹800 per hour for approved annotation work",
+            "YPAI",
+            "India",
+        )[0]
+        per_task_score = earnings.score_candidate(
+            "Hindi Recording Task",
+            "₹2 per approved task",
+            "Karmyug AI",
+            "India",
+        )[0]
+        self.assertGreater(hourly_score, per_task_score)
 
     def test_career_paths_are_scanned_as_role_details(self):
         self.assertTrue(earnings.is_task_detail_path("https://perit.ai/careers/ai-data-annotation-ftc-india"))
