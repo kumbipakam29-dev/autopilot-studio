@@ -18,6 +18,7 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Direct-client CSV/text labeling experiment](docs/DIRECT_CLIENT_MICROGIG_EXPERIMENT.md)
 
 ## Agent registry and versioning
+- [Safe runtime MVP — router, five deterministic handlers, SQLite run ledger, and approval gate](docs/AGENT_RUNTIME_MVP.md)
 - [500-agent registry — unique IDs, role/niche variants, model/agent versions and honest execution states](agents/registry.json)
 - [Registry validation and CI tests](docs/AGENT_REGISTRY_AND_VERSIONING.md)
 
