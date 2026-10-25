@@ -182,6 +182,16 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertGreater(int(detail["triage_score"]), int(generic["triage_score"]))
         self.assertIn("specific role-detail page", detail["score_notes"])
 
+    def test_very_low_per_task_offer_ranks_below_undisclosed_rate_lead(self):
+        very_low = earnings.score_candidate(
+            "Hindi Recording Task", "₹2 per approved task", "Karmyug AI", "India"
+        )
+        undisclosed = earnings.score_candidate(
+            "India remote annotation project", "Rate not listed until qualification", "YPAI", "India"
+        )
+        self.assertLess(very_low[0], undisclosed[0])
+        self.assertIn("very low per-task amount", very_low[4])
+
     def test_hourly_paid_roles_rank_above_very_low_per_task_rate(self):
         hourly_score = earnings.score_candidate(
             "AI Data Annotator",
