@@ -65,8 +65,15 @@ class DeviceAdaptiveRouterTests(unittest.TestCase):
             self.assertFalse(result["execution_ready"])
 
     def test_non_dictionary_device_is_rejected(self):
-        with self.assertRaises(ValueError):
-            recommend_profile("reasoning", ["ram", 16], {"rules-engine"}, self.catalog_path)
+        for invalid_device in ([], ["ram", 16], ""):
+            with self.subTest(device=invalid_device):
+                with self.assertRaises(ValueError):
+                    recommend_profile("reasoning", invalid_device, {"rules-engine"}, self.catalog_path)
+
+    def test_none_device_means_unknown_capabilities_not_invalid_input(self):
+        result = recommend_profile("reasoning", None, {"rules-engine"}, self.catalog_path)
+        self.assertEqual(result["route_status"], "device_incompatible_or_unknown")
+        self.assertFalse(result["execution_ready"])
 
     def test_catalog_rejects_boolean_resource_threshold(self):
         catalog = {
