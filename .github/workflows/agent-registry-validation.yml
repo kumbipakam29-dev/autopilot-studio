@@ -5,13 +5,17 @@ on:
     paths:
       - 'agents/**'
       - 'scripts/validate_agent_registry.py'
+      - 'scripts/validate_specialist_team_registry.py'
       - 'tests/test_agent_registry.py'
+      - 'tests/test_specialist_team_registry.py'
       - '.github/workflows/agent-registry-validation.yml'
   pull_request:
     paths:
       - 'agents/**'
       - 'scripts/validate_agent_registry.py'
+      - 'scripts/validate_specialist_team_registry.py'
       - 'tests/test_agent_registry.py'
+      - 'tests/test_specialist_team_registry.py'
       - '.github/workflows/agent-registry-validation.yml'
   workflow_dispatch:
 permissions:
@@ -24,7 +28,11 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Validate registry
+      - name: Validate main agent registry
         run: python scripts/validate_agent_registry.py
-      - name: Run registry tests
+      - name: Run main registry tests
         run: python -m unittest discover -s tests -p 'test_agent_registry.py'
+      - name: Validate 45-role specialist registry
+        run: python scripts/validate_specialist_team_registry.py
+      - name: Run specialist registry tests
+        run: python -m unittest discover -s tests -p 'test_specialist_team_registry.py'
