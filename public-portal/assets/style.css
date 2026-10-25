@@ -1,0 +1,29 @@
+:root { color-scheme: light; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #172033; background: #f4f6fb; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.shell { width: min(760px, 100% - 28px); margin: 0 auto; padding: 34px 0 24px; }
+header { margin-bottom: 22px; }
+.eyebrow { font-size: .75rem; letter-spacing: .14em; font-weight: 800; color: #4756a8; }
+h1 { font-size: clamp(2rem, 7vw, 3rem); line-height: 1.05; margin: 10px 0; }
+.sub { color: #59657b; line-height: 1.55; }
+.notice, .workspace { background: #fff; border: 1px solid #e0e5ef; border-radius: 18px; padding: 20px; box-shadow: 0 8px 28px #1720330a; }
+.notice { border-left: 4px solid #c18b24; margin-bottom: 16px; }
+.notice p, footer p { color: #59657b; line-height: 1.5; margin-bottom: 0; }
+.examples { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 22px; }
+.examples span { font-size: .85rem; color: #59657b; width: 100%; }
+button { border: 1px solid #d9dfed; border-radius: 999px; background: #f8f9fd; color: #25345b; padding: 9px 13px; font: inherit; cursor: pointer; }
+button:hover { background: #eef1fc; }
+button:focus-visible, textarea:focus-visible { outline: 3px solid #a8b4ff; outline-offset: 2px; }
+label { display: block; font-weight: 700; margin-bottom: 8px; }
+textarea { display: block; width: 100%; resize: vertical; border: 1px solid #ccd4e4; border-radius: 12px; padding: 13px; font: inherit; line-height: 1.5; }
+.actions, .response-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 12px; }
+.actions small, .meta { color: #68738a; }
+#send { background: #283d9b; color: white; border-color: #283d9b; font-weight: 700; }
+#send:disabled { opacity: .55; cursor: wait; }
+#status { line-height: 1.5; overflow-wrap: anywhere; }
+#response { border: 1px solid #e0e5ef; border-radius: 14px; padding: 16px; background: #fbfcff; }
+h2 { font-size: 1.05rem; margin: 0; }
+.meta { font-size: .85rem; overflow-wrap: anywhere; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.6; }
+footer { padding: 12px 4px; font-size: .85rem; }
+@media (max-width: 480px) { .shell { width: min(100% - 20px, 760px); padding-top: 22px; } .notice, .workspace { padding: 15px; } .actions { align-items: flex-start; flex-direction: column; } #send { width: 100%; } }
