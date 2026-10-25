@@ -2,7 +2,7 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, earnings-hunter-mobile-ui-2026-10, high-value-data-labeling-sources]
+    branches: [main, earnings-hunter-mobile-ui-2026-10, high-value-data-labeling-sources, feat/public-agent-chat-portal]
 permissions:
   contents: write
 jobs:
