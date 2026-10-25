@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_status": "candidate profiles; installation and runtime availability must be verified separately",
+  "profiles": [
+    {
+      "id": "rules-engine",
+      "version": "1.0.0",
+      "kind": "deterministic",
+      "runtime": "python",
+      "tasks": ["structured", "formatting", "validation", "simple_classification"],
+      "min_ram_gb": 0,
+      "min_vram_gb": 0,
+      "requires_model_weights": false,
+      "requires_network": false,
+      "execution_available_in_repo": true,
+      "cost_class": "local_code_no_model_api",
+      "notes": "Use for deterministic tasks; not a general language model."
+    },
+    {
+      "id": "local-llm-small-q4",
+      "version": "candidate-1",
+      "kind": "local_llm",
+      "runtime": "ollama_or_compatible_runtime",
+      "tasks": ["language", "summarization", "drafting", "simple_reasoning", "classification"],
+      "min_ram_gb": 8,
+      "min_vram_gb": 0,
+      "requires_model_weights": true,
+      "requires_network": false,
+      "execution_available_in_repo": false,
+      "cost_class": "local_compute_hardware_required",
+      "notes": "Hardware threshold is a conservative initial heuristic, not a guarantee. Exact model, quantization, context length, and runtime must be selected and tested."
+    },
+    {
+      "id": "local-llm-medium-q4",
+      "version": "candidate-1",
+      "kind": "local_llm",
+      "runtime": "ollama_or_compatible_runtime",
+      "tasks": ["language", "summarization", "drafting", "reasoning", "coding"],
+      "min_ram_gb": 16,
+      "min_vram_gb": 6,
+      "requires_model_weights": true,
+      "requires_network": false,
+      "execution_available_in_repo": false,
+      "cost_class": "local_compute_hardware_required",
+      "notes": "Candidate profile only. Some models may run CPU-only but slowly; VRAM needs vary substantially by model."
+    },
+    {
+      "id": "local-embeddings-small",
+      "version": "candidate-1",
+      "kind": "embedding_model",
+      "runtime": "sentence_transformers_or_compatible",
+      "tasks": ["semantic_search", "deduplication", "retrieval"],
+      "min_ram_gb": 4,
+      "min_vram_gb": 0,
+      "requires_model_weights": true,
+      "requires_network": false,
+      "execution_available_in_repo": false,
+      "cost_class": "local_compute_hardware_required",
+      "notes": "Model-weight license and actual memory use must be checked for the chosen embedding model."
+    }
+  ]
+}
