@@ -24,6 +24,41 @@ app = FastAPI(
     openapi_url=None,
 )
 
+AGENT_REGISTRY = [
+    {
+        "id": "caption-agent",
+        "version": "0.1.0",
+        "task": "caption",
+        "status": "available",
+        "execution_mode": "deterministic-template",
+        "external_actions": False,
+    },
+    {
+        "id": "reel_script-agent",
+        "version": "0.1.0",
+        "task": "reel_script",
+        "status": "available",
+        "execution_mode": "deterministic-template",
+        "external_actions": False,
+    },
+    {
+        "id": "content_calendar-agent",
+        "version": "0.1.0",
+        "task": "content_calendar",
+        "status": "available",
+        "execution_mode": "deterministic-template",
+        "external_actions": False,
+    },
+    {
+        "id": "public_summary-agent",
+        "version": "0.1.0",
+        "task": "public_summary",
+        "status": "limited",
+        "execution_mode": "brief-only-no-live-research",
+        "external_actions": False,
+    },
+]
+
 MAX_REQUESTS_PER_MINUTE = 20
 RATE_WINDOW_SECONDS = 60
 _request_times: dict[str, deque[float]] = defaultdict(deque)
@@ -108,6 +143,12 @@ def home():
 
 
 app.mount("/assets", StaticFiles(directory=BASE_DIR / "assets"), name="assets")
+
+
+@app.get("/api/agents")
+def agents():
+    """Return the declared agent registry without exposing credentials or private data."""
+    return {"agents": AGENT_REGISTRY, "count": len(AGENT_REGISTRY)}
 
 
 @app.get("/api/health")
