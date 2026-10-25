@@ -104,9 +104,9 @@ def extract_amount(text: str) -> tuple[str, str, str]:
         # A range endpoint is not a standalone rate. For example, ₹200–₹2,500+
         # is a study range, not evidence that a fixed ₹200 task exists.
         range_pattern = re.compile(
-            r"(?:₹|INR\\s*|Rs\\.?\\s*)\\s*\\d[\\d,]*(?:\\.\\d{1,2})?"
-            r"\\s*(?:-|–|—|\\bto\\b)\\s*"
-            r"(?:₹|INR\\s*|Rs\\.?\\s*)?\\s*\\d[\\d,]*(?:\\.\\d{1,2})?",
+            r"(?:₹|INR\s*|Rs\.?\s*)\s*\d[\d,]*(?:\.\d{1,2})?"
+            r"\s*(?:-|–|—|\bto\b)\s*"
+            r"(?:₹|INR\s*|Rs\.?\s*)?\s*\d[\d,]*(?:\.\d{1,2})?",
             re.I,
         )
         range_spans = [match.span() for match in range_pattern.finditer(text)]
