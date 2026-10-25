@@ -89,6 +89,7 @@ def read_opportunities(path: Path) -> list[dict[str, str]]:
 
 
 def import_opportunities(csv_path: Path, db_path: Path) -> tuple[int, int]:
+    init_ledger(db_path)
     now, imported, quarantined = utc_now(), 0, 0
     with sqlite3.connect(db_path) as db:
         for row in read_opportunities(csv_path):
