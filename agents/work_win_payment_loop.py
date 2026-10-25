@@ -173,7 +173,7 @@ def build_reports(outdir: Path, rows: list[dict[str, Any]], cycle_id: str, mode:
         "The SQLite ledger is stored at runtime/work_win_payment.sqlite3 by default (or AUTOPILOT_PAYMENT_LEDGER). The CI runner is ephemeral; the database is intentionally not included in artifacts. The CSV/Markdown artifact contains the public-source action board only.", ""
     ]
     outdir.mkdir(parents=True, exist_ok=True)
-    report_path.write_text("\\n".join(lines), encoding="utf-8")
+    report_path.write_text("\n".join(lines), encoding="utf-8")
     return queue_path, report_path
 
 
@@ -292,7 +292,7 @@ def draft_client_pitches(input_csv: Path, output_dir: Path | None = None) -> dic
             "- Status: DRAFT_ONLY_NOT_SENT","",item["message_draft"],""]
     lines += ["## Safety","",
         "Do not bulk-send, scrape personal data, or follow up repeatedly after no reply/opt-out. ₹499 is an experimental quote, not a validated market average. Label portfolio examples SPEC; never invent client names, testimonials or results.",""]
-    path.write_text("\\n".join(lines), encoding="utf-8")
+    path.write_text("\n".join(lines), encoding="utf-8")
     return {"status":"completed","draft_count":len(drafts),"skipped_count":len(skipped),
             "output":str(path),"messages_sent":0,"skipped":skipped}
 
