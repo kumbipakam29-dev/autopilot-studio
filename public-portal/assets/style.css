@@ -27,3 +27,10 @@ h2 { font-size: 1.05rem; margin: 0; }
 pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.6; }
 footer { padding: 12px 4px; font-size: .85rem; }
 @media (max-width: 480px) { .shell { width: min(100% - 20px, 760px); padding-top: 22px; } .notice, .workspace { padding: 15px; } .actions { align-items: flex-start; flex-direction: column; } #send { width: 100%; } }
+
+.agent-panel { margin-bottom: 16px; }
+.agent-list { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 8px; }
+.agent-list li { display: grid; gap: 4px; border: 1px solid #e0e5ef; border-radius: 10px; padding: 10px 12px; overflow-wrap: anywhere; }
+.agent-list li strong { font-size: .95rem; }
+.agent-list li span { color: #59657b; font-size: .85rem; }
+#refresh-agents { flex-shrink: 0; }
