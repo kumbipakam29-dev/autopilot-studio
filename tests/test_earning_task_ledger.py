@@ -47,6 +47,24 @@ class LedgerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "(?i)actual payout amount"):
             ledger.update_stage(self.data, "T1", "paid", payout_confirmed=True)
 
+    def test_positive_amounts_accept_currency_and_thousands_separators(self):
+        for stage in (
+            "current_listing_verified", "eligibility_check", "applied",
+            "qualification", "approved", "work_in_progress", "submitted",
+        ):
+            ledger.update_stage(self.data, "T1", stage)
+        ledger.update_stage(
+            self.data, "T1", "accepted", accepted_amount="INR 1,250.50"
+        )
+        self.assertEqual(self.data["tasks"][0]["accepted_amount"], "INR 1,250.50")
+        ledger.update_stage(self.data, "T1", "payout_pending")
+        ledger.update_stage(
+            self.data, "T1", "paid", payout_amount="₹1,250.50", payout_confirmed=True
+        )
+        self.assertEqual(
+            self.data["tasks"][0]["payout_received_amount"], "₹1,250.50"
+        )
+
     def test_user_confirmed_paid_stage(self):
         self.advance_to_payout_pending()
         ledger.update_stage(
