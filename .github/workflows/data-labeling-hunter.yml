@@ -19,12 +19,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: data-labeling-hunter-\${{ github.ref }}
+  group: data-labeling-hunter-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   test-and-scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v5
@@ -42,4 +42,5 @@ jobs:
         with:
           name: data-labeling-leads
           path: output/
+          if-no-files-found: error
           retention-days: 14
