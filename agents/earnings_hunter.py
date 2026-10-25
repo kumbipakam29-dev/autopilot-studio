@@ -149,6 +149,9 @@ def score_candidate(title: str, snippet: str, source_name: str, source_region: s
 
 def make_candidate(source, title, url, snippet, page_status, kind):
     score, amount, currency, signal, note = score_candidate(title, snippet, source["name"], source["region"])
+    if kind == "TASK_DETAIL_PAGE" and "QUARANTINE_RISK_REVIEW" not in note:
+        score += 10
+        note += "; specific role-detail page (prioritized over generic landing pages)"
     if page_status != "fetched": score -= 5
     status = "QUARANTINE_RISK_REVIEW" if "QUARANTINE_RISK_REVIEW" in note else ("REVIEW_TERMS" if amount else "LEAD_ONLY")
     return {
