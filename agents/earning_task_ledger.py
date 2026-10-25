@@ -11,6 +11,20 @@ STAGES = [
     "accepted", "rejected", "payout_pending", "paid"
 ]
 TERMINAL = {"paid", "rejected"}
+ALLOWED_NEXT = {
+    "discovered": {"current_listing_verified"},
+    "current_listing_verified": {"eligibility_check", "rejected"},
+    "eligibility_check": {"applied", "rejected"},
+    "applied": {"qualification", "approved", "rejected"},
+    "qualification": {"approved", "rejected"},
+    "approved": {"work_in_progress", "rejected"},
+    "work_in_progress": {"submitted", "rejected"},
+    "submitted": {"accepted", "rejected"},
+    "accepted": {"payout_pending"},
+    "payout_pending": {"paid"},
+    "rejected": set(),
+    "paid": set(),
+}
 
 def now():
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -38,13 +52,21 @@ def update_stage(data, task_id, stage, minutes=None, accepted_amount=None, payou
     task = next((t for t in data["tasks"] if t["task_id"] == task_id), None)
     if task is None: raise ValueError("Unknown task_id")
     current = task["stage"]
-    if current in TERMINAL and current != stage: raise ValueError("Cannot change a terminal task stage")
+    if current in TERMINAL and current != stage:
+        raise ValueError("Cannot change a terminal task stage")
     if stage == "paid" and not payout_confirmed:
         raise ValueError("Mark paid only after user confirms credit in their payment app")
-    if stage == "accepted" and accepted_amount is None:
+    if stage == "paid" and (payout_amount is None or not str(payout_amount).strip()):
+        raise ValueError("Paid stage needs the actual payout amount received")
+    if payout_confirmed and stage != "paid":
+        raise ValueError("Payout confirmation is valid only for the paid stage")
+    if stage == "accepted" and (accepted_amount is None or not str(accepted_amount).strip()):
         raise ValueError("Accepted task needs a confirmed accepted amount")
+    if current != stage and stage not in ALLOWED_NEXT[current]:
+        raise ValueError(f"Invalid stage transition: {current} -> {stage}")
     if minutes is not None:
-        if minutes < 0: raise ValueError("minutes cannot be negative")
+        if isinstance(minutes, bool) or not isinstance(minutes, int) or minutes < 0:
+            raise ValueError("minutes must be a non-negative integer")
         task["minutes_spent"] += minutes
     if accepted_amount is not None: task["accepted_amount"] = str(accepted_amount)
     if payout_amount is not None: task["payout_received_amount"] = str(payout_amount)
