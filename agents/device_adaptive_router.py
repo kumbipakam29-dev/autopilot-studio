@@ -76,9 +76,9 @@ def recommend_profile(
     genuinely installed and smoke-tested. Remote routing is disabled by default.
     """
     normalized_task = str(task_type or "").strip().lower()
-    device_info = device or {}
-    if not isinstance(device_info, dict):
+    if device is not None and not isinstance(device, dict):
         raise ValueError("device must be a dictionary of declared capabilities")
+    device_info = {} if device is None else device
     available = set(DEFAULT_AVAILABLE if available_profiles is None else available_profiles)
     catalog = load_profiles(catalog_path)
     candidates = [p for p in catalog["profiles"] if normalized_task in p.get("tasks", [])]
