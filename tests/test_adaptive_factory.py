@@ -1,5 +1,8 @@
 import unittest
-from agents.adaptive_factory import classify_task, draft_agent_spec, recommend_execution
+from agents.adaptive_factory import (
+    classify_task, draft_agent_spec, recommend_agent_profile, recommend_execution
+)
+
 
 class AdaptiveFactoryTests(unittest.TestCase):
     def test_classifies_text_and_reasoning_tasks(self):
@@ -50,6 +53,38 @@ class AdaptiveFactoryTests(unittest.TestCase):
     def test_agent_factory_rejects_unapproved_tools(self):
         with self.assertRaises(ValueError):
             draft_agent_spec('unsafe', 'Do things', ['research'], ['send_email'])
+
+    def test_factory_uses_versioned_router_and_keeps_uninstalled_profile_setup_only(self):
+        result = recommend_agent_profile('summarization', {'ram_gb': 12, 'vram_gb': 0})
+        self.assertEqual(result['factory_version'], '0.2.0')
+        self.assertEqual(result['selected_profile'], 'local-llm-small-q4')
+        self.assertEqual(result['route_status'], 'setup_required')
+        self.assertFalse(result['execution_ready'])
+        self.assertFalse(result['execution_performed'])
+        self.assertFalse(result['remote_called'])
+
+    def test_factory_selects_only_explicitly_verified_installed_profile(self):
+        result = recommend_agent_profile(
+            'summarization',
+            {'ram_gb': 12, 'vram_gb': 0},
+            installed_profiles={'rules-engine', 'local-llm-small-q4'},
+        )
+        self.assertEqual(result['selected_profile'], 'local-llm-small-q4')
+        self.assertEqual(result['route_status'], 'ready')
+        self.assertTrue(result['execution_ready'])
+        self.assertFalse(result['execution_performed'])
+
+    def test_factory_rejects_unknown_profile_task_without_remote_execution(self):
+        result = recommend_agent_profile(
+            'image_generation',
+            {'ram_gb': 32, 'vram_gb': 16},
+            installed_profiles={'rules-engine'},
+            allow_remote=True,
+        )
+        self.assertEqual(result['route_status'], 'unsupported')
+        self.assertFalse(result['execution_performed'])
+        self.assertFalse(result['remote_called'])
+
 
 if __name__ == '__main__':
     unittest.main()
