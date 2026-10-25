@@ -24,6 +24,10 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [First Verified Payment Sprint — India / zero budget](docs/FIRST_VERIFIED_PAYMENT_SPRINT.md)
 - [Direct-client CSV/text labeling experiment](docs/DIRECT_CLIENT_MICROGIG_EXPERIMENT.md)
 
+## Agent training and safety
+- [Agent training and evaluation playbook — quality gates, regression tests, safety metrics and release levels](docs/AGENT_TRAINING_AND_EVALUATION.md)
+- [Agent identity and signup rules — autonomous free steps, owner-only verification and privacy boundaries](docs/AGENT_IDENTITY_AND_SIGNUP_RULES.md)
+
 ## Agent registry and versioning
 - [Safe runtime MVP — router, five deterministic handlers, SQLite run ledger, and approval gate](docs/AGENT_RUNTIME_MVP.md)
 - [500-agent registry — unique IDs, role/niche variants, model/agent versions and honest execution states](agents/registry.json)
