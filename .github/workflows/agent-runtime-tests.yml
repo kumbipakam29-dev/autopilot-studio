@@ -5,7 +5,6 @@ on:
     paths:
       - 'agents/runtime.py'
       - 'agents/adaptive_factory.py'
-      - 'agents/adaptive_factory.py'
       - 'scripts/run_agent.py'
       - 'tests/test_agent_runtime.py'
       - 'tests/test_adaptive_factory.py'
@@ -13,6 +12,7 @@ on:
   pull_request:
     paths:
       - 'agents/runtime.py'
+      - 'agents/adaptive_factory.py'
       - 'scripts/run_agent.py'
       - 'tests/test_agent_runtime.py'
       - '.github/workflows/agent-runtime-tests.yml'
