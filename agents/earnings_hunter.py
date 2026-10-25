@@ -26,6 +26,11 @@ SOURCES = [
  {"name":"Smallest AI Contributor","url":"https://contributor.smallest.ai/","type":"Indian-language audio transcription and voice data quality","region":"Remote; language-specific openings, including Indian languages","payout_note":"Official contributor page describes hourly payment and monthly bank payout; rate and open language roles must be confirmed before doing work."},
  {"name":"Corpshore / Jwuma India AI data work","url":"https://platform.corpshore.ai/india","type":"AI model evaluation / text annotation / transcription / quality assurance","region":"India; language and role qualification required","payout_note":"Official page lists India roles and work types; rate is not assumed and must be confirmed in the offer."},
  {"name":"Prolific participant studies","url":"https://participant-help.prolific.com/en/articles/445007-who-can-participate-in-studies-on-prolific","type":"Research studies and surveys","region":"India appears on the supported-country list; account verification and possible waitlist apply","payout_note":"Study supply varies and India eligibility does not guarantee immediate access; confirm current study pay and payout terms."},
+ {"name":"YPAI — Data Annotator India","url":"https://freelancer.ypai.ai/jobs/openings/data-annotator-in","type":"AI data annotation and evaluation","region":"India; remote project-specific qualification","payout_note":"Official page reports typical project pay around ₹550–₹800/hour; individual invitations set exact rate/hours. Verify the current offer before accepting.","detail_page":True},
+ {"name":"Perit — Hindi Freelance AI Data Annotator","url":"https://perit.ai/careers/hindi-freelance-transcription","type":"Hindi transcription review and AI data annotation","region":"India; remote; laptop/desktop, headphones and strong Hindi writing required","payout_note":"Official career page says rate is confirmed on application and is per hour of audio output; no numeric rate is assumed.","detail_page":True},
+ {"name":"TSMG — Hindi Audio Transcription Specialist","url":"https://jobs.lever.co/tsmg/6a9979b9-3929-4e1d-9689-97926bc65dd5","type":"Hindi audio data collection and transcription","region":"Remote in India; freelance/independent-contractor project terms","payout_note":"Official application says payment is based on validated work completed; confirm the rate and contract terms before accepting.","detail_page":True},
+ {"name":"Sigma AI — Hindi, Bengali and English linguistic projects","url":"https://careers.sigma.ai/jobs/8569387-bengali-india-hindi-and-english-linguistic-projects-remote-sigma-ai","type":"Annotation, correction, transcription, evaluation, voice and localization tasks","region":"India; fully remote; apply only for languages genuinely spoken/proven","payout_note":"Recent official listing describes project types but does not state a numeric rate in the public excerpt; confirm rate and payout terms before accepting.","detail_page":True},
+ {"name":"Lionbridge — Hindi Transcriber","url":"https://jobs.eu.lever.co/lionbridge/6108498b-2ae3-43cd-8629-7edb52dca516","type":"Hindi transcription and audio annotation","region":"Remote; listing includes India among eligible locations; shift and language requirements apply","payout_note":"Public listing has shown a $10–$16/hour range; verify that the role and range remain active and applicable to India before relying on it.","detail_page":True},
 ]
 TASK_WORDS = re.compile(r"task|job|project|bount|microtask|annotat|transcri|recording|rater|assessor|analyst|evaluator|data collection|label|earn|apply|work from|contributor", re.I)
 RISK_WORDS = re.compile(r"pay\s*(?:a|an|the)?\s*(?:deposit|fee|joining fee|registration fee)|upfront\s*(?:payment|fee)|guaranteed\s+income|fake\s+(?:review|rating|proof|account)|buy\s+(?:followers|likes|reviews)|captcha\s*(?:bypass|solver)|otp\s*sharing|share\s+(?:your\s+)?password|crypto\s+deposit|investment\s+required|install\s+an\s+unknown\s+apk", re.I)
@@ -185,7 +190,14 @@ def discover_source(source, offline=False):
     try: parser.feed(body)
     except Exception: pass
     page_title = clean_text(" ".join(parser.title_parts)) or source["name"] + " public page"
-    rows = [make_candidate(source, page_title, source["url"], source["type"] + ". " + source["payout_note"], status, "OFFICIAL_PAGE_SCAN")]
+    if source.get("detail_page"):
+        facts = relevant_detail_facts(parser)
+        row = make_candidate(source, page_title, source["url"], facts or (source["type"] + ". " + source["payout_note"]), status, "TASK_DETAIL_PAGE")
+        row["public_detail_evidence"] = facts
+        row["eligibility_evidence"] = eligibility_evidence(facts)
+        rows = [row]
+    else:
+        rows = [make_candidate(source, page_title, source["url"], source["type"] + ". " + source["payout_note"], status, "OFFICIAL_PAGE_SCAN")]
     # Prioritize likely India/language/data tasks and avoid spending the small fetch budget on visibly US-only or credential-gated specialties.
     ordered_links = sorted(parser.links, key=lambda item: task_link_priority(item[0], urllib.parse.urljoin(source["url"], item[1])), reverse=True)
     seen, count, detail_count = {source["url"]}, 0, 0
