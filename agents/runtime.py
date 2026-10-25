@@ -61,11 +61,11 @@ def _job_alert(task: str, inputs: dict[str, Any]) -> dict[str, Any]:
     return {"deliverable_type":"job_search_filter","target_role":role,"filters":["official employer/careers source","country and eligibility","posted date","pay unit and payout method","no joining/deposit fee","application deadline"],"status":"no_live_search_connector","notice":"No jobs were fetched; connect an approved source before presenting live listings."}
 
 HANDLERS = {
-    "APS-SOCIAL-GROWTH-121": _caption,
-    "APS-SOCIAL-GROWTH-122": _reel,
-    "APS-AUTOMATION-SERVICE-128": _content_calendar,
-    "APS-LEAD-GENERATION-016": _website_audit,
-    "APS-MONITORING-ALERTS-008": _job_alert,
+    "APS-SOCIAL-GROWTH-361": _caption,
+    "APS-SOCIAL-GROWTH-364": _reel,
+    "APS-AUTOMATION-SERVICE-295": _content_calendar,
+    "APS-LEAD-GENERATION-160": _website_audit,
+    "APS-MONITORING-ALERTS-127": _job_alert,
 }
 
 def init_ledger(path: Path = DEFAULT_LEDGER) -> None:
