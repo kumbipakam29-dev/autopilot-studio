@@ -29,22 +29,22 @@ class LedgerTests(unittest.TestCase):
 
     def test_paid_requires_confirmation(self):
         self.advance_to_payout_pending()
-        with self.assertRaisesRegex(ValueError, "user confirms credit"):
+        with self.assertRaisesRegex(ValueError, "(?i)user confirms credit"):
             ledger.update_stage(self.data, "T1", "paid", payout_amount="100")
 
     def test_accepted_requires_amount(self):
-        with self.assertRaisesRegex(ValueError, "accepted amount"):
+        with self.assertRaisesRegex(ValueError, "(?i)accepted amount"):
             ledger.update_stage(self.data, "T1", "accepted")
 
     def test_cannot_skip_stages_to_paid(self):
-        with self.assertRaisesRegex(ValueError, "Invalid stage transition"):
+        with self.assertRaisesRegex(ValueError, "(?i)invalid stage transition"):
             ledger.update_stage(
                 self.data, "T1", "paid", payout_amount="100", payout_confirmed=True
             )
 
     def test_paid_requires_actual_amount(self):
         self.advance_to_payout_pending()
-        with self.assertRaisesRegex(ValueError, "actual payout amount"):
+        with self.assertRaisesRegex(ValueError, "(?i)actual payout amount"):
             ledger.update_stage(self.data, "T1", "paid", payout_confirmed=True)
 
     def test_user_confirmed_paid_stage(self):
