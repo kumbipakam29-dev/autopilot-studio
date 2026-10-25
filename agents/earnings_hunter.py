@@ -137,9 +137,14 @@ def score_candidate(title: str, snippet: str, source_name: str, source_region: s
         reasons.append("explicit hourly-rate unit; confirm task and payout terms")
     if currency == "INR" and PER_TASK_WORDS.search(joined):
         visible_values = [float(v.replace(",", "")) for v in RUPEE_AMOUNT.findall(joined)]
-        if visible_values and max(visible_values) < INR_MIN:
-            score -= 15
-            reasons.append("low per-task amount; calculate time and acceptance economics")
+        if visible_values:
+            lowest = min(visible_values)
+            if lowest < 10:
+                score -= 30
+                reasons.append("very low per-task amount; deprioritized pending time-per-task economics")
+            elif lowest < INR_MIN:
+                score -= 15
+                reasons.append("low per-task amount; calculate time and acceptance economics")
     if TASK_WORDS.search(joined): score += 12; reasons.append("task/work wording")
     if "India" in source_region or re.search(r"\bIndia\b|\bIN\b", joined): score += 10; reasons.append("India relevance signal")
     if source_name: score += 8; reasons.append("curated official source")
