@@ -5,16 +5,21 @@ on:
     paths:
       - 'agents/runtime.py'
       - 'agents/adaptive_factory.py'
+      - 'agents/integrated_agent_router.py'
       - 'scripts/run_agent.py'
       - 'tests/test_agent_runtime.py'
       - 'tests/test_adaptive_factory.py'
+      - 'tests/test_integrated_agent_router.py'
       - '.github/workflows/agent-runtime-tests.yml'
   pull_request:
     paths:
       - 'agents/runtime.py'
       - 'agents/adaptive_factory.py'
+      - 'agents/integrated_agent_router.py'
       - 'scripts/run_agent.py'
       - 'tests/test_agent_runtime.py'
+      - 'tests/test_adaptive_factory.py'
+      - 'tests/test_integrated_agent_router.py'
       - '.github/workflows/agent-runtime-tests.yml'
   workflow_dispatch:
 permissions:
@@ -31,5 +36,7 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_agent_runtime.py' -v
       - name: Run adaptive factory tests
         run: python -m unittest discover -s tests -p 'test_adaptive_factory.py' -v
+      - name: Run integrated agent factory-router tests
+        run: python -m unittest discover -s tests -p 'test_integrated_agent_router.py' -v
       - name: Smoke-test status command
         run: python scripts/run_agent.py status
