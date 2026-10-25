@@ -30,7 +30,7 @@ concurrency:
 jobs:
   research-and-drafts:
     name: Research, draft, validate and bundle
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       POD_REGION: ${{ github.event.inputs.region || 'IN' }}
