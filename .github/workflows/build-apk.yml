@@ -34,7 +34,7 @@ jobs:
       - name: Copy APK with friendly filename
         run: cp android/app/build/outputs/apk/debug/app-debug.apk AutoPilot-Studio-POD.apk
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: AutoPilot-Studio-debug-apk
           path: AutoPilot-Studio-POD.apk
