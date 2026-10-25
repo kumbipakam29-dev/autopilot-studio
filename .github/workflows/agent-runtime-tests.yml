@@ -1,0 +1,30 @@
+name: Agent runtime tests
+on:
+  push:
+    branches: [feat/public-agent-chat-portal]
+    paths:
+      - 'agents/runtime.py'
+      - 'scripts/run_agent.py'
+      - 'tests/test_agent_runtime.py'
+      - '.github/workflows/agent-runtime-tests.yml'
+  pull_request:
+    paths:
+      - 'agents/runtime.py'
+      - 'scripts/run_agent.py'
+      - 'tests/test_agent_runtime.py'
+      - '.github/workflows/agent-runtime-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  runtime-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run runtime tests
+        run: python -m unittest discover -s tests -p 'test_agent_runtime.py' -v
+      - name: Smoke-test status command
+        run: python scripts/run_agent.py status
