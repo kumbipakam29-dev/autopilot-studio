@@ -1,6 +1,8 @@
 import unittest
 
-from app import AGENT_REGISTRY, APPROVAL_TERMS, _draft, agents
+from fastapi.testclient import TestClient
+
+from app import AGENT_REGISTRY, APPROVAL_TERMS, _draft, agents, app
 
 
 class DraftTaskTests(unittest.TestCase):
@@ -44,6 +46,47 @@ class DraftTaskTests(unittest.TestCase):
 
     def test_normal_draft_request_is_not_sensitive(self):
         self.assertIsNone(APPROVAL_TERMS.search("write a caption for a bakery"))
+
+
+class PortalApiTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.client = TestClient(app)
+
+    def test_health_endpoint_reports_prototype_mode(self):
+        response = self.client.get("/api/health")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["mode"], "prototype-no-external-actions")
+
+    def test_agent_registry_endpoint(self):
+        response = self.client.get("/api/agents")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 4)
+
+    def test_caption_request_returns_draft(self):
+        response = self.client.post(
+            "/api/chat",
+            json={"message": "Create an Instagram caption for a bakery", "task": "auto"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["status"], "completed")
+        self.assertIn("Draft caption", response.json()["result"])
+
+    def test_sensitive_request_is_not_executed(self):
+        response = self.client.post(
+            "/api/chat",
+            json={"message": "Please publish this to Instagram", "task": "auto"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["status"], "needs_approval")
+        self.assertIsNone(response.json()["result"])
+
+    def test_oversized_message_is_rejected(self):
+        response = self.client.post(
+            "/api/chat",
+            json={"message": "x" * 2001, "task": "caption"},
+        )
+        self.assertEqual(response.status_code, 422)
 
 
 if __name__ == "__main__":
