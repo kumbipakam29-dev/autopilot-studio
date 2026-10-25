@@ -60,7 +60,7 @@ class EarningsHunterTests(unittest.TestCase):
     def test_new_direct_task_sources_are_registered(self):
         by_name = {source["name"]: source for source in earnings.SOURCES}
         for name in (
-            "YPAI — Data Annotator India",
+            "YPAI — Hindi Annotation Roles",
             "Perit — Hindi Freelance AI Data Annotator",
             "TSMG — Hindi Audio Transcription Specialist",
             "Sigma AI — Hindi, Bengali and English linguistic projects",
@@ -79,7 +79,7 @@ class EarningsHunterTests(unittest.TestCase):
         }
         original_fetch = earnings.fetch_public_page
         try:
-            earnings.fetch_public_page = lambda url: (
+            earnings.fetch_public_page = lambda url, require_same_path=False: (
                 "<html><title>Hindi Annotator</title><body><p>Rate ₹550–₹800 per hour. Remote in India. "
                 "Payment after validated work.</p></body></html>", "fetched"
             )
@@ -90,6 +90,40 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("₹550", rows[0]["public_detail_evidence"])
         self.assertIn("India", rows[0]["eligibility_evidence"])
         self.assertEqual(rows[0]["payment_signal"], "INR_AMOUNT_OUTSIDE_TARGET")
+
+    def test_generic_board_does_not_promote_payout_note_or_inherit_region(self):
+        source = {
+            "name": "Test public job board",
+            "url": "https://example.org/careers/",
+            "type": "Remote annotation roles",
+            "region": "India",
+            "payout_note": "Related roles may advertise ₹550–₹800 per hour; this is not a board rate.",
+        }
+        original_fetch = earnings.fetch_public_page
+        def fake_fetch(url, require_same_path=False):
+            if url == source["url"]:
+                return (
+                    '<html><title>Careers</title><body><p>Browse current roles.</p>'
+                    '<a href="/jobs/hindi-transcriber">Hindi Transcriber</a></body></html>',
+                    "fetched",
+                )
+            return (
+                '<html><title>Transcriber Role</title><body><p>Rate $10 per hour. '
+                'Role details should be checked with the employer.</p></body></html>',
+                "fetched",
+            )
+        try:
+            earnings.fetch_public_page = fake_fetch
+            rows, _ = earnings.discover_source(source)
+        finally:
+            earnings.fetch_public_page = original_fetch
+        root = next(row for row in rows if row["candidate_type"] == "OFFICIAL_PAGE_SCAN")
+        detail = next(row for row in rows if row["candidate_type"] == "TASK_DETAIL_PAGE")
+        self.assertEqual(root["public_amount_text"], "")
+        self.assertEqual(root["currency"], "")
+        self.assertEqual(detail["task_type"], "Transcriber Role")
+        self.assertIn("Not established", detail["region_or_eligibility"])
+        self.assertEqual(detail["currency"], "FOREIGN_CURRENCY_UNCONVERTED")
 
     def test_unsafe_external_link_not_allowed(self):
         self.assertFalse(earnings.allowed_same_site_url("https://evil.example/task", "https://work.karmyug.in/"))
