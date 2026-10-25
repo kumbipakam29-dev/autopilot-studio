@@ -17,6 +17,7 @@ uvicorn app:app --app-dir public-portal --host 127.0.0.1 --port 8000
 Then open http://127.0.0.1:8000.
 
 Health endpoint: `/api/health`.
+Agent registry endpoint: `/api/agents` (returns the registered draft-task handlers and their declared limits).
 
 ## What it can do
 
@@ -38,11 +39,10 @@ These are deterministic templates; no paid or local LLM is connected yet.
 
 ## Next hardening milestones
 
-1. Add automated API tests for allowlisted tasks, approval gating, validation, and rate limits.
-2. Add durable task storage with per-user authorization and a real review UI.
-3. Configure deployment-specific trusted proxy handling and edge rate limits.
-4. Add consent/privacy text and data retention controls.
-5. Add a provider-neutral agent registry and connect existing agents only behind explicit task permissions.
-6. Deploy only after all tests pass and the public URL is verified.
+1. Add durable task storage with per-user authorization and a real review UI.
+2. Configure deployment-specific trusted proxy handling and edge rate limits.
+3. Add consent/privacy text and data retention controls.
+4. Connect existing agents only behind explicit task permissions.
+5. Deploy only after all tests pass and the public URL is verified.
 
 No task is considered published, paid, or successful until independently verified.
