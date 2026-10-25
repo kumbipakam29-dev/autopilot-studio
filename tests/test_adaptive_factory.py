@@ -1,0 +1,55 @@
+import unittest
+from agents.adaptive_factory import classify_task, draft_agent_spec, recommend_execution
+
+class AdaptiveFactoryTests(unittest.TestCase):
+    def test_classifies_text_and_reasoning_tasks(self):
+        self.assertEqual(classify_task('Summarize this article'), 'text')
+        self.assertEqual(classify_task('Do a deep analysis and plan a strategy'), 'reasoning')
+
+    def test_deterministic_work_does_not_need_a_model(self):
+        result = recommend_execution('validate JSON', {'free_ram_gb': 1, 'free_vram_gb': 0})
+        self.assertEqual(result['route'], 'deterministic_local')
+        self.assertFalse(result['execution_performed'])
+
+    def test_small_local_profile_is_candidate_not_verified(self):
+        result = recommend_execution('summarize a document', {
+            'free_ram_gb': 6, 'free_vram_gb': 0, 'local_runtime_available': True
+        })
+        self.assertEqual(result['route'], 'local_model_small_candidate')
+        self.assertEqual(result['status'], 'candidate_not_verified')
+        self.assertFalse(result['execution_performed'])
+
+    def test_no_runtime_does_not_claim_model_is_running(self):
+        result = recommend_execution('write code for a script', {
+            'free_ram_gb': 32, 'free_vram_gb': 12, 'local_runtime_available': False
+        })
+        self.assertEqual(result['status'], 'needs_local_runtime_or_review')
+
+    def test_remote_route_is_only_a_candidate_and_needs_approval(self):
+        result = recommend_execution('summarize a document', {
+            'free_ram_gb': 1, 'free_vram_gb': 0, 'internet_available': True
+        }, allow_remote=True)
+        self.assertEqual(result['status'], 'approval_and_configuration_required')
+        self.assertFalse(result['remote_used'])
+
+    def test_vision_is_blocked_without_specialist_configuration(self):
+        result = recommend_execution('analyze this image', {'free_ram_gb': 16, 'free_vram_gb': 8})
+        self.assertEqual(result['status'], 'blocked_unconfigured')
+
+    def test_invalid_device_memory_is_rejected(self):
+        with self.assertRaises(ValueError):
+            recommend_execution('summarize this', {'free_ram_gb': -2})
+
+    def test_agent_spec_is_draft_only_and_denies_external_actions(self):
+        spec = draft_agent_spec('Cafe Content Helper', 'Draft social content', ['caption', 'calendar'])
+        self.assertEqual(spec['agent_id'], 'draft-cafe-content-helper')
+        self.assertEqual(spec['status'], 'draft_requires_evaluation')
+        self.assertFalse(spec['permissions']['public_publish'])
+        self.assertFalse(spec['execution_performed'])
+
+    def test_agent_factory_rejects_unapproved_tools(self):
+        with self.assertRaises(ValueError):
+            draft_agent_spec('unsafe', 'Do things', ['research'], ['send_email'])
+
+if __name__ == '__main__':
+    unittest.main()
