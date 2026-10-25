@@ -107,5 +107,19 @@ class AdaptiveFactoryTests(unittest.TestCase):
         self.assertEqual(unknown['route_status'], 'unsupported')
         self.assertFalse(unknown['execution_ready'])
 
+
+    def test_classification_falls_back_to_verified_local_llm_when_rules_engine_unavailable(self):
+        result = recommend_agent_profile(
+            'classification',
+            {'ram_gb': 12, 'vram_gb': 0},
+            installed_profiles={'local-llm-small-q4'},
+        )
+        self.assertEqual(result['task_type'], 'simple_classification')
+        self.assertEqual(result['selected_profile'], 'local-llm-small-q4')
+        self.assertEqual(result['route_status'], 'ready')
+        self.assertTrue(result['execution_ready'])
+        self.assertFalse(result['execution_performed'])
+        self.assertFalse(result['remote_called'])
+
 if __name__ == '__main__':
     unittest.main()
