@@ -4,30 +4,33 @@ Status: Operating policy for the AutoPilot Digital Studio experiments.
 Scope: All agents, scripts, workflows, contractors, and connected tools.
 
 ## Core rule
-Agents may research signup requirements and prepare account applications autonomously. They must not create, activate, verify, or operate an account in the owner's identity unless the owner has explicitly authorized that specific service and the action is permitted by that service's terms. A general request to work autonomously is not blanket consent to legal attestations, identity verification, or financial commitments.
+The owner has authorized agents to carry out routine, low-risk work autonomously without asking for approval each time. This standing permission covers research, drafting, local code/document changes, tests, public-page checks, lead ranking, and preparation of free signup workflows. It does not authorize spending money, bypassing platform rules, sensitive identity verification, or making legal/financial commitments.
+
+Agents may complete a free signup using the owner's identity only when the service permits this kind of assisted/automated action, all submitted details are accurate and already known or provided securely by the owner, no owner-only verification or binding declaration is required, and no new sensitive permissions are granted. If any condition is not met or is unclear, stop at the last safe step and report the exact blocker. Never fabricate missing information.
 
 ## Allowed without additional approval
 - Research public signup pages, eligibility, payout methods, fees, privacy terms, and country/language availability.
-- Prepare draft profile fields and signup checklists using only facts already provided by the owner; mark unknown fields as unknown.
+- Prepare and perform routine, free signup steps using accurate owner-provided information where platform rules permit and no owner-only step is involved.
+- Prepare profile drafts and signup checklists; mark unknown fields as unknown rather than guessing.
 - Create local test accounts with fictional data only on services that explicitly permit test accounts; never misrepresent a test account as the owner.
-- Prepare drafts, opportunity lists, and a queue of the exact owner actions needed.
-- Use an already-authorized business profile or connected account only within its existing permissions and the platform's rules.
+- Create drafts, opportunity lists, reports, and client/marketing materials; run tests and make reversible local code/document changes in a feature branch.
+- Use already-authorized business profiles and connected accounts within their existing permissions and platform rules.
+- Run bounded, free experiments and track outcomes. Keep actions reversible where practical and report results honestly.
 
-## Require explicit owner approval for each named service/action
-- Submitting a real signup using the owner's name, email, phone number, business identity, biography, photo, or other identifying information.
-- Accepting terms, making eligibility declarations, confirming age/residency, tax status, exclusivity, or other legal attestations.
-- Connecting a social account, granting new permissions, creating a public profile, or publishing content.
-- Sending messages, proposals, applications, or client outreach in the owner's name.
-- Any paid upgrade, fee, deposit, subscription, purchase, or financial setting change.
-
-Approval must identify the service and action. Approval for one service does not authorize other services.
+## Stop and request specific approval before
+- Paying any fee, starting a subscription, purchasing anything, making a deposit, or changing financial settings.
+- Accepting terms or submitting a declaration that legally requires the owner to personally attest, certify, consent, or confirm eligibility, age, residency, tax status, exclusivity, or similar matters.
+- Granting new OAuth/app permissions, connecting a new account, changing account security settings, or sharing sensitive data.
+- Publishing public content, sending messages/proposals/client outreach, or making commitments in the owner's name, unless the owner has already explicitly authorized that exact workflow and scope.
+- Merging to the default branch, deploying a live service, or making destructive changes.
+- Any action whose cost, consequences, permissions, or identity implications are unclear.
 
 ## Always owner-only; agents must stop and request the owner's direct action
 - Passwords, passkeys, recovery codes, one-time passwords (OTP), CAPTCHA, and security challenges.
 - Government ID, selfie/liveness checks, biometric checks, proof of address, or identity-document upload.
 - Bank-account details, card details, UPI PIN, payment authorization, tax identifiers, or signing financial/legal documents.
-- Any step where the platform requires the account holder personally to verify, certify, consent, or perform a human-only task.
-- Any attempt to evade a platform's eligibility rules, regional restrictions, anti-bot controls, or identity checks.
+- Human-only voice/video recording, live interviews, or tasks that require the account holder personally to prove presence, ability, identity, or consent.
+- Any attempt to evade eligibility rules, regional restrictions, anti-bot controls, or identity checks.
 
 Agents must never ask the owner to paste passwords, OTPs, UPI PINs, or full payment credentials into chat or commit them to the repository. Use the platform's secure official flow directly.
 
@@ -42,19 +45,18 @@ Agents must never ask the owner to paste passwords, OTPs, UPI PINs, or full paym
 - Collect only the minimum information required for an approved task.
 - Prefer a business identity (AutoPilot Digital Studio) over personal details when the platform permits it and the information is accurate.
 - Keep secrets in the platform's approved secret manager; never print them to logs or artifacts.
-- Before granting a new OAuth/app permission, explain the requested scope and why it is needed; wait for approval.
 - If suspicious requests, unexpected fees, unclear payout terms, or sensitive-data requests appear, stop and flag the item for review.
 
 ## Signup workflow
 1. Discover the official domain and current eligibility/terms.
-2. Produce a concise review card: service, purpose, country eligibility, requested identity fields, permissions, fees, payout method, data collected, risks, and exact next action.
-3. Classify: `RESEARCH_ONLY`, `OWNER_APPROVAL_REQUIRED`, `OWNER_ONLY_VERIFICATION`, or `BLOCKED`.
-4. Do not submit a real signup or make a binding declaration until the service-specific approval is recorded.
-5. If approved, proceed only through permitted steps; pause for OTP/ID/biometrics/payment/legal attestation.
-6. Record evidence and status without storing sensitive values. Mark account creation as complete only after the platform confirms it.
+2. Check service purpose, country eligibility, requested identity fields, platform automation rules, permissions, fees, payout method, data collected, and risks.
+3. Classify: `AUTONOMOUS_FREE_STEP`, `OWNER_ONLY_VERIFICATION`, `APPROVAL_REQUIRED`, or `BLOCKED`.
+4. Proceed through free, permitted, non-sensitive steps using only accurate known information.
+5. Pause for OTP/ID/biometrics, owner-only declarations, sensitive permissions, money, legal commitments, or uncertain identity claims.
+6. Record evidence and status without storing sensitive values. Mark account creation complete only after the platform confirms it.
 
 ## Audit trail
-Every attempted signup must record service/domain, date, agent/version, purpose, decision class, approval reference (if any), outcome, and a non-sensitive evidence URL or note. Never include credentials, OTPs, identity-document numbers, or full financial details.
+Every signup attempt must record service/domain, date, agent/version, purpose, decision class, outcome, and a non-sensitive evidence URL or note. Never include credentials, OTPs, identity-document numbers, or full financial details.
 
 ## Default decision
-If uncertain whether a step uses the owner's identity, creates a legal obligation, shares sensitive data, or changes account security/permissions, STOP and request specific approval. Autonomy means doing the safe research and preparation—not bypassing the owner's consent or platform safeguards.
+Routine, free, reversible work: proceed autonomously. If an action involves sensitive identity verification, money, legal commitment, new permissions, public external communication, or material uncertainty: stop at the safe boundary and report the exact next step. Autonomy never means bypassing the owner's consent or platform safeguards.
