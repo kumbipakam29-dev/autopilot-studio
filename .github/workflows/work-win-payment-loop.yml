@@ -46,9 +46,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      LOOP_MODE: ${ inputs.mode || 'live' }
-      HUNT_LIMIT: ${ inputs.limit || '30' }
-      AUTOPILOT_PAYMENT_LEDGER: ${ runner.temp }/autopilot-payment-ledger.sqlite3
+      LOOP_MODE: ${{ inputs.mode || 'live' }}
+      HUNT_LIMIT: ${{ inputs.limit || '30' }}
+      AUTOPILOT_PAYMENT_LEDGER: ${{ runner.temp }}/autopilot-payment-ledger.sqlite3
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -71,7 +71,7 @@ jobs:
       - name: Upload public-source action pack only
         uses: actions/upload-artifact@v4
         with:
-          name: work-win-payment-loop-${ github.run_number }
+          name: work-win-payment-loop-${{ github.run_number }}
           path: |
             output/earnings_opportunities.csv
             output/source_status.csv
