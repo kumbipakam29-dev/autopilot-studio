@@ -10,7 +10,7 @@ from typing import Any
 
 from agents.device_adaptive_router import recommend_profile
 
-ROUTER_VERSION = "0.2.0"
+ROUTER_VERSION = "0.2.1"
 
 
 def classify_task(task: str) -> str:
@@ -28,6 +28,20 @@ def classify_task(task: str) -> str:
     return "general"
 
 
+def _normalize_profile_task(task_type: str) -> str:
+    """Translate factory categories to catalog task IDs without guessing unknown work."""
+    normalized = str(task_type or "").strip().casefold().replace("-", "_").replace(" ", "_")
+    aliases = {
+        "text": "summarization",
+        "summarize": "summarization",
+        "summary": "summarization",
+        "reason": "reasoning",
+        "code": "coding",
+        "classification": "simple_classification",
+    }
+    return aliases.get(normalized, normalized)
+
+
 def recommend_agent_profile(
     task_type: str,
     device: dict[str, Any] | None = None,
@@ -39,14 +53,16 @@ def recommend_agent_profile(
     Only caller-confirmed, installed and smoke-tested profile IDs should be
     supplied in installed_profiles. This function recommends; it never executes.
     """
+    normalized_task = _normalize_profile_task(task_type)
     result = recommend_profile(
-        task_type=task_type,
+        task_type=normalized_task,
         device=device,
         available_profiles=installed_profiles,
         allow_remote=allow_remote,
     )
     return {
         **result,
+        "requested_task_type": task_type,
         "factory_version": ROUTER_VERSION,
         "execution_performed": False,
         "remote_called": False,
