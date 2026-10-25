@@ -38,9 +38,11 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Integrated agent factory/router: status semantics, safety gates, and test commands](docs/INTEGRATED_AGENT_FACTORY_ROUTER.md)
 
 ## Agent registry and versioning
-- [Safe runtime MVP — router, five deterministic handlers, SQLite run ledger, and approval gate](docs/AGENT_RUNTIME_MVP.md)
 - [500-agent registry — unique IDs, role/niche variants, model/agent versions and honest execution states](agents/registry.json)
+- [Additional 45-role specialist team registry — 15 social media, 15 error handling, 15 defensive cybersecurity roles](agents/specialist_team_registry.json)
+- [Specialist team registry, validation and permission boundaries](docs/SPECIALIST_TEAM_REGISTRY.md)
 - [Registry validation and CI tests](docs/AGENT_REGISTRY_AND_VERSIONING.md)
+- [Safe runtime MVP — router, five deterministic handlers, SQLite run ledger, and approval gate](docs/AGENT_RUNTIME_MVP.md)
 - [Agent tool registry — what is implemented vs disabled](agents/tool_registry.json)
 - [Work-loop agent runtime](agents/work_win_payment_loop.py)
 
@@ -56,6 +58,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 ## Run tests
 ```bash
 python -m unittest discover -s tests -v
+python scripts/validate_specialist_team_registry.py
+python -m unittest discover -s tests -p 'test_specialist_team_registry.py' -v
 ```
 
 Before spending time on any lead, check the official listing, country/language/device eligibility, task-specific rate unit, acceptance criteria, minimum payout, and supported payout route. Never pay a joining/deposit/unlock fee or store IDs, passwords, OTPs or payment details in the repository.
