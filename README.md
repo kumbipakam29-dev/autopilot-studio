@@ -22,6 +22,9 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [500-agent registry — unique IDs, role/niche variants, model/agent versions and honest execution states](agents/registry.json)
 - [Registry validation and CI tests](docs/AGENT_REGISTRY_AND_VERSIONING.md)
 
+## Open-source tool stack
+- [Curated local-first open-source tool catalog and adoption order](docs/OPEN_SOURCE_TOOL_CATALOG.md)
+
 ## Research documents
 - [Deep research, system gap audit, free tools/models and zero-budget roadmap](docs/DEEP_RESEARCH_ZERO_BUDGET.md)
 - [1,224 categorized opportunity hypotheses (CSV)](docs/IDEA_BANK_1200.csv)
