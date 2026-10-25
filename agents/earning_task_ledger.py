@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Local-first task ledger. Records user-confirmed task stages; never moves money."""
 from __future__ import annotations
-import argparse, json
+import argparse, json, re
+from decimal import Decimal, InvalidOperation
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -25,6 +26,23 @@ ALLOWED_NEXT = {
     "rejected": set(),
     "paid": set(),
 }
+
+def _validated_amount(value, label):
+    """Accept a positive amount with optional currency prefix and thousands separators."""
+    if isinstance(value, bool) or value is None:
+        raise ValueError(f"{label} must be a positive numeric amount")
+    raw = str(value).strip()
+    pattern = r"(?:(?:INR|USD|EUR|GBP)\s*)?[₹$€£]?\s*((?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?)"
+    match = re.fullmatch(pattern, raw, flags=re.IGNORECASE)
+    if not match:
+        raise ValueError(f"{label} must be a positive numeric amount")
+    try:
+        amount = Decimal(match.group(1).replace(",", ""))
+    except InvalidOperation as exc:
+        raise ValueError(f"{label} must be a positive numeric amount") from exc
+    if not amount.is_finite() or amount <= 0:
+        raise ValueError(f"{label} must be greater than zero")
+    return raw
 
 def now():
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -56,12 +74,12 @@ def update_stage(data, task_id, stage, minutes=None, accepted_amount=None, payou
         raise ValueError("Cannot change a terminal task stage")
     if stage == "paid" and not payout_confirmed:
         raise ValueError("Mark paid only after user confirms credit in their payment app")
-    if stage == "paid" and (payout_amount is None or not str(payout_amount).strip()):
-        raise ValueError("Paid stage needs the actual payout amount received")
+    if stage == "paid":
+        _validated_amount(payout_amount, "Actual payout amount")
     if payout_confirmed and stage != "paid":
         raise ValueError("Payout confirmation is valid only for the paid stage")
-    if stage == "accepted" and (accepted_amount is None or not str(accepted_amount).strip()):
-        raise ValueError("Accepted task needs a confirmed accepted amount")
+    if stage == "accepted":
+        _validated_amount(accepted_amount, "Accepted amount")
     if current != stage and stage not in ALLOWED_NEXT[current]:
         raise ValueError(f"Invalid stage transition: {current} -> {stage}")
     if minutes is not None:
