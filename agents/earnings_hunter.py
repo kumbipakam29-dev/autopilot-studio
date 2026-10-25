@@ -26,7 +26,7 @@ SOURCES = [
  {"name":"Smallest AI Contributor","url":"https://contributor.smallest.ai/","type":"Indian-language audio transcription and voice data quality","region":"Remote; language-specific openings, including Indian languages","payout_note":"Official contributor page describes hourly payment and monthly bank payout; rate and open language roles must be confirmed before doing work."},
  {"name":"Corpshore / Jwuma India AI data work","url":"https://platform.corpshore.ai/india","type":"AI model evaluation / text annotation / transcription / quality assurance","region":"India; language and role qualification required","payout_note":"Official page lists India roles and work types; rate is not assumed and must be confirmed in the offer."},
  {"name":"Prolific participant studies","url":"https://participant-help.prolific.com/en/articles/445007-who-can-participate-in-studies-on-prolific","type":"Research studies and surveys","region":"India appears on the supported-country list; account verification and possible waitlist apply","payout_note":"Study supply varies and India eligibility does not guarantee immediate access; confirm current study pay and payout terms."},
- {"name":"YPAI — Data Annotator India","url":"https://freelancer.ypai.ai/jobs/openings/data-annotator-in","type":"AI data annotation and evaluation","region":"India; remote project-specific qualification","payout_note":"Official page reports typical project pay around ₹550–₹800/hour; individual invitations set exact rate/hours. Verify the current offer before accepting.","detail_page":True},
+ {"name":"YPAI — Hindi Annotation Roles","url":"https://freelancer.ypai.ai/jobs/hindi/annotation","type":"Hindi AI data annotation role directory","region":"India; remote, with language/project-specific eligibility","payout_note":"Some YPAI role pages list typical project pay around ₹550–₹800/hour; only use the rate shown on the exact role/invitation and verify the rate unit before accepting."},
  {"name":"Perit — Hindi Freelance AI Data Annotator","url":"https://perit.ai/careers/hindi-freelance-transcription","type":"Hindi transcription review and AI data annotation","region":"India; remote; laptop/desktop, headphones and strong Hindi writing required","payout_note":"Official career page says rate is confirmed on application and is per hour of audio output; no numeric rate is assumed.","detail_page":True},
  {"name":"TSMG — Hindi Audio Transcription Specialist","url":"https://jobs.lever.co/tsmg/6a9979b9-3929-4e1d-9689-97926bc65dd5","type":"Hindi audio data collection and transcription","region":"Remote in India; freelance/independent-contractor project terms","payout_note":"Official application says payment is based on validated work completed; confirm the rate and contract terms before accepting.","detail_page":True},
  {"name":"Sigma AI — Hindi, Bengali and English linguistic projects","url":"https://careers.sigma.ai/jobs/8569387-bengali-india-hindi-and-english-linguistic-projects-remote-sigma-ai","type":"Annotation, correction, transcription, evaluation, voice and localization tasks","region":"India; fully remote; apply only for languages genuinely spoken/proven","payout_note":"Recent official listing describes project types but does not state a numeric rate in the public excerpt; confirm rate and payout terms before accepting.","detail_page":True},
@@ -76,11 +76,15 @@ class PageParser(HTMLParser):
         if self.in_title: self.title_parts.append(value)
         if self.anchor_href: self.anchor_text.append(value)
 
-def fetch_public_page(url: str) -> tuple[str | None, str]:
+def fetch_public_page(url: str, require_same_path: bool = False) -> tuple[str | None, str]:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"})
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
             if get_host(response.geturl()) != get_host(url): return None, "redirected to different host; skipped"
+            if require_same_path:
+                requested_path = urllib.parse.urlparse(url).path.rstrip("/") or "/"
+                final_path = urllib.parse.urlparse(response.geturl()).path.rstrip("/") or "/"
+                if final_path != requested_path: return None, "redirected to different path; skipped"
             ctype = response.headers.get("Content-Type", "").lower()
             if "text/html" not in ctype and "application/xhtml+xml" not in ctype: return None, "not HTML; skipped"
             data = response.read(MAX_BYTES + 1)[:MAX_BYTES]
@@ -178,10 +182,10 @@ def task_link_priority(label, url):
     return score
 
 def discover_source(source, offline=False):
-    base = make_candidate(source, source["name"] + " — official starting point", source["url"], source["type"] + ". " + source["payout_note"], "offline mode", "PLATFORM_LEAD")
+    base = make_candidate(source, source["name"] + " — official starting point", source["url"], source["type"], "offline mode", "PLATFORM_LEAD")
     if offline:
         return [base], {"source":source["name"],"fetch_status":"offline mode","candidate_links_extracted":"0","detail_pages_checked":"0"}
-    body, status = fetch_public_page(source["url"])
+    body, status = fetch_public_page(source["url"], require_same_path=bool(source.get("detail_page")))
     if not body:
         base["page_fetch_status"] = status
         base["triage_score"] = str(int(base["triage_score"])-5)
@@ -192,12 +196,14 @@ def discover_source(source, offline=False):
     page_title = clean_text(" ".join(parser.title_parts)) or source["name"] + " public page"
     if source.get("detail_page"):
         facts = relevant_detail_facts(parser)
-        row = make_candidate(source, page_title, source["url"], facts or (source["type"] + ". " + source["payout_note"]), status, "TASK_DETAIL_PAGE")
+        row = make_candidate(source, page_title, source["url"], facts or source["type"], status, "TASK_DETAIL_PAGE")
+        row["task_type"] = page_title or source["type"]
+        row["region_or_eligibility"] = eligibility_evidence(facts) or source["region"]
         row["public_detail_evidence"] = facts
         row["eligibility_evidence"] = eligibility_evidence(facts)
         rows = [row]
     else:
-        rows = [make_candidate(source, page_title, source["url"], source["type"] + ". " + source["payout_note"], status, "OFFICIAL_PAGE_SCAN")]
+        rows = [make_candidate(source, page_title, source["url"], source["type"], status, "OFFICIAL_PAGE_SCAN")]
     # Prioritize likely India/language/data tasks and avoid spending the small fetch budget on visibly US-only or credential-gated specialties.
     ordered_links = sorted(parser.links, key=lambda item: task_link_priority(item[0], urllib.parse.urljoin(source["url"], item[1])), reverse=True)
     seen, count, detail_count = {source["url"]}, 0, 0
@@ -212,7 +218,7 @@ def discover_source(source, offline=False):
         is_detail = ("/jobs/" in path and path.rsplit("/jobs/",1)[-1] not in {"", "index"}) or ("/projects/" in path and path.rsplit("/projects/",1)[-1] not in {"", "index"})
         detail_body, detail_status = (None, "not attempted")
         if is_detail and detail_count < 5:
-            detail_body, detail_status = fetch_public_page(url)
+            detail_body, detail_status = fetch_public_page(url, require_same_path=True)
             detail_count += 1
         if detail_body:
             detail_parser = PageParser()
@@ -222,11 +228,14 @@ def discover_source(source, offline=False):
             facts = relevant_detail_facts(detail_parser)
             title = clean_text(label + (" — " + detail_title if detail_title and detail_title.lower() not in label.lower() else ""))[:240]
             row = make_candidate(source, title, url, facts or label, detail_status, "TASK_DETAIL_PAGE")
+            row["task_type"] = detail_title or label
+            row["region_or_eligibility"] = eligibility_evidence(facts) or "Not established on this page; verify role-specific eligibility"
             row["public_detail_evidence"] = facts
             row["eligibility_evidence"] = eligibility_evidence(facts)
             rows.append(row)
         else:
-            row = make_candidate(source, label, url, label + ". " + source["type"] + ". " + source["payout_note"], status if not is_detail else detail_status, "SAME_SITE_LINK_LEAD")
+            row = make_candidate(source, label, url, label, status if not is_detail else detail_status, "SAME_SITE_LINK_LEAD")
+            row["region_or_eligibility"] = "Not established on this link; verify role-specific eligibility"
             row["public_detail_evidence"] = ""
             row["eligibility_evidence"] = ""
             rows.append(row)
@@ -250,6 +259,17 @@ def count_verified_target_rate_rows(candidates):
         for r in candidates
     )
 
+def count_detail_pages_with_public_pay(candidates):
+    # Count only specific task-detail pages whose own visible text contains a currency amount.
+    # Do not count broad career boards, authored payout notes, or parent-page estimates.
+    return sum(
+        r.get("candidate_type") == "TASK_DETAIL_PAGE"
+        and r.get("triage_status") == "REVIEW_TERMS"
+        and bool(r.get("public_detail_evidence"))
+        and r.get("payment_signal") not in {"NO_PUBLIC_AMOUNT_FOUND", ""}
+        for r in candidates
+    )
+
 def run_hunt(offline=False, limit=30):
     OUT.mkdir(parents=True,exist_ok=True)
     candidates, source_report = [], []
@@ -269,8 +289,9 @@ def run_hunt(offline=False, limit=30):
     tracker=[{"candidate_url":r["url"],"source":r["source"],"task_title":r["title"],"status":"NEW_NOT_STARTED","claimed_rate":r["public_amount_text"],"actual_time_minutes":"","proof_link_or_note":"","approval_status":"NOT_SUBMITTED","amount_earned_inr":"","payout_received_inr":"","next_follow_up":"Verify eligibility and task terms before starting."} for r in candidates if r["triage_status"]!="QUARANTINE_RISK_REVIEW"]
     write_csv(OUT/"earnings_tracker_template.csv",tracker,tracker_cols)
     target_hits=count_verified_target_rate_rows(candidates)
+    detail_pay_hits=count_detail_pages_with_public_pay(candidates)
     with (OUT/"earnings_hunt_report.md").open("w",encoding="utf-8") as f:
-        f.write(f"# AutoPilot Studio — Earnings Hunter Run\n\n- Run ID: {run_id}\n- Official starting points checked: {len(SOURCES)}\n- Candidate rows emitted: {len(candidates)}\n- Specific task-detail pages with public INR amount in ₹50–₹200: {target_hits}\n- Mode: {'offline test run' if offline else 'public-page discovery'}\n\n")
+        f.write(f"# AutoPilot Studio — Earnings Hunter Run\n\n- Run ID: {run_id}\n- Official starting points checked: {len(SOURCES)}\n- Candidate rows emitted: {len(candidates)}\n- Specific task-detail pages with visible public pay/rate evidence: {detail_pay_hits}\n- Specific task-detail pages with public INR amount in ₹50–₹200: {target_hits}\n- Mode: {'offline test run' if offline else 'public-page discovery'}\n\n")
         f.write("## How ranking works\n\nExplicit public INR amounts in ₹50–₹200 get a boost. India relevance and task wording may add points. Foreign currency is not silently converted. Risk phrases (deposits, fake reviews/proofs, credential sharing, captcha bypass, risky APK installation) are quarantined.\n\n")
         f.write("## Important limits\n\nA platform link is a lead, not proof a specific task is open, that you are eligible, or that it will pay. This workflow only fetches public HTML pages. It does not create accounts, log in, click claim/apply, submit surveys, solve CAPTCHAs, fake proof, upload work, or initiate payouts. A provider decides eligibility, acceptance and payment. No income or first-payment guarantee. Keep identity documents, passwords, OTPs and payment details out of the tracker.\n\n## Public page scan\n\n")
         for item in source_report: f.write(f"- {item['source']}: {item['fetch_status']}; same-site task/job links extracted: {item['candidate_links_extracted']}\n")
@@ -278,6 +299,7 @@ def run_hunt(offline=False, limit=30):
     print(f"source_count={len(SOURCES)}")
     print(f"candidate_rows={len(candidates)}")
     print(f"target_range_public_amount_rows={target_hits}")
+    print(f"specific_task_detail_pages_with_public_pay={detail_pay_hits}")
     print(f"report={OUT/'earnings_hunt_report.md'}")
     return OUT/"earnings_opportunities.csv"
 
