@@ -34,6 +34,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Device-adaptive model and agent factory architecture](docs/DEVICE_ADAPTIVE_MODEL_AND_AGENT_FACTORY.md)
 - [Device-adaptive router MVP and verification gates](docs/DEVICE_ADAPTIVE_ROUTER_MVP.md)
 - [Adaptive route recommendations and draft agent-spec generator](agents/adaptive_factory.py)
+- [Integrated draft-agent factory + versioned device-aware model router](agents/integrated_agent_router.py)
+- [Integrated agent factory/router: status semantics, safety gates, and test commands](docs/INTEGRATED_AGENT_FACTORY_ROUTER.md)
 
 ## Agent registry and versioning
 - [Safe runtime MVP — router, five deterministic handlers, SQLite run ledger, and approval gate](docs/AGENT_RUNTIME_MVP.md)
