@@ -20,6 +20,16 @@
       <p>Drafts run automatically. Publishing, sending messages, purchases, account changes and destructive actions are not executed here and require human approval.</p>
     </section>
 
+    <section class="workspace agent-panel" aria-labelledby="agents-heading">
+      <div class="response-head">
+        <h2 id="agents-heading">Agent status</h2>
+        <button type="button" id="refresh-agents">Refresh</button>
+      </div>
+      <p id="agent-status" class="meta" role="status" aria-live="polite">Checking local portal status…</p>
+      <ul id="agent-list" class="agent-list"></ul>
+      <p class="meta">Statuses describe this prototype's registered task handlers, not background workers or connected external accounts.</p>
+    </section>
+
     <section class="workspace" aria-label="Chat workspace">
       <div class="examples">
         <span>Try a task</span>
@@ -56,6 +66,39 @@
     const result = document.querySelector("#result");
     const meta = document.querySelector("#meta");
     const counter = document.querySelector("#counter");
+
+    const agentStatus = document.querySelector("#agent-status");
+    const agentList = document.querySelector("#agent-list");
+
+    async function loadAgents() {
+      agentStatus.textContent = "Checking local portal status…";
+      try {
+        const [healthResponse, agentsResponse] = await Promise.all([
+          fetch("/api/health"),
+          fetch("/api/agents")
+        ]);
+        if (!healthResponse.ok || !agentsResponse.ok) throw new Error("Status endpoints are unavailable.");
+        const health = await healthResponse.json();
+        const registry = await agentsResponse.json();
+        agentList.replaceChildren();
+        registry.agents.forEach(agent => {
+          const item = document.createElement("li");
+          const name = document.createElement("strong");
+          name.textContent = agent.id + " · v" + agent.version;
+          const detail = document.createElement("span");
+          detail.textContent = agent.status + " — " + agent.execution_mode;
+          item.append(name, detail);
+          agentList.append(item);
+        });
+        agentStatus.textContent = "Portal API: " + health.status + " · " + registry.count + " registered task handlers";
+      } catch {
+        agentStatus.textContent = "Could not load agent status. The portal API may be offline.";
+        agentList.replaceChildren();
+      }
+    }
+
+    document.querySelector("#refresh-agents").addEventListener("click", loadAgents);
+    loadAgents();
 
     input.addEventListener("input", () => counter.textContent = input.value.length + " / 2000");
     document.querySelectorAll("[data-prompt]").forEach(button => {
