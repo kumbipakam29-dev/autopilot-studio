@@ -43,6 +43,12 @@ class AdaptiveFactoryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             recommend_execution('summarize this', {'free_ram_gb': -2})
 
+    def test_non_finite_device_memory_is_rejected(self):
+        for value in (float('nan'), float('inf'), float('-inf')):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError):
+                    recommend_execution('summarize this', {'free_ram_gb': value})
+
     def test_agent_spec_is_draft_only_and_denies_external_actions(self):
         spec = draft_agent_spec('Cafe Content Helper', 'Draft social content', ['caption', 'calendar'])
         self.assertEqual(spec['agent_id'], 'draft-cafe-content-helper')
