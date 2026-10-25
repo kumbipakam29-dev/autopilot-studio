@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +20,8 @@ DEFAULT_AVAILABLE = {"rules-engine"}
 def load_profiles(path: Path = DEFAULT_CATALOG) -> dict[str, Any]:
     catalog = json.loads(path.read_text(encoding="utf-8"))
     profiles = catalog.get("profiles", [])
+    if not isinstance(profiles, list):
+        raise ValueError("Profile catalog 'profiles' must be a list")
     ids = [profile.get("id") for profile in profiles]
     if len(ids) != len(set(ids)):
         raise ValueError("Duplicate model profile IDs")
@@ -27,21 +30,33 @@ def load_profiles(path: Path = DEFAULT_CATALOG) -> dict[str, Any]:
         missing = required - profile.keys()
         if missing:
             raise ValueError(f"Profile {profile.get('id')} missing {sorted(missing)}")
+        if not isinstance(profile["id"], str) or not profile["id"].strip():
+            raise ValueError("Profile IDs must be non-empty strings")
+        if not isinstance(profile["tasks"], list) or any(not isinstance(t, str) or not t.strip() for t in profile["tasks"]):
+            raise ValueError(f"Profile {profile['id']} tasks must be non-empty strings")
+        for key in ("min_ram_gb", "min_vram_gb"):
+            value = profile[key]
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+                raise ValueError(f"Profile {profile['id']} {key} must be a finite non-negative number")
     return catalog
 
 
 def _device_supports(profile: dict[str, Any], device: dict[str, Any]) -> tuple[bool, str]:
     ram = device.get("ram_gb")
     vram = device.get("vram_gb")
-    if not isinstance(ram, (int, float)) or ram < 0:
+    if isinstance(ram, bool) or (ram is not None and (not isinstance(ram, (int, float)) or not math.isfinite(ram) or ram < 0)):
+        return False, "device RAM must be a finite non-negative number"
+    if ram is None:
         if profile.get("min_ram_gb", 0) > 0:
             return False, "device RAM is unknown"
     elif ram < profile.get("min_ram_gb", 0):
         return False, f"requires about {profile['min_ram_gb']} GB RAM; reported {ram} GB"
 
     minimum_vram = profile.get("min_vram_gb", 0)
+    if isinstance(vram, bool) or (vram is not None and (not isinstance(vram, (int, float)) or not math.isfinite(vram) or vram < 0)):
+        return False, "device VRAM must be a finite non-negative number"
     if minimum_vram > 0:
-        if not isinstance(vram, (int, float)):
+        if vram is None:
             return False, "device VRAM is unknown"
         if vram < minimum_vram:
             return False, f"requires about {minimum_vram} GB VRAM; reported {vram} GB"
@@ -62,6 +77,8 @@ def recommend_profile(
     """
     normalized_task = str(task_type or "").strip().lower()
     device_info = device or {}
+    if not isinstance(device_info, dict):
+        raise ValueError("device must be a dictionary of declared capabilities")
     available = set(DEFAULT_AVAILABLE if available_profiles is None else available_profiles)
     catalog = load_profiles(catalog_path)
     candidates = [p for p in catalog["profiles"] if normalized_task in p.get("tasks", [])]
