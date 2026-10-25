@@ -209,11 +209,13 @@ def discover_source(source, offline=False):
     page_title = clean_text(" ".join(parser.title_parts)) or source["name"] + " public page"
     if source.get("detail_page"):
         facts = relevant_detail_facts(parser)
-        row = make_candidate(source, page_title, source["url"], facts or source["type"], status, "TASK_DETAIL_PAGE")
+        actual_eligibility = eligibility_evidence(facts)
+        detail_source = dict(source, region=actual_eligibility or "Not established on this page")
+        row = make_candidate(detail_source, page_title, source["url"], facts or page_title, status, "TASK_DETAIL_PAGE")
         row["task_type"] = page_title or source["type"]
-        row["region_or_eligibility"] = eligibility_evidence(facts) or source["region"]
+        row["region_or_eligibility"] = actual_eligibility or "Not established on this page; verify role-specific eligibility"
         row["public_detail_evidence"] = facts
-        row["eligibility_evidence"] = eligibility_evidence(facts)
+        row["eligibility_evidence"] = actual_eligibility
         rows = [row]
     else:
         rows = [make_candidate(source, page_title, source["url"], source["type"], status, "OFFICIAL_PAGE_SCAN")]
@@ -239,11 +241,16 @@ def discover_source(source, offline=False):
             detail_title = clean_text(" ".join(detail_parser.title_parts))
             facts = relevant_detail_facts(detail_parser)
             title = clean_text(label + (" — " + detail_title if detail_title and detail_title.lower() not in label.lower() else ""))[:240]
-            row = make_candidate(source, title, url, facts or label, detail_status, "TASK_DETAIL_PAGE")
+            actual_eligibility = eligibility_evidence(facts)
+            detail_source = dict(source, region=actual_eligibility or "Not established on this page")
+            # Score only the detail page's own title/text. Parent-link labels may show
+            # pay ranges that do not apply to this exact role, so they are display-only.
+            row = make_candidate(detail_source, detail_title or "", url, facts or detail_title, detail_status, "TASK_DETAIL_PAGE")
+            row["title"] = title
             row["task_type"] = detail_title or label
-            row["region_or_eligibility"] = eligibility_evidence(facts) or "Not established on this page; verify role-specific eligibility"
+            row["region_or_eligibility"] = actual_eligibility or "Not established on this page; verify role-specific eligibility"
             row["public_detail_evidence"] = facts
-            row["eligibility_evidence"] = eligibility_evidence(facts)
+            row["eligibility_evidence"] = actual_eligibility
             rows.append(row)
         else:
             row = make_candidate(source, label, url, label, status if not is_detail else detail_status, "SAME_SITE_LINK_LEAD")
