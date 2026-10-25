@@ -38,8 +38,9 @@ class SpecialistTeamRegistryTests(unittest.TestCase):
         self.assertTrue(any("authorized defensive scope" in error for error in validate_registry(broken)))
 
     def test_catalogue_does_not_claim_running_agents(self):
+        self.assertTrue(all(agent["registry_status"] == "registered" for agent in self.data["agents"]))
         self.assertTrue(all(agent["execution_status"] == "planned" for agent in self.data["agents"]))
-        self.assertTrue(all(agent["execution_performed"] is False for agent in []) )
+        self.assertTrue(all("not a running worker" in agent["notes"] for agent in self.data["agents"]))
 
 
 if __name__ == "__main__":
