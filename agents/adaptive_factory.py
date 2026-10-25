@@ -7,7 +7,10 @@ from __future__ import annotations
 import re
 from typing import Any
 
-ROUTER_VERSION = "0.1.0"
+from agents.device_adaptive_router import recommend_profile
+
+ROUTER_VERSION = "0.2.0"
+
 
 def classify_task(task: str) -> str:
     text = task.casefold()
@@ -23,11 +26,38 @@ def classify_task(task: str) -> str:
         return "text"
     return "general"
 
+
+def recommend_agent_profile(
+    task_type: str,
+    device: dict[str, Any] | None = None,
+    installed_profiles: set[str] | None = None,
+    allow_remote: bool = False,
+) -> dict[str, Any]:
+    """Bridge the agent factory to the versioned model-profile router.
+
+    Only caller-confirmed, installed and smoke-tested profile IDs should be
+    supplied in installed_profiles. This function recommends; it never executes.
+    """
+    result = recommend_profile(
+        task_type=task_type,
+        device=device,
+        available_profiles=installed_profiles,
+        allow_remote=allow_remote,
+    )
+    return {
+        **result,
+        "factory_version": ROUTER_VERSION,
+        "execution_performed": False,
+        "remote_called": False,
+    }
+
+
 def _nonnegative_number(device: dict[str, Any], key: str) -> float:
     value = device.get(key, 0)
     if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
         raise ValueError(f"{key} must be a non-negative number")
     return float(value)
+
 
 def recommend_execution(task: str, device: dict[str, Any], allow_remote: bool = False) -> dict[str, Any]:
     """Return a recommendation only; no model or agent is executed by this function.
@@ -72,6 +102,7 @@ def recommend_execution(task: str, device: dict[str, Any], allow_remote: bool = 
                 "reason": "Remote inference is not called; explicit provider configuration, privacy review, and cost approval are required."}
     return {**base, "route": "deterministic_or_manual_fallback", "status": "needs_local_runtime_or_review",
             "reason": "No verified local model route is available. Use a deterministic handler, install/configure a compatible local runtime manually, or return for review."}
+
 
 def draft_agent_spec(name: str, purpose: str, capabilities: list[str],
                      allowed_tools: list[str] | None = None) -> dict[str, Any]:
