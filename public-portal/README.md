@@ -6,43 +6,50 @@ A mobile-friendly website chat prototype with a small allowlist of deterministic
 
 From the repository root:
 
-```bash
+\`\`\`bash
 python -m venv .venv
 # Windows: .venv\Scripts\activate
 # macOS/Linux: source .venv/bin/activate
 pip install -r public-portal/requirements.txt
 uvicorn app:app --app-dir public-portal --host 127.0.0.1 --port 8000
-```
+\`\`\`
 
 Then open http://127.0.0.1:8000.
 
-Health endpoint: `/api/health`.
-Agent registry endpoint: `/api/agents` (returns the registered draft-task handlers and their declared limits).
+Health endpoint: \`/api/health\`. Agent registry: \`/api/agents\`.
 
-## What it can do
+## Supported tasks
 
 - Draft a social caption.
 - Draft a 14–20 second Reel script.
 - Create a basic 7-day content calendar.
-- Accept a public-research brief while clearly stating that no live research connector is enabled.
+- Accept a public-research brief while stating that live research is not connected.
 
 These are deterministic templates; no paid or local LLM is connected yet.
 
-## Safety boundaries
+## Approval review API (not an action executor)
+
+Potential publishing, outbound messaging, uploads/deploys, purchases/payments, account changes, submissions, and destructive requests are stored in a SQLite queue for review. Queue records expire after seven days. Likely passwords/API keys/secrets, email addresses, and phone numbers are redacted before storage, but this is only best-effort filtering: **never submit passwords, OTPs, payment details, government IDs, or private customer information.**
+
+The approval API is disabled unless a server-side \`AUTOPILOT_APPROVAL_TOKEN\` is configured. Set a long random secret in the hosting environment; never put it in browser code, the repository, or a URL. Send it only as the \`X-Approval-Token\` header. The endpoints are:
+
+- \`GET /api/approvals\` — list up to 100 unexpired records.
+- \`POST /api/approvals/{task_id}/decision\` with JSON \`{"decision":"approved_for_manual_review"}\` or \`{"decision":"rejected"}\`.
+
+A recorded approval means only “approved for manual review”; **it does not send, publish, pay, deploy, modify accounts, or execute any other external action.** Review endpoints are intended for an owner-operated admin client, not the public chat UI.
+
+The SQLite path defaults to \`/tmp/autopilot-approval-queue.sqlite3\`. Configure \`AUTOPILOT_APPROVAL_DB\` to a private persistent disk path when hosting. If the filesystem is ephemeral, queue data can be lost during restarts/redeploys. The per-peer in-memory rate limiter is only a prototype guard and can be bypassed across instances/restarts.
+
+## Safety limits
 
 - Unsupported tasks are rejected.
-- Potential publishing, outbound messaging, purchase/payment, account-change, submission, and destructive requests are marked for approval and not executed.
-- There is no shell tool, arbitrary code execution, filesystem access, external publishing integration, payment integration, or credentials store.
-- The in-memory rate limiter is a prototype guard, not a substitute for production edge rate limiting.
-- The approval queue is volatile memory only. It is not a usable multi-user approval workflow and resets when the server restarts.
-- Do not expose this prototype to the public internet until tests, persistent queue/authentication, privacy review, production rate limiting, and deployment hardening are complete.
+- No shell tool, arbitrary code execution, credentials store, external publishing integration, payment integration, or connected model is present.
+- The agent registry describes local handlers, not background agents or connected accounts.
+- Do not expose the app publicly until authentication, privacy, rate limiting, persistent storage, and deployment hardening have been independently reviewed.
+- No task is considered published, paid, or successful until independently verified.
 
-## Next hardening milestones
+## Tests
 
-1. Add durable task storage with per-user authorization and a real review UI.
-2. Configure deployment-specific trusted proxy handling and edge rate limits.
-3. Add consent/privacy text and data retention controls.
-4. Connect existing agents only behind explicit task permissions.
-5. Deploy only after all tests pass and the public URL is verified.
-
-No task is considered published, paid, or successful until independently verified.
+\`\`\`bash
+PYTHONPATH=public-portal python -m unittest discover -s public-portal -v
+\`\`\`
