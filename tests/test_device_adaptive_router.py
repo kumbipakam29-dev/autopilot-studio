@@ -1,3 +1,6 @@
+import json
+import math
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -48,6 +51,36 @@ class DeviceAdaptiveRouterTests(unittest.TestCase):
         result = recommend_profile("reasoning", {}, {"rules-engine"}, self.catalog_path)
         self.assertEqual(result["route_status"], "device_incompatible_or_unknown")
         self.assertFalse(result["execution_ready"])
+
+    def test_boolean_memory_values_are_rejected_as_invalid_capabilities(self):
+        for device in ({"ram_gb": True}, {"ram_gb": 16, "vram_gb": False}):
+            result = recommend_profile("reasoning", device, {"rules-engine"}, self.catalog_path)
+            self.assertEqual(result["route_status"], "device_incompatible_or_unknown")
+            self.assertFalse(result["execution_ready"])
+
+    def test_non_finite_memory_values_are_rejected(self):
+        for value in (float("nan"), float("inf"), float("-inf")):
+            result = recommend_profile("reasoning", {"ram_gb": value, "vram_gb": 0}, {"rules-engine"}, self.catalog_path)
+            self.assertEqual(result["route_status"], "device_incompatible_or_unknown")
+            self.assertFalse(result["execution_ready"])
+
+    def test_non_dictionary_device_is_rejected(self):
+        with self.assertRaises(ValueError):
+            recommend_profile("reasoning", ["ram", 16], {"rules-engine"}, self.catalog_path)
+
+    def test_catalog_rejects_boolean_resource_threshold(self):
+        catalog = {
+            "schema_version": "test",
+            "profiles": [{
+                "id": "bad-profile", "version": "1", "kind": "local_llm",
+                "tasks": ["reasoning"], "min_ram_gb": True, "min_vram_gb": 0
+            }]
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "catalog.json"
+            path.write_text(json.dumps(catalog), encoding="utf-8")
+            with self.assertRaises(ValueError):
+                load_profiles(path)
 
 
 if __name__ == "__main__":
