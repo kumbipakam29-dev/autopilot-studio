@@ -32,7 +32,7 @@ def _profile_task(task: str) -> str:
     if any(word in text for word in ("translate", "translation", "multilingual")):
         return "language"
     if any(word in text for word in ("classify text", "classification", "sentiment")):
-        return "classification"
+        return "simple_classification"
     if any(word in text for word in ("draft", "caption", "rewrite", "write a post")):
         return "drafting"
     if category == "text":
