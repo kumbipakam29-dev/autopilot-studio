@@ -37,7 +37,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: work-win-payment-loop-${ github.ref }
+  group: work-win-payment-loop-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
