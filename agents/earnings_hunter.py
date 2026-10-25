@@ -168,6 +168,16 @@ def eligibility_evidence(text):
     snippets = re.findall(r"[^.!?\n]{0,80}(?:India|Indian|resident|residents|country|eligible|eligibility|location|remote|worldwide|US only|United States|language requirement)[^.!?\n]{0,100}", text, re.I)
     return clean_text(" | ".join(snippets[:5]))[:700]
 
+def is_task_detail_path(url):
+    path = urllib.parse.urlparse(url).path.lower().rstrip("/")
+    parts = [part for part in path.split("/") if part]
+    if len(parts) < 2:
+        return False
+    if parts[0] in {"jobs", "projects", "careers", "job", "role"}:
+        return parts[-1] not in {"", "index", "careers", "jobs", "projects", "openings"}
+    return False
+
+
 def task_link_priority(label, url):
     text = clean_text(label + " " + urllib.parse.urlparse(url).path).lower()
     score = 0
@@ -214,8 +224,7 @@ def discover_source(source, offline=False):
         url = urllib.parse.urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", parsed.query, ""))
         if url in seen or len(seen) >= 60 or not TASK_WORDS.search(label): continue
         seen.add(url)
-        path = parsed.path.lower().rstrip("/")
-        is_detail = ("/jobs/" in path and path.rsplit("/jobs/",1)[-1] not in {"", "index"}) or ("/projects/" in path and path.rsplit("/projects/",1)[-1] not in {"", "index"})
+        is_detail = is_task_detail_path(url)
         detail_body, detail_status = (None, "not attempted")
         if is_detail and detail_count < 5:
             detail_body, detail_status = fetch_public_page(url, require_same_path=True)
