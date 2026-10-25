@@ -62,7 +62,7 @@ class AdaptiveFactoryTests(unittest.TestCase):
 
     def test_factory_uses_versioned_router_and_keeps_uninstalled_profile_setup_only(self):
         result = recommend_agent_profile('summarization', {'ram_gb': 12, 'vram_gb': 0})
-        self.assertEqual(result['factory_version'], '0.2.0')
+        self.assertEqual(result['factory_version'], '0.2.1')
         self.assertEqual(result['selected_profile'], 'local-llm-small-q4')
         self.assertEqual(result['route_status'], 'setup_required')
         self.assertFalse(result['execution_ready'])
@@ -91,6 +91,21 @@ class AdaptiveFactoryTests(unittest.TestCase):
         self.assertFalse(result['execution_performed'])
         self.assertFalse(result['remote_called'])
 
+
+    def test_factory_normalizes_classifier_text_category_to_supported_catalog_task(self):
+        result = recommend_agent_profile('text', {'ram_gb': 12, 'vram_gb': 0})
+        self.assertEqual(result['requested_task_type'], 'text')
+        self.assertEqual(result['task_type'], 'summarization')
+        self.assertEqual(result['selected_profile'], 'local-llm-small-q4')
+        self.assertEqual(result['route_status'], 'setup_required')
+        self.assertFalse(result['execution_ready'])
+
+    def test_factory_normalizes_code_alias_but_does_not_guess_unknown_tasks(self):
+        code = recommend_agent_profile('code', {'ram_gb': 16, 'vram_gb': 8})
+        self.assertEqual(code['task_type'], 'coding')
+        unknown = recommend_agent_profile('general', {'ram_gb': 32, 'vram_gb': 16})
+        self.assertEqual(unknown['route_status'], 'unsupported')
+        self.assertFalse(unknown['execution_ready'])
 
 if __name__ == '__main__':
     unittest.main()
