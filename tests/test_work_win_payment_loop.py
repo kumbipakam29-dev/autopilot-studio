@@ -49,7 +49,7 @@ class WorkWinPaymentLoopTests(unittest.TestCase):
         imported, quarantined = import_opportunities(self.opportunities, self.ledger)
         self.assertEqual((imported, quarantined), (1, 0))
         lead_id = stable_lead_id("Official source", "https://example.org/task")
-        update_lead_status(lead_id, "accepted", "provider accepted work")
+        update_lead_status(lead_id, "accepted", "provider accepted work", self.ledger)
         with self.assertRaisesRegex(ValueError, "confirm-received"):
             confirm_payment(lead_id, 100, "UPI", "checked actual credit", False, self.ledger)
         recorded = confirm_payment(lead_id, 100, "UPI", "actual credit checked in payment app today", True, self.ledger)
