@@ -41,6 +41,14 @@ A separate local-only prospect pack contains 21 Surat businesses with source URL
 
 The experimental offer in the pack is ₹499 for 3 post concepts/captions, one 14–20 second Reel script, a 7-day calendar and one revision. This is a test quote, not a verified market average. Do not promise growth, reach, sales or revenue.
 
+## Ranking refinement — latest live run
+
+A follow-up successful run at 25 October 2026, 19:50:22 UTC / 26 October in India ([Work Win Payment Loop run](https://github.com/kumbipakam29-dev/autopilot-studio/actions/runs/40227834091)) kept the same discovery count: 22 curated starting pages, 30 candidate rows, 3 visible pay amounts and 0 rows in the ₹50–₹200 target band.
+
+The ₹2-per-task recording projects were demoted by the ranking function because their per-task amount is very low and effective earnings depend on time, approval and task availability. The top of the refreshed queue now prioritises an exact OneForma translation-rating role and India-specific YPAI annotation role pages. **Neither has a numeric rate in the exact-page evidence extracted by this run**, so this is a lead-quality/ranking improvement, not proof of better pay or an accepted task.
+
+The ranking guard has a regression test: a ₹2-per-task lead should rank below a comparable India-remote task lead with no published rate until the low-value task economics are checked. The public-source scanner and the Work Win Payment Loop CI jobs passed on the feature branch at this revision.
+
 ## What the experiment proved
 
 1. The scan and queue pipeline ran successfully and generated a shareable public-source action pack.
