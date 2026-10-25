@@ -56,9 +56,10 @@ def build_agent_package(
         raise ValueError("task must be a non-empty string")
     spec = draft_agent_spec(name, purpose, capabilities, allowed_tools)
     profile_task = _profile_task(task)
+    # Avoid truthiness coercion: invalid falsy inputs such as [] must fail validation.
     route = recommend_profile(
         profile_task,
-        device=device or {},
+        device={} if device is None else device,
         available_profiles=available_profiles,
         catalog_path=catalog_path,
         allow_remote=allow_remote,
