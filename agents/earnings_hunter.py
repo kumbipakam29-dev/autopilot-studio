@@ -169,8 +169,11 @@ def eligibility_evidence(text):
     return clean_text(" | ".join(snippets[:5]))[:700]
 
 def is_task_detail_path(url):
-    path = urllib.parse.urlparse(url).path.lower().rstrip("/")
+    parsed = urllib.parse.urlparse(url)
+    path = parsed.path.lower().rstrip("/")
     parts = [part for part in path.split("/") if part]
+    if len(parts) >= 2 and parsed.hostname and parsed.hostname.lower().endswith("lever.co"):
+        return True
     if len(parts) < 2:
         return False
     if parts[0] in {"jobs", "projects", "careers", "job", "role"}:
