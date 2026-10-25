@@ -54,6 +54,15 @@ class IntegratedAgentRouterTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_agent_package("A", "Purpose", ["text"], "  ", catalog_path=self.catalog_path)
 
+    def test_invalid_falsy_device_values_are_rejected_not_coerced_to_empty_device(self):
+        for invalid_device in ([], False, ""):
+            with self.subTest(device=invalid_device):
+                with self.assertRaises(ValueError):
+                    build_agent_package(
+                        "A", "Purpose", ["text"], "summarize a report",
+                        device=invalid_device, catalog_path=self.catalog_path,
+                    )
+
 
 if __name__ == "__main__":
     unittest.main()
