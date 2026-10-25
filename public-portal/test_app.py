@@ -1,6 +1,6 @@
 import unittest
 
-from app import APPROVAL_TERMS, _draft
+from app import AGENT_REGISTRY, APPROVAL_TERMS, _draft, agents
 
 
 class DraftTaskTests(unittest.TestCase):
@@ -27,6 +27,20 @@ class DraftTaskTests(unittest.TestCase):
         self.assertRegex("please publish this", APPROVAL_TERMS)
         self.assertRegex("send message to customer", APPROVAL_TERMS)
         self.assertRegex("delete the repository", APPROVAL_TERMS)
+
+    def test_registry_lists_supported_draft_agents(self):
+        registry = agents()
+        self.assertEqual(registry["count"], 4)
+        task_ids = {agent["task"] for agent in registry["agents"]}
+        self.assertEqual(
+            task_ids,
+            {"caption", "reel_script", "content_calendar", "public_summary"},
+        )
+
+    def test_registry_does_not_claim_external_actions(self):
+        self.assertTrue(all(agent["external_actions"] is False for agent in AGENT_REGISTRY))
+        public_research = next(agent for agent in AGENT_REGISTRY if agent["task"] == "public_summary")
+        self.assertEqual(public_research["status"], "limited")
 
     def test_normal_draft_request_is_not_sensitive(self):
         self.assertIsNone(APPROVAL_TERMS.search("write a caption for a bakery"))
