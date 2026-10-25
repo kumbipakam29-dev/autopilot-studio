@@ -54,3 +54,12 @@ Stop for owner-only OTP/CAPTCHA, identity documents, selfie/liveness/biometrics,
 - \`lead_only\`: possible opportunity; not confirmed available or eligible.
 - \`owner_action_required\`: account, eligibility, identity, task completion, or submission must be done by the owner.
 - \`owner_confirmed_paid\`: owner says actual credit arrived; not independent financial verification.
+
+## Agent improvement iteration — 2026-10-26
+
+- Added [Agent Training & Evaluation Playbook](AGENT_TRAINING_AND_EVALUATION.md) defining task-specific tests, evidence standards, safety regression checks, quality metrics, and prototype-to-production release gates.
+- Added the [Identity & Signup Rules](AGENT_IDENTITY_AND_SIGNUP_RULES.md) and linked both playbooks from the README.
+- Fixed a ranking/extraction edge case in `agents/earnings_hunter.py`: endpoints of a visible rupee range such as `₹200–₹2,500+` are no longer treated as a standalone target-range rate. Added a regression test in `tests/test_earnings_hunter.py`.
+- Changes are saved on `feat/public-agent-chat-portal`. A new CI result for these exact commits has not been verified yet, so the regression fix is implemented but not yet labelled tested.
+- This is software/test-fixture improvement, not model training. The existing agents remain bounded scripts and deterministic handlers; no new external model, live platform login, or background worker was connected.
+
