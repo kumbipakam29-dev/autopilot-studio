@@ -12,6 +12,9 @@ A review-first prototype for POD research and public microtask opportunity disco
 ## Important limitations
 This is **not** a fully autonomous AGI or a guaranteed income system. It does not log into earning platforms, apply for jobs, complete personal tests, submit work, bypass CAPTCHAs, verify a user's eligibility, or receive payouts. The app does not yet sync live GitHub Actions output into its local tracker. POD publishing and model inference are not connected. A discovered link is a lead, not a promise of available work or payment.
 
+## Agent earning experiment
+- [Live experiment log, verified run metrics, permission boundaries and next experiments](docs/AGENT_EARNING_EXPERIMENT_LOG.md)
+
 ## First verified payment
 - [Work → Win → Payment Loop — setup, commands, status and owner-confirmed payment ledger](docs/WORK_WIN_PAYMENT_LOOP.md)
 - [Zero-budget revenue experiment protocol, success metrics and approval boundaries](docs/REVENUE_EXPERIMENT_PROTOCOL.md)
