@@ -15,6 +15,7 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 ## First verified payment
 - [Work → Win → Payment Loop — setup, commands, status and owner-confirmed payment ledger](docs/WORK_WIN_PAYMENT_LOOP.md)
 - [Zero-budget revenue experiment protocol, success metrics and approval boundaries](docs/REVENUE_EXPERIMENT_PROTOCOL.md)
+- [Measured experiment baseline — first live scan, visible pay evidence and zero-payment truth](docs/REVENUE_EXPERIMENT_RESULTS_BASELINE_1.md)
 - [Small-business client acquisition playbook — ₹0 budget](docs/SMALL_BUSINESS_CLIENT_ACQUISITION.md)
 - [Fictional small-business content portfolio (SPEC WORK)](portfolio/SMALL_BUSINESS_CONTENT_SAMPLES.md)
 - [First Verified Payment Sprint — India / zero budget](docs/FIRST_VERIFIED_PAYMENT_SPRINT.md)
