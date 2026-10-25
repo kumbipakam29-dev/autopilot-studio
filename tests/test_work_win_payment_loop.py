@@ -78,8 +78,8 @@ class WorkWinPaymentLoopTests(unittest.TestCase):
         self.assertTrue(Path(result["queue_csv"]).exists())
         self.assertTrue(Path(result["report_md"]).exists())
         report_text = Path(result["report_md"]).read_text(encoding="utf-8")
-        self.assertTrue(report_text.startswith("# AutoPilot Studio — Work → Win → Payment loop\\n"))
-        self.assertNotIn("\\\\n- Cycle ID:", report_text)
+        self.assertTrue(report_text.startswith("# AutoPilot Studio — Work → Win → Payment loop\n"))
+        self.assertNotIn("\\n- Cycle ID:", report_text)
         self.assertFalse(result["database_upload_allowed"])
         self.assertGreater(result["total_leads_in_ledger"], 0)
 
