@@ -163,6 +163,25 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertEqual(child["payment_signal"], "NO_PUBLIC_AMOUNT_FOUND")
         self.assertIn("Not established", child["region_or_eligibility"])
 
+    def test_specific_role_pages_rank_ahead_of_generic_landing_pages(self):
+        source = {
+            "name": "Example source",
+            "url": "https://example.org/careers/",
+            "type": "annotation",
+            "region": "Not established",
+            "payout_note": "See role-specific invitation",
+        }
+        detail = earnings.make_candidate(
+            source, "Annotator role", "https://example.org/careers/annotator",
+            "Tasks include text review and annotation.", "fetched", "TASK_DETAIL_PAGE"
+        )
+        generic = earnings.make_candidate(
+            source, "Careers", "https://example.org/careers/",
+            "Tasks include text review and annotation.", "fetched", "OFFICIAL_PAGE_SCAN"
+        )
+        self.assertGreater(int(detail["triage_score"]), int(generic["triage_score"]))
+        self.assertIn("specific role-detail page", detail["score_notes"])
+
     def test_hourly_paid_roles_rank_above_very_low_per_task_rate(self):
         hourly_score = earnings.score_candidate(
             "AI Data Annotator",
