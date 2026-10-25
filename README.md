@@ -17,6 +17,10 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [First Verified Payment Sprint — India / zero budget](docs/FIRST_VERIFIED_PAYMENT_SPRINT.md)
 - [Direct-client CSV/text labeling experiment](docs/DIRECT_CLIENT_MICROGIG_EXPERIMENT.md)
 
+## Agent registry and versioning
+- [500-agent registry — unique IDs, role/niche variants, model/agent versions and honest execution states](agents/registry.json)
+- [Registry validation and CI tests](docs/AGENT_REGISTRY_AND_VERSIONING.md)
+
 ## Research documents
 - [Deep research, system gap audit, free tools/models and zero-budget roadmap](docs/DEEP_RESEARCH_ZERO_BUDGET.md)
 - [1,224 categorized opportunity hypotheses (CSV)](docs/IDEA_BANK_1200.csv)
