@@ -312,7 +312,18 @@ function App() {
         <div className="notice"><b>First-payment playbook</b><p>Use only official pages, confirm the payout method and minimum withdrawal before starting, do not pay a joining/deposit/unlock fee, do the real task yourself, follow its AI-assistance rules, and record “Accepted” or “Paid” only when the platform confirms it. Fake reviews, fake proof, duplicate accounts, location spoofing and CAPTCHA bypass are out.</p></div>
       </section>}
 
-      {tab === 'AI Agents' && <section className="panel"><h3>Agent connections</h3><p className="muted">No live agents are connected yet. The POD concept library is a local planning module, not a running autonomous agent.</p>{['Trend & Demand Research Agent','Original Design Brief Agent','Listing SEO Agent','IP & Print QA Agent','Publishing Queue Agent','Sales Learning Agent'].map(a => <div className="task" key={a}><span className="task-icon">✧</span><div><b>{a}</b><small>Backend integration required</small></div><span className="status warn">Not connected</span></div>)}</section>}
+      {tab === 'AI Agents' && <>
+        <section className="panel">
+          <div className="panel-head"><div><h3>Public Agent Chat Portal</h3><p className="muted">Code and automated checks are in review; no public server is connected.</p></div><span className="status warn">Not deployed</span></div>
+          <div className="cards">
+            <article><small>PORTAL CODE</small><h2>PR #17</h2><p>Isolated feature branch; not merged into main.</p><a href="https://github.com/kumbipakam29-dev/autopilot-studio/pull/17" target="_blank" rel="noreferrer">Review code ↗</a></article>
+            <article><small>REGISTERED HANDLERS</small><h2>4</h2><p>Caption, Reel script, content calendar and limited research brief.</p></article>
+            <article><small>APPROVAL GATE</small><h2>Token protected</h2><p>SQLite review queue; decisions never execute external actions. Hosted persistence is not configured.</p></article>
+          </div>
+          <div className="notice"><b>Connection status: not connected</b><p>The portal has not been deployed, so this app cannot show live API health or live queue data. Do not enter credentials or approval tokens into this Android app. Deployment and any public exposure still require owner approval.</p><a href="https://github.com/kumbipakam29-dev/autopilot-studio/actions" target="_blank" rel="noreferrer">View automated checks ↗</a></div>
+        </section>
+        <section className="panel"><h3>Other agent integrations</h3><p className="muted">These labels are planned modules, not running autonomous workers. The POD concept library is local planning data.</p>{['Trend & Demand Research Agent','Original Design Brief Agent','Listing SEO Agent','IP & Print QA Agent','Publishing Queue Agent','Sales Learning Agent'].map(a => <div className="task" key={a}><span className="task-icon">✧</span><div><b>{a}</b><small>Backend integration required</small></div><span className="status warn">Not connected</span></div>)}</section>
+      </>}
 
       {tab === 'Task Queue' && <section className="panel"><h3>Add a task</h3><p className="muted">Tasks are stored locally; they are not executed automatically.</p><form onSubmit={e => { e.preventDefault(); add(); }} className="task-form"><input value={task} onChange={e => setTask(e.target.value)} placeholder="Describe a task to track…" aria-label="Task description"/><button className="primary">Add task</button></form>{notes.map((n,i) => <div className="task" key={i}><span className="task-icon">☷</span><div><b>{n.text}</b><small>{n.time}</small></div><span className="status">{n.status}</span></div>)}</section>}
 
