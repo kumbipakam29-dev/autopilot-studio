@@ -126,6 +126,13 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("Not established", detail["region_or_eligibility"])
         self.assertEqual(detail["currency"], "FOREIGN_CURRENCY_UNCONVERTED")
 
+    def test_career_paths_are_scanned_as_role_details(self):
+        self.assertTrue(earnings.is_task_detail_path("https://perit.ai/careers/ai-data-annotation-ftc-india"))
+        self.assertTrue(earnings.is_task_detail_path("https://jobs.lever.co/tsmg/6a9979b9-3929-4e1d-9689-97926bc65dd5"))
+        self.assertTrue(earnings.is_task_detail_path("https://www.oneforma.com/projects/paragraph-level-translation-quality-rater/"))
+        self.assertFalse(earnings.is_task_detail_path("https://perit.ai/careers/"))
+        self.assertFalse(earnings.is_task_detail_path("https://www.oneforma.com/projects/"))
+
     def test_unsafe_external_link_not_allowed(self):
         self.assertFalse(earnings.allowed_same_site_url("https://evil.example/task", "https://work.karmyug.in/"))
         self.assertTrue(earnings.allowed_same_site_url("/jobs/", "https://work.karmyug.in/"))
