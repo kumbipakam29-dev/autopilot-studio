@@ -26,7 +26,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: work-win-payment-loop
+  group: work-win-payment-loop-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -46,10 +46,13 @@ jobs:
       - name: Test tool registry and safe loop
         run: python -m unittest discover -s tests -v
       - name: Scan public pages and build work queue
+        if: github.event_name != 'pull_request'
         run: python agents/work_win_payment_loop.py cycle --limit 30
       - name: Print safe status
+        if: github.event_name != 'pull_request'
         run: python agents/work_win_payment_loop.py status
       - name: Upload public-source action pack only
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
         with:
           name: work-win-payment-loop-artifacts
