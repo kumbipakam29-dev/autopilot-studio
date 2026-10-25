@@ -126,6 +126,40 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("Not established", detail["region_or_eligibility"])
         self.assertEqual(detail["currency"], "FOREIGN_CURRENCY_UNCONVERTED")
 
+    def test_parent_link_salary_is_not_attributed_to_child_role(self):
+        source = {
+            "name": "Example careers board",
+            "url": "https://example.org/careers/",
+            "type": "Remote annotation roles",
+            "region": "India",
+            "payout_note": "Parent page has links to multiple roles.",
+        }
+        original_fetch = earnings.fetch_public_page
+        def fake_fetch(url, require_same_path=False):
+            if url == source["url"]:
+                return (
+                    '<html><title>Careers</title><body><p>Browse current roles.</p>'
+                    '<a href="/careers/ai-data-annotation-ftc-india">'
+                    'AI Data Annotation (FTC) Full-time · $260–365 / month</a></body></html>',
+                    "fetched",
+                )
+            return (
+                '<html><title>AI Data Annotation (FTC)</title><body>'
+                '<p>Work involves labeling text and reviewing AI outputs.</p>'
+                '</body></html>',
+                "fetched",
+            )
+        try:
+            earnings.fetch_public_page = fake_fetch
+            rows, _ = earnings.discover_source(source)
+        finally:
+            earnings.fetch_public_page = original_fetch
+        child = next(row for row in rows if row["candidate_type"] == "TASK_DETAIL_PAGE")
+        self.assertEqual(child["public_amount_text"], "")
+        self.assertEqual(child["currency"], "")
+        self.assertEqual(child["payment_signal"], "NO_PUBLIC_AMOUNT_FOUND")
+        self.assertIn("Not established", child["region_or_eligibility"])
+
     def test_career_paths_are_scanned_as_role_details(self):
         self.assertTrue(earnings.is_task_detail_path("https://perit.ai/careers/ai-data-annotation-ftc-india"))
         self.assertTrue(earnings.is_task_detail_path("https://jobs.lever.co/tsmg/6a9979b9-3929-4e1d-9689-97926bc65dd5"))
