@@ -27,5 +27,7 @@ jobs:
           python-version: '3.x'
       - name: Run all Python tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
-      - name: Run harmless demo task
+      - name: Verify fail-then-pass learning demo
+        run: python runtime/quality_loop.py --demo
+      - name: Run harmless task-router demo
         run: python runtime/runner.py
