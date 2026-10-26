@@ -1,5 +1,4 @@
 import importlib.util
-import tempfile
 import unittest
 from pathlib import Path
 
@@ -21,12 +20,24 @@ class RunnerTests(unittest.TestCase):
         self.assertTrue(result["approval_required"])
 
     def test_unknown_task_type_fails_closed(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, "No registered agent"):
             runner.run_task({"task_type": "execute_shell", "input": {}})
 
     def test_missing_fields_fails_closed(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, "Missing required fields"):
             runner.run_task({"task_type": "draft_content"})
+
+    def test_rejects_unexpected_fields(self):
+        with self.assertRaisesRegex(ValueError, "Unexpected fields"):
+            runner.run_task({"task_type": "draft_content", "input": {}, "shell": "whoami"})
+
+    def test_input_must_be_object(self):
+        with self.assertRaisesRegex(ValueError, "input must be an object"):
+            runner.run_task({"task_type": "draft_content", "input": "not-an-object"})
+
+    def test_rejects_non_object_task(self):
+        with self.assertRaisesRegex(ValueError, "Task must be a JSON object"):
+            runner.run_task([])
 
 if __name__ == "__main__":
     unittest.main()
