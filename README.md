@@ -72,8 +72,8 @@ Before spending time on any lead, check the official listing, country/language/d
 
 ## Client acquisition materials
 
-- [Organic outreach queue and response-handling guide](docs/ORGANIC_OUTREACH_QUEUE.md) — prospect routes, tailored first-contact drafts, one-follow-up policy, and honest outcome ledger.
-- [The Cleaning Squad sample](docs/SPEC_PROSPECT_SAMPLE_CLEANING_SQUAD.md) — clearly labelled private prospect concept, not client work.
-- [Gulabo & Co. sample](docs/SPEC_PROSPECT_SAMPLE_GULABO_AND_CO.md) — clearly labelled private prospect concept, not client work.
+- [Organic outreach queue template](docs/ORGANIC_OUTREACH_QUEUE_TEMPLATE.md) — generic outreach and response-handling template. Keep actual prospect names, contact routes, personalised drafts, and outcomes in a private workspace, not this public repository.
+- [Small-business spec portfolio samples](portfolio/SMALL_BUSINESS_CONTENT_SAMPLES.md) — fictional examples clearly labelled as spec work.
+- [Client offer one-pager](docs/CLIENT_OFFER_ONE_PAGER.md) — ₹499 introductory service scope and exclusions.
 
-These are drafts only. The repository does not claim that messages have been sent, prospects have replied, posts have been published, or revenue has been received.
+The public repository does not claim that messages have been sent, prospects have replied, posts have been published, or revenue has been received.
