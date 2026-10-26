@@ -104,3 +104,9 @@ Hello The Cleaning Squad team, I’m preparing a small example of social-media c
 - Replies: 0
 - Clients confirmed: 0
 - Payments verified: 0
+
+
+## Current public contact channel (checked 2026-10-26)
+
+The official contact page currently lists **book@thecleaningsquad.co.in** and office phone numbers **+91 78618 56347** and **+91 92069 20647**. Source: https://thecleaningsquad.co.in/contact-us/  
+Use the official email for a one-time, relevant introduction if choosing email. Do not call or message repeatedly. The sample remains unsent; this repository edit does not send it. Recheck the page immediately before outreach because contact details can change.
