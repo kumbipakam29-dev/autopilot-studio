@@ -67,6 +67,17 @@ class OpportunityTrackerTests(unittest.TestCase):
             self.assertEqual(rows[0]["approval_required"], "true")
             self.assertEqual(rows[0]["status"], "needs_verification")
 
+    def test_payment_text_without_payment_verification_still_needs_verification(self):
+        score, flags = tracker.score({
+            "title": "Content writing task",
+            "url": "https://example.org/task",
+            "source": "Example source",
+            "eligibility_checked": True,
+            "payment_text": "Rate displayed, not independently confirmed",
+            "payment_verified": False,
+        })
+        self.assertIn("payment_not_verified", flags)
+
     def test_non_array_input_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             input_path = Path(tmp) / "input.json"
