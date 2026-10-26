@@ -1,0 +1,31 @@
+name: Agent Runtime Tests
+on:
+  push:
+    paths:
+      - 'runtime/**'
+      - 'agents/**'
+      - 'tests/test_agent_runner.py'
+      - '.github/workflows/agent-runtime-tests.yml'
+  pull_request:
+    paths:
+      - 'runtime/**'
+      - 'agents/**'
+      - 'tests/test_agent_runner.py'
+      - '.github/workflows/agent-runtime-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run agent runtime tests
+        run: python -m unittest discover -s tests -p 'test_agent_runner.py' -v
+      - name: Run harmless demo task
+        run: python runtime/runner.py
