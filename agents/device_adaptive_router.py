@@ -88,7 +88,14 @@ def recommend_profile(
     if device is not None and not isinstance(device, dict):
         raise ValueError("device must be a dictionary of declared capabilities")
     device_info = {} if device is None else device
-    available = set(DEFAULT_AVAILABLE if available_profiles is None else available_profiles)
+    if available_profiles is None:
+        available = set(DEFAULT_AVAILABLE)
+    else:
+        if not isinstance(available_profiles, (set, frozenset, list, tuple)):
+            raise ValueError("available_profiles must be a collection of verified profile IDs")
+        if any(not isinstance(profile_id, str) or not profile_id.strip() for profile_id in available_profiles):
+            raise ValueError("available_profiles must contain only non-empty profile ID strings")
+        available = set(available_profiles)
     catalog = load_profiles(catalog_path)
     candidates = [p for p in catalog["profiles"] if normalized_task in p.get("tasks", [])]
     if not candidates:
