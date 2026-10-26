@@ -65,7 +65,7 @@ class OpportunityTrackerTests(unittest.TestCase):
                 rows = list(csv.DictReader(handle))
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0]["approval_required"], "true")
-            self.assertEqual(rows[0]["status"], "needs_verification")
+            self.assertEqual(rows[0]["status"], "awaiting_user_approval")
 
     def test_non_array_input_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
