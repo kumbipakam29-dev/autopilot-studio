@@ -317,7 +317,8 @@ function App() {
           <div className="panel-head"><div><h3>Public Agent Chat Portal</h3><p className="muted">Code and automated checks are in review; no public server is connected.</p></div><span className="status warn">Not deployed</span></div>
           <div className="cards">
             <article><small>PORTAL CODE</small><h2>PR #17</h2><p>Isolated feature branch; not merged into main.</p><a href="https://github.com/kumbipakam29-dev/autopilot-studio/pull/17" target="_blank" rel="noreferrer">Review code ↗</a></article>
-            <article><small>REGISTERED HANDLERS</small><h2>4</h2><p>Caption, Reel script, content calendar and limited research brief.</p></article>
+            <article><small>IMPLEMENTED HANDLERS</small><h2>5</h2><p>Repository snapshot (26 Oct 2026): caption drafts, Reel scripts, 7-day content calendars, website audit checklists and job-search filters. These are deterministic local handlers, not always-on AI workers.</p></article>
+            <article><small>CATALOGUE SIZE</small><h2>500 roles</h2><p>495 catalogue entries do not yet have runtime handlers in this snapshot. Catalogue size is not the number of active agents.</p></article>
             <article><small>APPROVAL GATE</small><h2>Token protected</h2><p>SQLite review queue; decisions never execute external actions. Hosted persistence is not configured.</p></article>
           </div>
           <div className="notice"><b>Connection status: not connected</b><p>The portal has not been deployed, so this app cannot show live API health or live queue data. Do not enter credentials or approval tokens into this Android app. Deployment and any public exposure still require owner approval.</p><a href="https://github.com/kumbipakam29-dev/autopilot-studio/actions" target="_blank" rel="noreferrer">View automated checks ↗</a></div>
