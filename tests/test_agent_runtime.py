@@ -41,5 +41,17 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(len(status["recent_runs"]), 1)
         self.assertEqual(status["recent_runs"][0]["agent_version"], "1.0.0")
 
+    def test_status_separates_implemented_handlers_from_catalogue(self):
+        status = get_status(self.ledger)
+        counts = status["registry_counts"]
+        registry = load_registry(self.registry)
+        self.assertEqual(counts["registered"], len(registry["agents"]))
+        self.assertEqual(counts["implemented_handlers"], 5)
+        self.assertEqual(
+            counts["catalogued_but_unimplemented"],
+            counts["registered"] - counts["implemented_handlers"],
+        )
+        self.assertEqual(counts["implemented_handlers"] + counts["catalogued_but_unimplemented"], counts["registered"])
+
 if __name__ == "__main__":
     unittest.main()
