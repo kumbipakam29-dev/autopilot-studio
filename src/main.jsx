@@ -43,6 +43,24 @@ const EARNING_LEADS = [
     detail: 'The provider advertises typical INR 550–800/hour with payment every two weeks after approved work. Follow project capture instructions and consent requirements; exact pay and work volume depend on the invitation.'
   },
   {
+    id: 'ypai-voice', title: 'Voice Recording Contributor — India', source: 'YPAI Voice Recording Contributor India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/voice-recording-contributor-in',
+    rate: '₹550–₹800/hour typical project rate', ratePerTaskInr: null, rateValue: '550-800', rateUnit: 'Per hour', rateCurrency: 'INR', badge: 'Native language + quiet room',
+    detail: 'Official page currently says applications open in India and advertises typical INR 550–800/hour. Native or near-native language, suitable recording device and quiet space are needed. Work is project-based; payment is biweekly after approved work. Verify exact invitation terms.'
+  },
+  {
+    id: 'ypai-text-nlp', title: 'Text and NLP Annotator — India', source: 'YPAI Text and NLP Annotator India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/text-annotator-in',
+    rate: 'Project-specific rate; verify invitation', ratePerTaskInr: null, rateValue: '', rateUnit: 'Unknown', rateCurrency: 'INR', badge: 'Native language + assessment',
+    detail: 'Official page currently says applications open in India. Requires native or near-native command of the annotation language and project assessment. Work availability depends on language demand; check exact rate before accepting.'
+  },
+  {
+    id: 'ypai-translator', title: 'Translator — India', source: 'YPAI Translator India',
+    url: 'https://freelancer.ypai.ai/jobs/openings/translator-in',
+    rate: '₹950–₹1,450/hour typical project rate', ratePerTaskInr: null, rateValue: '950-1450', rateUnit: 'Per hour', rateCurrency: 'INR', badge: 'Strong writing + English required',
+    detail: 'Official page currently says applications open in India and advertises typical INR 950–1,450/hour. Requires native or near-native writing in your language and strong written English. Language-pair demand and selection apply; exact rate is stated in the invitation.'
+  },
+  {
     id: 'humansignal', title: 'HumanSignal AI Training Contributor', source: 'HumanSignal AI Training Contributors',
     url: 'https://onboard.humansignal.com/',
     rate: 'Rate shown after eligible project matching', ratePerTaskInr: null, rateValue: '', rateUnit: 'Unknown', rateCurrency: 'INR', badge: 'Profile and matching required',
