@@ -19,9 +19,13 @@ DEFAULT_AVAILABLE = {"rules-engine"}
 
 def load_profiles(path: Path = DEFAULT_CATALOG) -> dict[str, Any]:
     catalog = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(catalog, dict):
+        raise ValueError("Profile catalog root must be a JSON object")
     profiles = catalog.get("profiles", [])
     if not isinstance(profiles, list):
         raise ValueError("Profile catalog 'profiles' must be a list")
+    if any(not isinstance(profile, dict) for profile in profiles):
+        raise ValueError("Every model profile must be a JSON object")
     ids = [profile.get("id") for profile in profiles]
     if len(ids) != len(set(ids)):
         raise ValueError("Duplicate model profile IDs")
@@ -30,8 +34,9 @@ def load_profiles(path: Path = DEFAULT_CATALOG) -> dict[str, Any]:
         missing = required - profile.keys()
         if missing:
             raise ValueError(f"Profile {profile.get('id')} missing {sorted(missing)}")
-        if not isinstance(profile["id"], str) or not profile["id"].strip():
-            raise ValueError("Profile IDs must be non-empty strings")
+        for key in ("id", "version", "kind"):
+            if not isinstance(profile[key], str) or not profile[key].strip():
+                raise ValueError(f"Profile {profile.get('id')} {key} must be a non-empty string")
         if not isinstance(profile["tasks"], list) or any(not isinstance(t, str) or not t.strip() for t in profile["tasks"]):
             raise ValueError(f"Profile {profile['id']} tasks must be non-empty strings")
         for key in ("min_ram_gb", "min_vram_gb"):
