@@ -89,6 +89,37 @@ class DeviceAdaptiveRouterTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 load_profiles(path)
 
+    def test_catalog_rejects_non_object_root_and_non_object_profiles(self):
+        invalid_catalogs = (
+            [],
+            "not a catalog",
+            {"profiles": ["not a profile"]},
+            {"profiles": [None]},
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "catalog.json"
+            for catalog in invalid_catalogs:
+                with self.subTest(catalog=catalog):
+                    path.write_text(json.dumps(catalog), encoding="utf-8")
+                    with self.assertRaises(ValueError):
+                        load_profiles(path)
+
+    def test_catalog_rejects_empty_version_or_kind(self):
+        for key in ("version", "kind"):
+            catalog = {
+                "schema_version": "test",
+                "profiles": [{
+                    "id": "bad-profile", "version": "1", "kind": "local_llm",
+                    "tasks": ["reasoning"], "min_ram_gb": 8, "min_vram_gb": 0
+                }]
+            }
+            catalog["profiles"][0][key] = "  "
+            with self.subTest(key=key), tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "catalog.json"
+                path.write_text(json.dumps(catalog), encoding="utf-8")
+                with self.assertRaises(ValueError):
+                    load_profiles(path)
+
 
 if __name__ == "__main__":
     unittest.main()
