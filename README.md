@@ -68,3 +68,12 @@ python -m unittest discover -s tests -p 'test_specialist_team_registry.py' -v
 ```
 
 Before spending time on any lead, check the official listing, country/language/device eligibility, task-specific rate unit, acceptance criteria, minimum payout, and supported payout route. Never pay a joining/deposit/unlock fee or store IDs, passwords, OTPs or payment details in the repository.
+
+
+## Client acquisition materials
+
+- [Organic outreach queue and response-handling guide](docs/ORGANIC_OUTREACH_QUEUE.md) — prospect routes, tailored first-contact drafts, one-follow-up policy, and honest outcome ledger.
+- [The Cleaning Squad sample](docs/SPEC_PROSPECT_SAMPLE_CLEANING_SQUAD.md) — clearly labelled private prospect concept, not client work.
+- [Gulabo & Co. sample](docs/SPEC_PROSPECT_SAMPLE_GULABO_AND_CO.md) — clearly labelled private prospect concept, not client work.
+
+These are drafts only. The repository does not claim that messages have been sent, prospects have replied, posts have been published, or revenue has been received.
