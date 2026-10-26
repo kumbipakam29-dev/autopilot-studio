@@ -1,5 +1,6 @@
 import importlib.util
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 MODULE = Path(__file__).resolve().parents[1] / "runtime" / "runner.py"
@@ -18,6 +19,13 @@ class RunnerTests(unittest.TestCase):
         result = runner.run_task({"task_type": "record_payment", "input": {"amount": 0}})
         self.assertEqual(result["status"], "awaiting_user_approval")
         self.assertTrue(result["approval_required"])
+
+    def test_missing_agent_approval_setting_defaults_to_approval_required(self):
+        registry = {"agents": [{"id": "test-agent", "version": "1.0", "task_types": ["draft_content"]}]}
+        with patch.object(runner, "load_registry", return_value=registry):
+            result = runner.run_task({"task_type": "draft_content", "input": {}})
+        self.assertTrue(result["approval_required"])
+        self.assertEqual(result["status"], "awaiting_user_approval")
 
     def test_unknown_task_type_fails_closed(self):
         with self.assertRaisesRegex(ValueError, "No registered agent"):
