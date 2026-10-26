@@ -22,6 +22,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Measured experiment baseline — first live scan, visible pay evidence and zero-payment truth](docs/REVENUE_EXPERIMENT_RESULTS_BASELINE_1.md)
 - [Small-business client acquisition playbook — ₹0 budget](docs/SMALL_BUSINESS_CLIENT_ACQUISITION.md)
 - [Client-facing social content offer — scope, price and exclusions](docs/CLIENT_OFFER_ONE_PAGER.md)
+- [Private client acquisition tracker guide](docs/CLIENT_ACQUISITION_TRACKER_GUIDE.md)
+- [Blank client acquisition tracker CSV template](docs/CLIENT_ACQUISITION_TRACKER_TEMPLATE.csv)
 - [Fictional small-business content portfolio (SPEC WORK)](portfolio/SMALL_BUSINESS_CONTENT_SAMPLES.md)
 - [First Verified Payment Sprint — India / zero budget](docs/FIRST_VERIFIED_PAYMENT_SPRINT.md)
 - [Direct-client CSV/text labeling experiment](docs/DIRECT_CLIENT_MICROGIG_EXPERIMENT.md)
