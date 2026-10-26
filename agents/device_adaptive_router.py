@@ -26,7 +26,11 @@ def load_profiles(path: Path = DEFAULT_CATALOG) -> dict[str, Any]:
         raise ValueError("Profile catalog 'profiles' must be a list")
     if any(not isinstance(profile, dict) for profile in profiles):
         raise ValueError("Every model profile must be a JSON object")
-    ids = [profile.get("id") for profile in profiles]
+    for profile in profiles:
+        profile_id = profile.get("id")
+        if not isinstance(profile_id, str) or not profile_id.strip():
+            raise ValueError("Profile IDs must be non-empty strings")
+    ids = [profile["id"] for profile in profiles]
     if len(ids) != len(set(ids)):
         raise ValueError("Duplicate model profile IDs")
     required = {"id", "version", "kind", "tasks", "min_ram_gb", "min_vram_gb"}
