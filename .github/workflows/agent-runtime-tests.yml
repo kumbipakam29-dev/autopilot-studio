@@ -4,13 +4,13 @@ on:
     paths:
       - 'runtime/**'
       - 'agents/**'
-      - 'tests/test_agent_runner.py'
+      - 'tests/**'
       - '.github/workflows/agent-runtime-tests.yml'
   pull_request:
     paths:
       - 'runtime/**'
       - 'agents/**'
-      - 'tests/test_agent_runner.py'
+      - 'tests/**'
       - '.github/workflows/agent-runtime-tests.yml'
   workflow_dispatch:
 permissions:
@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Run agent runtime tests
-        run: python -m unittest discover -s tests -p 'test_agent_runner.py' -v
+      - name: Run all Python tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
       - name: Run harmless demo task
         run: python runtime/runner.py
