@@ -98,12 +98,15 @@ def audit_sqlite(path: Path) -> dict[str, Any]:
         }
         if "leads" not in tables:
             raise ValueError("SQLite ledger has no leads table")
-        lead_statuses = [
+        raw_lead_statuses = [
             row[0] for row in db.execute(
                 "SELECT workflow_status FROM leads ORDER BY workflow_status"
             ).fetchall()
         ]
+        # NULL or non-text statuses are malformed data, not sortable status names.
+        lead_statuses = [status for status in raw_lead_statuses if isinstance(status, str)]
         result = summarize_statuses(lead_statuses, SQLITE_MAP)
+        result["malformed_record_count"] = len(raw_lead_statuses) - len(lead_statuses)
         result["source"] = "sqlite_work_win_payment_loop"
         result["payments_table_present"] = "payments" in tables
         if "payments" in tables:
