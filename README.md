@@ -24,6 +24,7 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Client-facing social content offer — scope, price and exclusions](docs/CLIENT_OFFER_ONE_PAGER.md)
 - [Private client acquisition tracker guide](docs/CLIENT_ACQUISITION_TRACKER_GUIDE.md)
 - [Blank client acquisition tracker CSV template](docs/CLIENT_ACQUISITION_TRACKER_TEMPLATE.csv)
+- [Ahmedabad café prospect research and owner-review message drafts](docs/AHMEDABAD_CAFE_PROSPECT_RESEARCH.md)
 - [Fictional small-business content portfolio (SPEC WORK)](portfolio/SMALL_BUSINESS_CONTENT_SAMPLES.md)
 - [First Verified Payment Sprint — India / zero budget](docs/FIRST_VERIFIED_PAYMENT_SPRINT.md)
 - [Direct-client CSV/text labeling experiment](docs/DIRECT_CLIENT_MICROGIG_EXPERIMENT.md)
