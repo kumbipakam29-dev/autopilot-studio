@@ -75,6 +75,11 @@ class DeviceAdaptiveRouterTests(unittest.TestCase):
         self.assertEqual(result["route_status"], "device_incompatible_or_unknown")
         self.assertFalse(result["execution_ready"])
 
+    def test_invalid_installed_profile_declarations_are_rejected(self):
+        for installed in ("rules-engine", [{"id": "rules-engine"}], {None}, {""}):
+            with self.subTest(installed=installed), self.assertRaises(ValueError):
+                recommend_profile("structured", {"ram_gb": 2}, installed, self.catalog_path)
+
     def test_catalog_rejects_boolean_resource_threshold(self):
         catalog = {
             "schema_version": "test",
