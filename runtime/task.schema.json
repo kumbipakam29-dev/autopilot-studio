@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AutoPilot Studio Task",
+  "type": "object",
+  "required": ["task_type", "input"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "task_type": {"type": "string", "minLength": 1},
+    "input": {"type": "object"},
+    "created_at": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
