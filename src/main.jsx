@@ -186,6 +186,33 @@ function App() {
     setNotice('Task saved on this device. No application or task submission was made.');
   }
   function updateEarning(id, field, value) {
+    const current = earningsLog.find(item => item.id === id);
+    if (!current) return;
+    if (field === 'status' && value === 'Applied' && current.status !== 'Applied') {
+      const confirmation = window.prompt('Confirm only after you submitted the application on the official site. Enter the confirmation/reference text (do not enter passwords, OTPs or ID numbers):');
+      if (!confirmation || !confirmation.trim()) {
+        setNotice('Status unchanged. Add Applied only after submission and a confirmation/reference.');
+        return;
+      }
+      setEarningsLog(prev => prev.map(item => item.id === id ? { ...item, status: value, applicationEvidenceNote: confirmation.trim(), applicationConfirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() } : item));
+      setNotice('Application marked Applied based on your confirmation. The app did not submit it or independently verify the platform.');
+      return;
+    }
+    if (field === 'status' && value === 'Paid' && current.status !== 'Paid') {
+      const amount = Number(current.payoutInr);
+      if (!Number.isFinite(amount) || amount <= 0) {
+        setNotice('Cannot mark Paid yet: enter the actual payout received (₹) first.');
+        return;
+      }
+      const confirmation = window.prompt('Confirm the money actually arrived. Enter a short evidence note (e.g. payout date/reference; no bank details, OTPs or account numbers):');
+      if (!confirmation || !confirmation.trim()) {
+        setNotice('Status unchanged. A payout evidence note is required.');
+        return;
+      }
+      setEarningsLog(prev => prev.map(item => item.id === id ? { ...item, status: value, paymentEvidenceNote: confirmation.trim(), paymentConfirmedAt: new Date().toISOString(), updatedAt: new Date().toISOString() } : item));
+      setNotice('Marked Paid based on your confirmation only; receipt was not independently verified by the app.');
+      return;
+    }
     setEarningsLog(prev => prev.map(item => item.id === id ? { ...item, [field]: value, updatedAt: new Date().toISOString() } : item));
   }
   function exportEarnings() {
