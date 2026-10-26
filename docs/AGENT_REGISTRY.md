@@ -29,7 +29,8 @@
 ## Current verified scope
 
 - Repository documentation for Earnings Hunter exists.
-- Earnings Hunter tracker CSV exists.
+- Earnings Hunter tracker CSV exists, including the RWS TrainAI Hindi ASR lead (still unverified until the exact role and payout are checked).
+- `docs/EARNINGS_IMPLEMENTATION_PACK.md` provides a zero-budget 7-day execution plan, application readiness checklist, copy-ready drafts, evidence states, and human approval gates.
 - This registry describes planned workflow roles; it does **not** prove that nine autonomous agents are running.
 - No client, application, sale, paid task, or payment is marked complete without evidence.
 - No paid APIs or subscriptions are required by this registry.
