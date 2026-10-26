@@ -1,0 +1,20 @@
+name: Website contact and HTML checks
+
+on:
+  pull_request:
+    paths:
+      - "website/**"
+      - ".github/workflows/website-contact-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  website-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Validate website HTML and contact links
+        run: python3 scripts/check_website.py
