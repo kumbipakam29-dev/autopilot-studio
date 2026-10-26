@@ -118,6 +118,10 @@ def get_status(ledger_path: Path = DEFAULT_LEDGER) -> dict[str, Any]:
         state = agent.get("execution_status","planned")
         counts[state] = counts.get(state,0)+1
     counts["registered"] = len(registry["agents"])
+    registered_ids = {agent.get("id") for agent in registry["agents"]}
+    implemented_ids = registered_ids.intersection(HANDLERS)
+    counts["implemented_handlers"] = len(implemented_ids)
+    counts["catalogued_but_unimplemented"] = counts["registered"] - len(implemented_ids)
     recent = []
     if ledger_path.exists():
         with sqlite3.connect(ledger_path) as db:
