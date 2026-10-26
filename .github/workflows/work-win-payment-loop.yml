@@ -1,0 +1,68 @@
+name: Work Win Payment Loop
+
+on:
+  push:
+    branches: [feat/public-agent-chat-portal]
+    paths:
+      - agents/earnings_hunter.py
+      - agents/tool_registry.json
+      - agents/work_win_payment_loop.py
+      - tests/test_work_win_payment_loop.py
+      - agents/earning_task_ledger.py
+      - tests/test_earning_task_ledger.py
+      - .github/workflows/work-win-payment-loop.yml
+  pull_request:
+    paths:
+      - agents/earnings_hunter.py
+      - agents/tool_registry.json
+      - agents/work_win_payment_loop.py
+      - tests/test_work_win_payment_loop.py
+      - agents/earning_task_ledger.py
+      - tests/test_earning_task_ledger.py
+      - .github/workflows/work-win-payment-loop.yml
+  workflow_dispatch:
+  schedule:
+    - cron: '45 4 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: work-win-payment-loop-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  safe-work-loop:
+    name: Discover public leads and prepare owner-action queue
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      HUNT_LIMIT: '30'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Test tool registry and safe loop
+        run: python -m unittest discover -s tests -v
+      - name: Scan public pages and build work queue
+        if: github.event_name != 'pull_request'
+        run: python agents/work_win_payment_loop.py cycle --limit 30
+      - name: Print safe status
+        if: github.event_name != 'pull_request'
+        run: python agents/work_win_payment_loop.py status
+      - name: Upload public-source action pack only
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: work-win-payment-loop-artifacts
+          path: |
+            output/earnings_opportunities.csv
+            output/source_status.csv
+            output/earnings_hunt_report.md
+            output/work_win_payment_queue.csv
+            output/work_win_payment_report.md
+          if-no-files-found: error
+          retention-days: 14

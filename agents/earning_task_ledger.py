@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Local-first task ledger. Records user-confirmed task stages; never moves money."""
 from __future__ import annotations
-import argparse, json
+import argparse, json, re
+from decimal import Decimal, InvalidOperation
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -11,6 +12,37 @@ STAGES = [
     "accepted", "rejected", "payout_pending", "paid"
 ]
 TERMINAL = {"paid", "rejected"}
+ALLOWED_NEXT = {
+    "discovered": {"current_listing_verified"},
+    "current_listing_verified": {"eligibility_check", "rejected"},
+    "eligibility_check": {"applied", "rejected"},
+    "applied": {"qualification", "approved", "rejected"},
+    "qualification": {"approved", "rejected"},
+    "approved": {"work_in_progress", "rejected"},
+    "work_in_progress": {"submitted", "rejected"},
+    "submitted": {"accepted", "rejected"},
+    "accepted": {"payout_pending"},
+    "payout_pending": {"paid"},
+    "rejected": set(),
+    "paid": set(),
+}
+
+def _validated_amount(value, label):
+    """Accept a positive amount with optional currency prefix and thousands separators."""
+    if isinstance(value, bool) or value is None:
+        raise ValueError(f"{label} must be a positive numeric amount")
+    raw = str(value).strip()
+    pattern = r"(?:(?:INR|USD|EUR|GBP)\s*)?[₹$€£]?\s*((?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?)"
+    match = re.fullmatch(pattern, raw, flags=re.IGNORECASE)
+    if not match:
+        raise ValueError(f"{label} must be a positive numeric amount")
+    try:
+        amount = Decimal(match.group(1).replace(",", ""))
+    except InvalidOperation as exc:
+        raise ValueError(f"{label} must be a positive numeric amount") from exc
+    if not amount.is_finite() or amount <= 0:
+        raise ValueError(f"{label} must be greater than zero")
+    return raw
 
 def now():
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -38,13 +70,21 @@ def update_stage(data, task_id, stage, minutes=None, accepted_amount=None, payou
     task = next((t for t in data["tasks"] if t["task_id"] == task_id), None)
     if task is None: raise ValueError("Unknown task_id")
     current = task["stage"]
-    if current in TERMINAL and current != stage: raise ValueError("Cannot change a terminal task stage")
+    if current in TERMINAL and current != stage:
+        raise ValueError("Cannot change a terminal task stage")
     if stage == "paid" and not payout_confirmed:
         raise ValueError("Mark paid only after user confirms credit in their payment app")
-    if stage == "accepted" and accepted_amount is None:
-        raise ValueError("Accepted task needs a confirmed accepted amount")
+    if stage == "paid":
+        _validated_amount(payout_amount, "actual payout amount")
+    if payout_confirmed and stage != "paid":
+        raise ValueError("Payout confirmation is valid only for the paid stage")
+    if stage == "accepted":
+        _validated_amount(accepted_amount, "accepted amount")
+    if current != stage and stage not in ALLOWED_NEXT[current]:
+        raise ValueError(f"Invalid stage transition: {current} -> {stage}")
     if minutes is not None:
-        if minutes < 0: raise ValueError("minutes cannot be negative")
+        if isinstance(minutes, bool) or not isinstance(minutes, int) or minutes < 0:
+            raise ValueError("minutes must be a non-negative integer")
         task["minutes_spent"] += minutes
     if accepted_amount is not None: task["accepted_amount"] = str(accepted_amount)
     if payout_amount is not None: task["payout_received_amount"] = str(payout_amount)

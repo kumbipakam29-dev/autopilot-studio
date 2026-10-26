@@ -24,15 +24,15 @@ concurrency:
 jobs:
   discover-and-rank:
     name: Scan public pages and prepare a review-first task board
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     env:
       HUNT_LIMIT: ${{ github.event.inputs.limit || '30' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Run offline tests
@@ -40,7 +40,7 @@ jobs:
       - name: Discover public earning leads
         run: python agents/earnings_hunter.py --limit "$HUNT_LIMIT"
       - name: Upload opportunity board and tracker
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: earnings-hunter-results-${{ github.run_number }}
           path: |

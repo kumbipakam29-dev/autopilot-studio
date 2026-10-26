@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AutoPilot Studio public agent portal prototype for safe content drafts.">
+  <title>AutoPilot Studio — Agent Portal</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <p class="eyebrow">AUTOPILOT DIGITAL STUDIO</p>
+      <h1>Agent chat portal</h1>
+      <p class="sub">A small, safety-first prototype. Ask for a draft; review it before using it.</p>
+    </header>
+
+    <section class="notice" aria-label="Safety notice">
+      <strong>Prototype mode</strong>
+      <p>Drafts run automatically. Publishing, sending messages, purchases, account changes and destructive actions are not executed here and require human approval.</p>
+    </section>
+
+    <section class="workspace agent-panel" aria-labelledby="agents-heading">
+      <div class="response-head">
+        <h2 id="agents-heading">Agent status</h2>
+        <button type="button" id="refresh-agents">Refresh</button>
+      </div>
+      <p id="agent-status" class="meta" role="status" aria-live="polite">Checking local portal status…</p>
+      <ul id="agent-list" class="agent-list"></ul>
+      <p class="meta">Statuses describe this prototype's registered task handlers, not background workers or connected external accounts.</p>
+    </section>
+
+    <section class="workspace" aria-label="Chat workspace">
+      <div class="examples">
+        <span>Try a task</span>
+        <button type="button" data-prompt="Create an Instagram caption for a local cafe introducing its weekend special.">Caption</button>
+        <button type="button" data-prompt="Write a 14–20 second Reel script for a home cleaning service.">Reel script</button>
+        <button type="button" data-prompt="Create a 7-day content calendar for a small bakery.">7-day calendar</button>
+      </div>
+      <form id="chat-form">
+        <label for="message">What should the agent draft?</label>
+        <textarea id="message" name="message" rows="4" maxlength="2000" required placeholder="Describe the draft you need (max 2,000 characters)…"></textarea>
+        <div class="actions">
+          <small id="counter">0 / 2000</small>
+          <button id="send" type="submit">Generate draft</button>
+        </div>
+      </form>
+      <p id="status" role="status" aria-live="polite"></p>
+      <article id="response" hidden>
+        <div class="response-head"><h2>Agent response</h2><button type="button" id="copy">Copy result</button></div>
+        <p id="meta" class="meta"></p>
+        <pre id="result"></pre>
+      </article>
+    </section>
+    <footer>
+      <p>Do not enter passwords, OTPs, payment details, government IDs or private customer data.</p>
+      <p>Prototype only — no live publishing, customer account connections, or AI model is connected.</p>
+    </footer>
+  </main>
+  <script>
+    const form = document.querySelector("#chat-form");
+    const input = document.querySelector("#message");
+    const send = document.querySelector("#send");
+    const status = document.querySelector("#status");
+    const response = document.querySelector("#response");
+    const result = document.querySelector("#result");
+    const meta = document.querySelector("#meta");
+    const counter = document.querySelector("#counter");
+
+    const agentStatus = document.querySelector("#agent-status");
+    const agentList = document.querySelector("#agent-list");
+
+    async function loadAgents() {
+      agentStatus.textContent = "Checking local portal status…";
+      try {
+        const [healthResponse, agentsResponse] = await Promise.all([
+          fetch("/api/health"),
+          fetch("/api/agents")
+        ]);
+        if (!healthResponse.ok || !agentsResponse.ok) throw new Error("Status endpoints are unavailable.");
+        const health = await healthResponse.json();
+        const registry = await agentsResponse.json();
+        agentList.replaceChildren();
+        registry.agents.forEach(agent => {
+          const item = document.createElement("li");
+          const name = document.createElement("strong");
+          name.textContent = agent.id + " · v" + agent.version;
+          const detail = document.createElement("span");
+          detail.textContent = agent.status + " — " + agent.execution_mode;
+          item.append(name, detail);
+          agentList.append(item);
+        });
+        agentStatus.textContent = "Portal API: " + health.status + " · " + registry.count + " registered task handlers";
+      } catch {
+        agentStatus.textContent = "Could not load agent status. The portal API may be offline.";
+        agentList.replaceChildren();
+      }
+    }
+
+    document.querySelector("#refresh-agents").addEventListener("click", loadAgents);
+    loadAgents();
+
+    input.addEventListener("input", () => counter.textContent = input.value.length + " / 2000");
+    document.querySelectorAll("[data-prompt]").forEach(button => {
+      button.addEventListener("click", () => {
+        input.value = button.dataset.prompt;
+        counter.textContent = input.value.length + " / 2000";
+        input.focus();
+      });
+    });
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      send.disabled = true;
+      status.textContent = "Working…";
+      response.hidden = true;
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({message: input.value, task: "auto"})
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Request failed. Please try again.");
+        status.textContent = data.message;
+        meta.textContent = "Task " + data.task_id + " · Agent: " + data.agent + " · Status: " + data.status;
+        result.textContent = data.result || data.message;
+        response.hidden = false;
+      } catch (error) {
+        status.textContent = error.message || "Could not reach the portal API.";
+      } finally {
+        send.disabled = false;
+      }
+    });
+
+    document.querySelector("#copy").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(result.textContent);
+        status.textContent = "Result copied.";
+      } catch {
+        status.textContent = "Copy is unavailable in this browser; select the text and copy it manually.";
+      }
+    });
+  </script>
+</body>
+</html>

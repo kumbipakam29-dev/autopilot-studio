@@ -16,6 +16,34 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("₹150", amount)
         self.assertEqual(signal, "TARGET_RANGE_MATCH")
 
+    def test_study_ranges_are_not_misclassified_as_fixed_target_rates(self):
+        currency, amount, signal = earnings.extract_amount(
+            "Video studies ₹300–₹2,500+, audio studies ₹200–₹1,500+ depending on duration"
+        )
+        self.assertEqual(currency, "INR")
+        self.assertIn("₹200", amount)
+        self.assertNotEqual(signal, "TARGET_RANGE_MATCH")
+
+    def test_range_endpoints_are_not_counted_as_fixed_rates_for_common_separators(self):
+        samples = [
+            "Video studies ₹300-₹2,500+ depending on duration",
+            "Audio studies ₹200 to ₹1,500+ depending on duration",
+            "Project range INR 300–INR 900 based on approved work",
+        ]
+        for sample in samples:
+            with self.subTest(sample=sample):
+                currency, amount, signal = earnings.extract_amount(sample)
+                self.assertEqual(currency, "INR")
+                self.assertNotEqual(signal, "TARGET_RANGE_MATCH")
+
+    def test_standalone_target_amount_remains_detectable_beside_a_range(self):
+        currency, amount, signal = earnings.extract_amount(
+            "Video studies ₹300–₹2,500+; separate approved task pays ₹150"
+        )
+        self.assertEqual(currency, "INR")
+        self.assertEqual(signal, "TARGET_RANGE_MATCH")
+        self.assertIn("₹150", amount)
+
     def test_hour_abbreviation_is_not_a_rupee_symbol(self):
         self.assertEqual(earnings.extract_amount("Long-term remote work, 10 hr per week"), ("", "", "NO_PUBLIC_AMOUNT_FOUND"))
         self.assertEqual(earnings.extract_amount("Work requires 20 hrs per month"), ("", "", "NO_PUBLIC_AMOUNT_FOUND"))
@@ -56,6 +84,163 @@ class EarningsHunterTests(unittest.TestCase):
         self.assertIn("Smallest AI Contributor", names)
         self.assertIn("Corpshore / Jwuma India AI data work", names)
         self.assertIn("Prolific participant studies", names)
+
+    def test_new_direct_task_sources_are_registered(self):
+        by_name = {source["name"]: source for source in earnings.SOURCES}
+        self.assertIn("YPAI — Hindi Annotation Roles", by_name)
+        self.assertFalse(by_name["YPAI — Hindi Annotation Roles"].get("detail_page"))
+        self.assertFalse(by_name["Perit — Hindi Freelance AI Data Annotator"].get("detail_page"))
+        for name in (
+            "YPAI — Data Annotator India",
+            "YPAI — Text and NLP Annotator India",
+            "YPAI — Data Collection Contributor India",
+            "TSMG — Hindi Audio Transcription Specialist",
+            "Sigma AI — Hindi, Bengali and English linguistic projects",
+            "Lionbridge — Hindi Transcriber",
+        ):
+            self.assertTrue(by_name[name].get("detail_page"), name)
+
+    def test_direct_source_extracts_visible_root_task_evidence(self):
+        source = {
+            "name": "Test direct task",
+            "url": "https://example.org/jobs/hindi-annotator",
+            "type": "Hindi annotation",
+            "region": "India",
+            "payout_note": "Confirm rate before accepting",
+            "detail_page": True,
+        }
+        original_fetch = earnings.fetch_public_page
+        try:
+            earnings.fetch_public_page = lambda url, require_same_path=False: (
+                "<html><title>Hindi Annotator</title><body><p>Rate ₹550–₹800 per hour. Remote in India. "
+                "Payment after validated work.</p></body></html>", "fetched"
+            )
+            rows, _ = earnings.discover_source(source)
+        finally:
+            earnings.fetch_public_page = original_fetch
+        self.assertEqual(rows[0]["candidate_type"], "TASK_DETAIL_PAGE")
+        self.assertIn("₹550", rows[0]["public_detail_evidence"])
+        self.assertIn("India", rows[0]["eligibility_evidence"])
+        self.assertEqual(rows[0]["payment_signal"], "INR_AMOUNT_OUTSIDE_TARGET")
+
+    def test_generic_board_does_not_promote_payout_note_or_inherit_region(self):
+        source = {
+            "name": "Test public job board",
+            "url": "https://example.org/careers/",
+            "type": "Remote annotation roles",
+            "region": "India",
+            "payout_note": "Related roles may advertise ₹550–₹800 per hour; this is not a board rate.",
+        }
+        original_fetch = earnings.fetch_public_page
+        def fake_fetch(url, require_same_path=False):
+            if url == source["url"]:
+                return (
+                    '<html><title>Careers</title><body><p>Browse current roles.</p>'
+                    '<a href="/jobs/hindi-transcriber">Hindi Transcriber</a></body></html>',
+                    "fetched",
+                )
+            return (
+                '<html><title>Transcriber Role</title><body><p>Rate $10 per hour. '
+                'Role details should be checked with the employer.</p></body></html>',
+                "fetched",
+            )
+        try:
+            earnings.fetch_public_page = fake_fetch
+            rows, _ = earnings.discover_source(source)
+        finally:
+            earnings.fetch_public_page = original_fetch
+        root = next(row for row in rows if row["candidate_type"] == "OFFICIAL_PAGE_SCAN")
+        detail = next(row for row in rows if row["candidate_type"] == "TASK_DETAIL_PAGE")
+        self.assertEqual(root["public_amount_text"], "")
+        self.assertEqual(root["currency"], "")
+        self.assertEqual(detail["task_type"], "Transcriber Role")
+        self.assertIn("Not established", detail["region_or_eligibility"])
+        self.assertEqual(detail["currency"], "FOREIGN_CURRENCY_UNCONVERTED")
+
+    def test_parent_link_salary_is_not_attributed_to_child_role(self):
+        source = {
+            "name": "Example careers board",
+            "url": "https://example.org/careers/",
+            "type": "Remote annotation roles",
+            "region": "India",
+            "payout_note": "Parent page has links to multiple roles.",
+        }
+        original_fetch = earnings.fetch_public_page
+        def fake_fetch(url, require_same_path=False):
+            if url == source["url"]:
+                return (
+                    '<html><title>Careers</title><body><p>Browse current roles.</p>'
+                    '<a href="/careers/ai-data-annotation-ftc-india">'
+                    'AI Data Annotation (FTC) Full-time · $260–365 / month</a></body></html>',
+                    "fetched",
+                )
+            return (
+                '<html><title>AI Data Annotation (FTC)</title><body>'
+                '<p>Work involves labeling text and reviewing AI outputs.</p>'
+                '</body></html>',
+                "fetched",
+            )
+        try:
+            earnings.fetch_public_page = fake_fetch
+            rows, _ = earnings.discover_source(source)
+        finally:
+            earnings.fetch_public_page = original_fetch
+        child = next(row for row in rows if row["candidate_type"] == "TASK_DETAIL_PAGE")
+        self.assertEqual(child["public_amount_text"], "")
+        self.assertEqual(child["currency"], "")
+        self.assertEqual(child["payment_signal"], "NO_PUBLIC_AMOUNT_FOUND")
+        self.assertIn("Not established", child["region_or_eligibility"])
+
+    def test_specific_role_pages_rank_ahead_of_generic_landing_pages(self):
+        source = {
+            "name": "Example source",
+            "url": "https://example.org/careers/",
+            "type": "annotation",
+            "region": "Not established",
+            "payout_note": "See role-specific invitation",
+        }
+        detail = earnings.make_candidate(
+            source, "Annotator role", "https://example.org/careers/annotator",
+            "Tasks include text review and annotation.", "fetched", "TASK_DETAIL_PAGE"
+        )
+        generic = earnings.make_candidate(
+            source, "Careers", "https://example.org/careers/",
+            "Tasks include text review and annotation.", "fetched", "OFFICIAL_PAGE_SCAN"
+        )
+        self.assertGreater(int(detail["triage_score"]), int(generic["triage_score"]))
+        self.assertIn("specific role-detail page", detail["score_notes"])
+
+    def test_very_low_per_task_offer_ranks_below_undisclosed_rate_lead(self):
+        very_low = earnings.score_candidate(
+            "Hindi Recording Task", "₹2 per approved task", "Karmyug AI", "India"
+        )
+        undisclosed = earnings.score_candidate(
+            "India remote annotation project", "Rate not listed until qualification", "YPAI", "India"
+        )
+        self.assertLess(very_low[0], undisclosed[0])
+        self.assertIn("very low per-task amount", very_low[4])
+
+    def test_hourly_paid_roles_rank_above_very_low_per_task_rate(self):
+        hourly_score = earnings.score_candidate(
+            "AI Data Annotator",
+            "₹550–₹800 per hour for approved annotation work",
+            "YPAI",
+            "India",
+        )[0]
+        per_task_score = earnings.score_candidate(
+            "Hindi Recording Task",
+            "₹2 per approved task",
+            "Karmyug AI",
+            "India",
+        )[0]
+        self.assertGreater(hourly_score, per_task_score)
+
+    def test_career_paths_are_scanned_as_role_details(self):
+        self.assertTrue(earnings.is_task_detail_path("https://perit.ai/careers/ai-data-annotation-ftc-india"))
+        self.assertTrue(earnings.is_task_detail_path("https://jobs.lever.co/tsmg/6a9979b9-3929-4e1d-9689-97926bc65dd5"))
+        self.assertTrue(earnings.is_task_detail_path("https://www.oneforma.com/projects/paragraph-level-translation-quality-rater/"))
+        self.assertFalse(earnings.is_task_detail_path("https://perit.ai/careers/"))
+        self.assertFalse(earnings.is_task_detail_path("https://www.oneforma.com/projects/"))
 
     def test_unsafe_external_link_not_allowed(self):
         self.assertFalse(earnings.allowed_same_site_url("https://evil.example/task", "https://work.karmyug.in/"))

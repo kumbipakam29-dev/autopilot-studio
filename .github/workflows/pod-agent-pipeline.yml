@@ -30,16 +30,16 @@ concurrency:
 jobs:
   research-and-drafts:
     name: Research, draft, validate and bundle
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       POD_REGION: ${{ github.event.inputs.region || 'IN' }}
       POD_LIMIT: ${{ github.event.inputs.limit || '25' }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Run offline unit tests
@@ -47,7 +47,7 @@ jobs:
       - name: Run POD pipeline
         run: python agents/pod_pipeline.py --region "$POD_REGION" --limit "$POD_LIMIT"
       - name: Upload reports and ZIP bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pod-agent-results-${{ github.run_number }}
           path: output/
