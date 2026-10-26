@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "company": "AutoPilot Digital Studio",
+  "principle": {
+    "reference": "Bhagavad Gita 2.47",
+    "operational_interpretation": "Work diligently, learn from evidence, and never claim a result that has not been verified.",
+    "note": "Gita-inspired labels are symbolic company role names, not claims of religious authority or divine capability."
+  },
+  "quality_policy": {
+    "pass_score": 85,
+    "hard_gate_score": 90,
+    "default_max_attempts": 3,
+    "absolute_max_attempts": 5,
+    "missing_check_behavior": "score_zero_and_fail_closed",
+    "min_golden_cases_for_model_review": 5,
+    "model_promotion_requires_human_approval": true,
+    "auto_promotion": false,
+    "external_publishing_spending_account_and_payment_actions_require_separate_approval": true
+  },
+  "agents": [
+    {"id":"Arjuna-Creator","role":"Create a candidate artifact","version":"1.0.0","status":"provider_adapter_not_connected"},
+    {"id":"Krishna-Guide","role":"Turn failures into actionable next-attempt instructions","version":"1.0.0","status":"implemented_in_quality_loop"},
+    {"id":"Sanjaya-Observer","role":"Collect evidence and score artifacts","version":"1.0.0","status":"implemented_in_quality_loop"},
+    {"id":"Drishti-Video","role":"Video quality review","version":"1.0.0","domain":"video","status":"rubric_ready_adapter_required"},
+    {"id":"Svara-Music","role":"Music/audio quality review","version":"1.0.0","domain":"music","status":"rubric_ready_adapter_required"},
+    {"id":"Chitrakara-Image","role":"Image/graphic quality review","version":"1.0.0","domain":"image","status":"rubric_ready_adapter_required"},
+    {"id":"Vishwakarma-Web","role":"Website/browser quality review","version":"1.0.0","domain":"website","status":"rubric_ready_adapter_required"}
+  ],
+  "models": [],
+  "model_candidate_template": {
+    "model_id":"provider/model-name",
+    "model_version":"exact-version-or-commit",
+    "provider":"local-or-free-provider",
+    "golden_suite_version":"1.0.0",
+    "evaluation_count":0,
+    "mean_score":null,
+    "pass_rate":null,
+    "status":"candidate_not_connected",
+    "promotion_status":"not_evaluated"
+  }
+}
