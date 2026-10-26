@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "agents": [
+    {"id":"opportunity-researcher","version":"1.0.0","task_types":["research_opportunity"],"approval_required":false,"max_retries":1,"status":"implemented_in_design"},
+    {"id":"content-planner","version":"1.0.0","task_types":["draft_content"],"approval_required":false,"max_retries":1,"status":"implemented_in_design"},
+    {"id":"earnings-ledger","version":"1.0.0","task_types":["record_application","record_payment"],"approval_required":true,"max_retries":0,"status":"implemented_in_design"}
+  ]
+}
