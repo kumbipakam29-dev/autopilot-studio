@@ -120,6 +120,20 @@ class DeviceAdaptiveRouterTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     load_profiles(path)
 
+    def test_catalog_rejects_unhashable_or_empty_profile_ids_cleanly(self):
+        for profile_id in ([], {}, "", "   ", None):
+            catalog = {
+                "profiles": [{
+                    "id": profile_id, "version": "1", "kind": "local_llm",
+                    "tasks": ["reasoning"], "min_ram_gb": 8, "min_vram_gb": 0
+                }]
+            }
+            with self.subTest(profile_id=profile_id), tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "catalog.json"
+                path.write_text(json.dumps(catalog), encoding="utf-8")
+                with self.assertRaises(ValueError):
+                    load_profiles(path)
+
 
 if __name__ == "__main__":
     unittest.main()
