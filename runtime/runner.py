@@ -48,7 +48,7 @@ def run_task(task):
     if not agent:
         raise ValueError("No registered agent for task type: " + task["task_type"])
     task_id = task.get("task_id") or str(uuid.uuid4())
-    approval_required = bool(agent.get("approval_required"))
+    approval_required = agent.get("approval_required") is not False
     status = "awaiting_user_approval" if approval_required else "review_required"
     result = {
         "task_id": task_id, "task_type": task["task_type"],
