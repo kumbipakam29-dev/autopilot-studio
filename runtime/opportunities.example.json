@@ -1,0 +1,14 @@
+[
+  {
+    "opportunity_id": "example-content-001",
+    "source": "Replace with a permitted, checked source",
+    "title": "Example: social media captions for a local business",
+    "url": "https://example.org/opportunity",
+    "posted_at": "",
+    "description": "Example record only. Verify legitimacy, eligibility, terms, and payment before use.",
+    "payment_text": "Not verified",
+    "eligibility_checked": false,
+    "payment_verified": false,
+    "notes": "DEMO ONLY — not a real job or client lead. Do not contact or apply."
+  }
+]
