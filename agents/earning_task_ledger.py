@@ -75,11 +75,11 @@ def update_stage(data, task_id, stage, minutes=None, accepted_amount=None, payou
     if stage == "paid" and not payout_confirmed:
         raise ValueError("Mark paid only after user confirms credit in their payment app")
     if stage == "paid":
-        _validated_amount(payout_amount, "Actual payout amount")
+        _validated_amount(payout_amount, "actual payout amount")
     if payout_confirmed and stage != "paid":
         raise ValueError("Payout confirmation is valid only for the paid stage")
     if stage == "accepted":
-        _validated_amount(accepted_amount, "Accepted amount")
+        _validated_amount(accepted_amount, "accepted amount")
     if current != stage and stage not in ALLOWED_NEXT[current]:
         raise ValueError(f"Invalid stage transition: {current} -> {stage}")
     if minutes is not None:
