@@ -57,6 +57,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Ahmedabad intake batch 7](crm/lead_import_batch_7.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_7_2026-10.md)
 - [Ahmedabad intake batch 8](crm/lead_import_batch_8.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_8_2026-10.md)
 
+- [Offline specialist task runner](agents/specialist_runner.py) — deterministic, no-network task handlers and local JSONL evaluation logs; not an LLM runtime.
+- [Specialist runner tests](tests/test_specialist_runner.py) — checks catalog validation, missing evidence, rejected external-action task types, and local log behavior.
 - [15-specialist supervised learning loop](docs/15_SPECIALIST_AGENT_LEARNING_LOOP.md) — bounded specialist contracts, feedback-to-regression workflow, safety gates, and scoring rubric.
 - [15-specialist learning-loop configuration](config/agent_learning_loop_v1.json) — versioned JSON profiles (catalog only; not 15 running processes).
 - [Offline configuration tests](tests/test_agent_learning_loop_config.py) — checks specialist count, unique IDs, contract fields, scoring weights and approval gates.
