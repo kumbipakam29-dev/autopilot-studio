@@ -45,6 +45,19 @@ Offer: low-cost, practical social-media content support for small businesses. Fi
 
 **Personalization check:** Verify the current official contact channel and ask permission before using any venue imagery or music.
 
+## 4. Le Crumbs Dessert Café — desserts, gifting and coffee
+
+**Public fact used:** Its official website lists cookie tins, bento cakes, specialty coffee, brownies, cheesecake and custom cakes, with a Prahlad Nagar location. Source: https://lecrumbs.in/
+
+**Potential offer:** a “choose your dessert mood” Reel or gifting carousel using only products and prices confirmed by the business.
+
+**Draft DM/email**
+> Hi Le Crumbs team — I came across your website and noticed you offer a mix of cookie tins, bento cakes, specialty coffee and custom cakes. I run AutoPilot Digital Studio and prepare social-media content plans, captions and short Reel scripts for small businesses.
+>
+> One possible content idea is a short “choose your dessert mood” Reel or a gifting-focused carousel, based only on items you confirm are currently available. If useful, I can share a small written concept for review. No pressure either way.
+
+**Personalization check:** Recheck the current menu and contact preference. Do not imply that the café asked for help or use its images without permission.
+
 ## Sending and tracking rules
 
 - These are drafts only. Nothing has been sent.
