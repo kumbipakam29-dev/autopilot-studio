@@ -28,7 +28,7 @@ Import a CSV using the template:
 python crm/crm_cli.py import-csv crm/import_template.csv
 ```
 
-The template contains headers and no real lead data. Import is idempotent by normalized business name + source URL. Inspect `--help` for commands and options.
+The template contains headers and no real lead data. Import skips exact duplicate business-name + source-URL pairs; spelling/case variants may still create separate records. Inspect `--help` for commands and options.
 
 ## Pipeline stages
 
