@@ -34,12 +34,15 @@ class SpecialistAgentTests(unittest.TestCase):
                     self.assertTrue(all(part.isdigit() for part in parts))
                 self.assertEqual(agent["model_profile"], "unassigned")
                 self.assertEqual(agent["model_version"], "unassigned")
-                self.assertEqual(agent["status"], "specification-only")
+                self.assertEqual(agent["status"], "offline-prototype-implemented")
+                self.assertEqual(agent["implementation_path"], "agents/specialist_capabilities.py")
+                self.assertEqual(agent["capability_version"], "0.1.0")
+                self.assertEqual(agent["evaluation_status"], "tests-authored-ci-not-confirmed")
                 self.assertTrue(agent["approval_required"])
                 self.assertIn("deny-by-default", agent["tool_access"])
 
     def test_frameworks_are_pattern_study_not_claimed_as_installed(self):
-        self.assertIn("not 15 running", self.data["status"])
+        self.assertIn("not 15 running model-backed agents", self.data["status"])
         for framework in self.data["frameworks"]:
             self.assertIn("no upstream package installed", framework["adoption_mode"])
 
