@@ -1,0 +1,467 @@
+{
+  "schema_version": "1.0.0",
+  "project": "AutoPilot-Studio",
+  "created_for": "zero-budget supervised multi-agent system",
+  "status": "catalog-only; these are specifications, not 100 running agents",
+  "versioning_policy": "Semantic versioning: MAJOR for incompatible contracts or safety changes, MINOR for backward-compatible capability additions, PATCH for bug fixes and prompt/rule corrections.",
+  "model_policy": "Model identity and model version must be recorded separately from agent and prompt versions. Never claim a model is installed, available, trained, or benchmarked without evidence.",
+  "learning_policy": "Learn from reviewed task outcomes by adding approved examples, regression tests, and versioned prompt/rule updates. No autonomous self-modifying code or unreviewed model-weight training.",
+  "approval_policy": "Human approval required for external communication, account changes, submissions, publishing, purchases, deployments, payout settings, destructive actions, and any spend.",
+  "budget_policy": "No paid APIs or subscriptions by default. Tests must work offline with deterministic mocks.",
+  "agent_count": 22,
+  "departments": [
+    "Executive & Orchestration",
+    "Research & Intelligence",
+    "Revenue & Opportunity",
+    "Sales & Client Service",
+    "Content & Social Media",
+    "Website, SEO & Publishing",
+    "Design & Digital Products",
+    "Data, Labeling & Evaluation",
+    "Engineering & Reliability",
+    "Operations, Finance & Compliance",
+    "Learning, Memory & Governance"
+  ],
+  "agents": [
+    {
+      "id": "APS-001",
+      "name": "E",
+      "department": 0,
+      "purpose": "x",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-002",
+      "name": [
+        "Chief of Staff",
+        "Prioritize goals, route tasks, track blockers and request approvals."
+      ],
+      "department": 0,
+      "purpose": [
+        "Task Planner",
+        "Break objectives into bounded tasks with acceptance criteria."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-003",
+      "name": "R",
+      "department": 1,
+      "purpose": "e",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-004",
+      "name": [
+        "Market Researcher",
+        "Research public market demand and cite sources."
+      ],
+      "department": 1,
+      "purpose": [
+        "Trend Analyst",
+        "Find emerging topics and label freshness and uncertainty."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-005",
+      "name": "R",
+      "department": 2,
+      "purpose": "e",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-006",
+      "name": [
+        "Earnings Hunter",
+        "Find legitimate public earning opportunities and label verification status."
+      ],
+      "department": 2,
+      "purpose": [
+        "Opportunity Eligibility Checker",
+        "Check stated country, device, age and eligibility requirements."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-007",
+      "name": "S",
+      "department": 3,
+      "purpose": "a",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-008",
+      "name": [
+        "Sales Strategy Planner",
+        "Plan ethical acquisition channels and weekly targets."
+      ],
+      "department": 3,
+      "purpose": [
+        "Proposal Writer",
+        "Draft tailored proposals grounded in verified capabilities."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-009",
+      "name": "C",
+      "department": 4,
+      "purpose": "o",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-010",
+      "name": [
+        "Content Strategist",
+        "Build channel-specific content strategy."
+      ],
+      "department": 4,
+      "purpose": [
+        "Social Calendar Planner",
+        "Prepare realistic weekly and monthly calendars."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-011",
+      "name": "W",
+      "department": 5,
+      "purpose": "e",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-012",
+      "name": [
+        "Website Architect",
+        "Plan lightweight websites and navigation."
+      ],
+      "department": 5,
+      "purpose": [
+        "Landing Page Copywriter",
+        "Draft clear service and product pages."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-013",
+      "name": "D",
+      "department": 6,
+      "purpose": "e",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-014",
+      "name": [
+        "Portfolio Concept Designer",
+        "Create clearly labelled speculative portfolio concepts."
+      ],
+      "department": 6,
+      "purpose": [
+        "Visual QA Reviewer",
+        "Check consistency, hierarchy, spacing and export readiness."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-015",
+      "name": "D",
+      "department": 7,
+      "purpose": "a",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-016",
+      "name": [
+        "Dataset Curator",
+        "Build small lawful datasets from permitted sources or synthetic examples."
+      ],
+      "department": 7,
+      "purpose": [
+        "Data Labeling Worker",
+        "Label records using explicit instructions and uncertainty tags."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-017",
+      "name": "E",
+      "department": 8,
+      "purpose": "n",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-018",
+      "name": [
+        "Repository Scout",
+        "Map repository structure and identify relevant files."
+      ],
+      "department": 8,
+      "purpose": [
+        "CI Failure Triager",
+        "Read logs and identify evidence-supported failure causes."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-019",
+      "name": "O",
+      "department": 9,
+      "purpose": "p",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-020",
+      "name": [
+        "Workflow Automation Planner",
+        "Design low-cost automations with explicit trigger and action boundaries."
+      ],
+      "department": 9,
+      "purpose": [
+        "Schedule & Queue Planner",
+        "Plan task queues and schedules without assuming a running scheduler."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-021",
+      "name": "L",
+      "department": 10,
+      "purpose": "e",
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    },
+    {
+      "id": "APS-022",
+      "name": [
+        "Model Capability Evaluator",
+        "Compare candidate models on a fixed task set."
+      ],
+      "department": 10,
+      "purpose": [
+        "Prompt Version Manager",
+        "Track prompt versions and evaluation results."
+      ],
+      "agent_version": "0.1.0",
+      "status": "planned",
+      "framework": "native-python-first",
+      "model_profile": "unassigned",
+      "model_version": "unassigned",
+      "prompt_version": "0.1.0",
+      "tool_access": "deny-by-default",
+      "network_access": "disabled-unless-explicitly-approved",
+      "approval_required": true,
+      "evaluation_status": "not-run",
+      "last_verified_commit": null
+    }
+  ]
+}
