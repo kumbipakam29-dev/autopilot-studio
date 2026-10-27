@@ -18,6 +18,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 ## Agent system (catalog / planned)
 - [100-agent registry (versioned JSON)](config/agent_registry_v1.json) — catalog only; agents are not all deployed or running.
 - [Agent versioning and supervised learning standard](docs/AGENT_VERSIONING_AND_SUPERVISED_LEARNING.md)
+- [Pinned GitHub upstream agent sources](config/upstream_agent_sources_v1.json) — 10 public projects with commit pins, licenses and adaptation roles.
+- [GitHub agent source adoption plan](docs/GITHUB_UPSTREAM_AGENT_SOURCES.md) — staged, zero-budget integration plan.
 - [Open-source agent learning and integration roadmap](docs/OPEN_SOURCE_AGENT_LEARNING_ROADMAP.md)
 
 ## Research documents
