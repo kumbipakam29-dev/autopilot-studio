@@ -34,6 +34,7 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Ahmedabad prospect inventory v1 (CSV)](docs/AHMEDABAD_PROSPECT_INVENTORY_V1.csv) — 20 public-directory candidates, all marked unqualified and not contacted.
 - [Ahmedabad prospect research — batch 5](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_5_2026-10.md) — wider categories: interiors, education, property, auto care, photography and events; research only.
 - [Ahmedabad prospect inventory — batch 5 (CSV)](docs/AHMEDABAD_PROSPECT_INVENTORY_BATCH_5.csv) — 23 additional candidates with explicit verification/contact gates.
+- [Ahmedabad batch 5 outreach drafts (unsent)](docs/AHMEDABAD_BATCH_5_OUTREACH_DRAFTS_UNSENT.md) — six permission-first one-to-one drafts; not sent.
 - [Prospect qualification scorecard](docs/PROSPECT_QUALIFICATION_SCORECARD.md) — hard gates, evidence scoring, and status/payment integrity rules.
 - [Portfolio spec work: café + local service](docs/PORTFOLIO_SPEC_WORK_CAFE_AND_LOCAL_SERVICE.md) — two fictional examples with post concepts, captions, 17-second Reels, and seven-day calendars.
 - [Ahmedabad outreach drafts](docs/AHMEDABAD_OUTREACH_DRAFTS_2026-10.md) — four fact-grounded drafts for manual review; unsent.
