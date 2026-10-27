@@ -57,6 +57,7 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Ahmedabad intake batch 7](crm/lead_import_batch_7.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_7_2026-10.md)
 - [Ahmedabad intake batch 8](crm/lead_import_batch_8.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_8_2026-10.md)
 
+- [Market research specialist learning-cycle example](docs/MARKET_RESEARCH_SPECIALIST_LEARNING_CYCLE.md) — offline workflow, reviewer-scored baseline/candidate comparison, regression gates, and non-claims.
 - [Supervised learning-cycle orchestrator](agents/learning_cycle.py) — evaluates one baseline/candidate pair, checks regression outcomes, and blocks automatic release.
 - [Learning-cycle integration tests](tests/test_learning_cycle.py) — verifies approval gates, hard-fail handling, and regression rejection.
 - [Human-reviewed evaluation loop](agents/evaluation_loop.py) — weighted scoring, hard-fail overrides, and conservative baseline/candidate comparison.
