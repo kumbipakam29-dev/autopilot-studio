@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "project": "AutoPilot-Studio",
   "title": "15 specialized agents across three upstream framework patterns",
-  "status": "specification-only; not 15 running model-backed agents",
+  "status": "15 deterministic offline capability prototypes implemented; not 15 running model-backed agents",
   "budget_policy": "₹0 by default; no paid APIs or subscriptions; framework dependencies are not installed by this catalog",
   "learning_policy": "Use pinned upstream design patterns, deterministic fixtures, human-reviewed changes and versioned tests. No model-weight training is claimed.",
   "frameworks": [
@@ -44,12 +44,15 @@
       "model_version": "unassigned",
       "input_contract": "URL list + extracted snippets",
       "output_contract": "verification report",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-SM-02",
@@ -65,12 +68,15 @@
       "model_version": "unassigned",
       "input_contract": "Listing text + official source snippet",
       "output_contract": "rate evidence with quote and context",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-SM-03",
@@ -86,12 +92,15 @@
       "model_version": "unassigned",
       "input_contract": "Opportunity description",
       "output_contract": "risk flags and rationale",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-SM-04",
@@ -107,12 +116,15 @@
       "model_version": "unassigned",
       "input_contract": "Client brief text",
       "output_contract": "validated structured brief",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-SM-05",
@@ -128,12 +140,15 @@
       "model_version": "unassigned",
       "input_contract": "Approved content brief",
       "output_contract": "caption variants with claims checklist",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-LG-01",
@@ -149,12 +164,15 @@
       "model_version": "unassigned",
       "input_contract": "Task list and acceptance criteria",
       "output_contract": "dependency graph + blockers",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-LG-02",
@@ -170,12 +188,15 @@
       "model_version": "unassigned",
       "input_contract": "Proposed action + policy",
       "output_contract": "allow/deny/needs-approval decision",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-LG-03",
@@ -191,12 +212,15 @@
       "model_version": "unassigned",
       "input_contract": "Workflow log + changed files",
       "output_contract": "failure summary + test plan",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-LG-04",
@@ -212,12 +236,15 @@
       "model_version": "unassigned",
       "input_contract": "Version registry + manifests",
       "output_contract": "version drift report",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-LG-05",
@@ -233,12 +260,15 @@
       "model_version": "unassigned",
       "input_contract": "Task state snapshot",
       "output_contract": "resume plan without duplicate side effects",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-CR-01",
@@ -254,12 +284,15 @@
       "model_version": "unassigned",
       "input_contract": "Public business facts supplied by user",
       "output_contract": "niche analysis with evidence gaps",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-CR-02",
@@ -275,12 +308,15 @@
       "model_version": "unassigned",
       "input_contract": "Approved niche and offer",
       "output_contract": "calendar with format, hook and CTA",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-CR-03",
@@ -296,12 +332,15 @@
       "model_version": "unassigned",
       "input_contract": "Approved campaign brief",
       "output_contract": "14–20 second script variants",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-CR-04",
@@ -317,12 +356,15 @@
       "model_version": "unassigned",
       "input_contract": "Target niche + deliverable type",
       "output_contract": "spec-work portfolio plan",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     },
     {
       "id": "APS-CR-05",
@@ -338,12 +380,15 @@
       "model_version": "unassigned",
       "input_contract": "Verified public facts + service offer",
       "output_contract": "draft message + personalization evidence",
-      "status": "specification-only",
-      "evaluation_status": "not-run",
+      "status": "offline-prototype-implemented",
+      "evaluation_status": "tests-authored-ci-not-confirmed",
       "tool_access": "read-only; deny-by-default",
       "network_access": "disabled-unless-explicitly-approved",
       "external_actions": "prohibited-without-human-approval",
-      "approval_required": true
+      "approval_required": true,
+      "implementation_path": "agents/specialist_capabilities.py",
+      "implementation_entrypoint": "run_capability",
+      "capability_version": "0.1.0"
     }
   ]
 }
