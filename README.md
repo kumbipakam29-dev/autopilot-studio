@@ -51,6 +51,12 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [GitHub agent source adoption plan](docs/GITHUB_UPSTREAM_AGENT_SOURCES.md) — staged adoption, including first read-only evidence grader.
 - [Open-source agent learning and integration roadmap](docs/OPEN_SOURCE_AGENT_LEARNING_ROADMAP.md)
 
+## CRM and prospect intake
+- [Local-first CRM guide](crm/README.md) and [CRM CLI](crm/crm_cli.py) — local SQLite tracking and unsent draft generation; no automatic outreach.
+- [Blank CRM import template](crm/import_template.csv)
+- [Ahmedabad intake batch 7](crm/lead_import_batch_7.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_7_2026-10.md)
+- [Ahmedabad intake batch 8](crm/lead_import_batch_8.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_8_2026-10.md)
+
 ## Research documents
 - [Deep research, system gap audit, free tools/models and zero-budget roadmap](docs/DEEP_RESEARCH_ZERO_BUDGET.md)
 - [1,224 categorized opportunity hypotheses (CSV)](docs/IDEA_BANK_1200.csv)
