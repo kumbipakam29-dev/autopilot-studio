@@ -57,6 +57,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Ahmedabad intake batch 7](crm/lead_import_batch_7.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_7_2026-10.md)
 - [Ahmedabad intake batch 8](crm/lead_import_batch_8.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_8_2026-10.md)
 
+- [Human-reviewed evaluation loop](agents/evaluation_loop.py) — weighted scoring, hard-fail overrides, and conservative baseline/candidate comparison.
+- [Evaluation loop tests](tests/test_evaluation_loop.py) — score arithmetic, hard-fail precedence, safety regression, and human approval checks.
 - [Offline specialist task runner](agents/specialist_runner.py) — deterministic, no-network task handlers and local JSONL evaluation logs; not an LLM runtime.
 - [Specialist runner tests](tests/test_specialist_runner.py) — checks catalog validation, missing evidence, rejected external-action task types, and local log behavior.
 - [15-specialist supervised learning loop](docs/15_SPECIALIST_AGENT_LEARNING_LOOP.md) — bounded specialist contracts, feedback-to-regression workflow, safety gates, and scoring rubric.
