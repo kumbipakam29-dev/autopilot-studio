@@ -26,6 +26,7 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Offline client-acquisition draft pipeline](agents/client_acquisition_pipeline.py) — composes brief structuring, content angles, captions, a seven-day calendar, two 17-second Reels, fictional spec work and conditional outreach drafts; no browsing, sending, or publishing.
 - [Client-acquisition pipeline tests](tests/test_client_acquisition_pipeline.py)
 - [Client-acquisition pipeline guide](docs/CLIENT_ACQUISITION_DRAFT_PIPELINE.md)
+- [Ahmedabad prospect research starter list](docs/PROSPECT_RESEARCH_AHMEDABAD_2026-10.md) — public-source candidates to manually qualify; no businesses contacted.
 - [Specialist capability GitHub Actions workflow](.github/workflows/specialist-capability-tests.yml) — runs the full offline unittest suite on pushes and pull requests.
 - [Agent versioning and supervised learning standard](docs/AGENT_VERSIONING_AND_SUPERVISED_LEARNING.md)
 - [Pinned GitHub upstream agent sources](config/upstream_agent_sources_v1.json) — 10 public projects with commit pins, licenses and adaptation roles.
