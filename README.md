@@ -28,6 +28,7 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Client-acquisition pipeline guide](docs/CLIENT_ACQUISITION_DRAFT_PIPELINE.md)
 - [Ahmedabad prospect research starter list](docs/PROSPECT_RESEARCH_AHMEDABAD_2026-10.md) — public-source candidates to manually qualify; no businesses contacted.
 - [Ahmedabad prospect research — batch 2](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_2_2026-10.md) — additional candidates and content hypotheses; no businesses contacted.
+- [Portfolio spec work: café + local service](docs/PORTFOLIO_SPEC_WORK_CAFE_AND_LOCAL_SERVICE.md) — two fictional examples with post concepts, captions, 17-second Reels, and seven-day calendars.
 - [Specialist capability GitHub Actions workflow](.github/workflows/specialist-capability-tests.yml) — runs the full offline unittest suite on pushes and pull requests.
 - [Agent versioning and supervised learning standard](docs/AGENT_VERSIONING_AND_SUPERVISED_LEARNING.md)
 - [Pinned GitHub upstream agent sources](config/upstream_agent_sources_v1.json) — 10 public projects with commit pins, licenses and adaptation roles.
