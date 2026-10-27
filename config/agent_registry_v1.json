@@ -8,7 +8,7 @@
   "learning_policy": "Learn from reviewed task outcomes by adding approved examples, regression tests, and versioned prompt/rule updates. No autonomous self-modifying code or unreviewed model-weight training.",
   "approval_policy": "Human approval required for external communication, account changes, submissions, publishing, purchases, deployments, payout settings, destructive actions, and any spend.",
   "budget_policy": "No paid APIs or subscriptions by default. Tests must work offline with deterministic mocks.",
-  "agent_count": 110,
+  "agent_count": 100,
   "departments": [
     "Executive & Orchestration",
     "Research & Intelligence",
@@ -246,23 +246,6 @@
     },
     {
       "id": "APS-014",
-      "name": "Customer Persona Analyst",
-      "department": "Research & Intelligence",
-      "purpose": "Build evidence-based audience hypotheses.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-015",
       "name": "Keyword Researcher",
       "department": "Research & Intelligence",
       "purpose": "Generate and cluster search-intent keywords.",
@@ -279,7 +262,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-016",
+      "id": "APS-015",
       "name": "Source Verifier",
       "department": "Research & Intelligence",
       "purpose": "Cross-check factual claims against primary sources.",
@@ -296,7 +279,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-017",
+      "id": "APS-016",
       "name": "Fact Checker",
       "department": "Research & Intelligence",
       "purpose": "Flag unsupported, stale or contradictory claims.",
@@ -313,7 +296,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-018",
+      "id": "APS-017",
       "name": "Opportunity Scorer",
       "department": "Research & Intelligence",
       "purpose": "Rank opportunities using transparent criteria.",
@@ -330,24 +313,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-019",
-      "name": "Research Synthesizer",
-      "department": "Research & Intelligence",
-      "purpose": "Combine sourced findings into concise decision briefs.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-020",
+      "id": "APS-018",
       "name": "Research QA Critic",
       "department": "Research & Intelligence",
       "purpose": "Challenge assumptions and identify missing evidence.",
@@ -364,7 +330,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-021",
+      "id": "APS-019",
       "name": "Earnings Hunter",
       "department": "Revenue & Opportunity",
       "purpose": "Find legitimate public earning opportunities and label verification status.",
@@ -381,7 +347,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-022",
+      "id": "APS-020",
       "name": "Opportunity Eligibility Checker",
       "department": "Revenue & Opportunity",
       "purpose": "Check stated country, device, age and eligibility requirements.",
@@ -398,7 +364,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-023",
+      "id": "APS-021",
       "name": "Payout Terms Auditor",
       "department": "Revenue & Opportunity",
       "purpose": "Extract payment thresholds, fees and payout methods from official terms.",
@@ -415,7 +381,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-024",
+      "id": "APS-022",
       "name": "Task Legitimacy Checker",
       "department": "Revenue & Opportunity",
       "purpose": "Flag scams, upfront fees, suspicious promises and unclear terms.",
@@ -432,7 +398,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-025",
+      "id": "APS-023",
       "name": "Application Prep Assistant",
       "department": "Revenue & Opportunity",
       "purpose": "Prepare drafts and checklists without submitting applications.",
@@ -449,24 +415,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-026",
-      "name": "Microtask Evaluator",
-      "department": "Revenue & Opportunity",
-      "purpose": "Compare task effort, skill requirements and expected payout evidence.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-027",
+      "id": "APS-024",
       "name": "Freelance Lead Researcher",
       "department": "Revenue & Opportunity",
       "purpose": "Find public business prospects and official contact channels.",
@@ -483,7 +432,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-028",
+      "id": "APS-025",
       "name": "Lead Qualification Agent",
       "department": "Revenue & Opportunity",
       "purpose": "Score public prospects by fit, need signals and source quality.",
@@ -500,7 +449,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-029",
+      "id": "APS-026",
       "name": "Offer & Pricing Analyst",
       "department": "Revenue & Opportunity",
       "purpose": "Propose transparent starter packages and scope boundaries.",
@@ -517,7 +466,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-030",
+      "id": "APS-027",
       "name": "Revenue Ledger Auditor",
       "department": "Revenue & Opportunity",
       "purpose": "Count revenue only when user confirms actual payment credit.",
@@ -534,7 +483,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-031",
+      "id": "APS-028",
       "name": "Sales Strategy Planner",
       "department": "Sales & Client Service",
       "purpose": "Plan ethical acquisition channels and weekly targets.",
@@ -551,7 +500,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-032",
+      "id": "APS-029",
       "name": "Proposal Writer",
       "department": "Sales & Client Service",
       "purpose": "Draft tailored proposals grounded in verified capabilities.",
@@ -568,7 +517,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-033",
+      "id": "APS-030",
       "name": "Outreach Personalizer",
       "department": "Sales & Client Service",
       "purpose": "Prepare human-reviewed, non-spam outreach drafts.",
@@ -585,24 +534,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-034",
-      "name": "Discovery Call Coach",
-      "department": "Sales & Client Service",
-      "purpose": "Create discovery questions and meeting preparation.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-035",
+      "id": "APS-031",
       "name": "Needs Analyst",
       "department": "Sales & Client Service",
       "purpose": "Map client problems to service deliverables.",
@@ -619,7 +551,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-036",
+      "id": "APS-032",
       "name": "Scope & Estimate Builder",
       "department": "Sales & Client Service",
       "purpose": "Create deliverables, timelines, exclusions and estimates.",
@@ -636,7 +568,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-037",
+      "id": "APS-033",
       "name": "Objection Handler",
       "department": "Sales & Client Service",
       "purpose": "Draft honest responses without pressure or false claims.",
@@ -653,7 +585,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-038",
+      "id": "APS-034",
       "name": "Follow-up Planner",
       "department": "Sales & Client Service",
       "purpose": "Suggest respectful follow-up timing and stop conditions.",
@@ -670,7 +602,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-039",
+      "id": "APS-035",
       "name": "Client Onboarding Planner",
       "department": "Sales & Client Service",
       "purpose": "Prepare intake forms, asset lists and approval workflow.",
@@ -687,7 +619,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-040",
+      "id": "APS-036",
       "name": "Client Success Reviewer",
       "department": "Sales & Client Service",
       "purpose": "Check deliverables against agreed client goals.",
@@ -704,7 +636,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-041",
+      "id": "APS-037",
       "name": "Content Strategist",
       "department": "Content & Social Media",
       "purpose": "Build channel-specific content strategy.",
@@ -721,7 +653,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-042",
+      "id": "APS-038",
       "name": "Social Calendar Planner",
       "department": "Content & Social Media",
       "purpose": "Prepare realistic weekly and monthly calendars.",
@@ -738,7 +670,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-043",
+      "id": "APS-039",
       "name": "Caption Writer",
       "department": "Content & Social Media",
       "purpose": "Draft platform-appropriate captions and calls to action.",
@@ -755,7 +687,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-044",
+      "id": "APS-040",
       "name": "Short-Video Scriptwriter",
       "department": "Content & Social Media",
       "purpose": "Write concise hooks, scenes, voiceover and timing.",
@@ -772,7 +704,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-045",
+      "id": "APS-041",
       "name": "Creative Brief Writer",
       "department": "Content & Social Media",
       "purpose": "Convert campaign goals into briefs for design production.",
@@ -789,24 +721,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-046",
-      "name": "Carousel Planner",
-      "department": "Content & Social Media",
-      "purpose": "Outline educational and promotional carousel slides.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-047",
+      "id": "APS-042",
       "name": "Community Reply Drafter",
       "department": "Content & Social Media",
       "purpose": "Prepare safe, brand-consistent reply drafts for human review.",
@@ -823,7 +738,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-048",
+      "id": "APS-043",
       "name": "Repurposing Agent",
       "department": "Content & Social Media",
       "purpose": "Adapt approved content across formats and platforms.",
@@ -840,7 +755,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-049",
+      "id": "APS-044",
       "name": "Brand Voice Editor",
       "department": "Content & Social Media",
       "purpose": "Enforce a documented brand voice and terminology.",
@@ -857,7 +772,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-050",
+      "id": "APS-045",
       "name": "Content QA Reviewer",
       "department": "Content & Social Media",
       "purpose": "Check factuality, clarity, accessibility and platform fit.",
@@ -874,7 +789,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-051",
+      "id": "APS-046",
       "name": "Website Architect",
       "department": "Website, SEO & Publishing",
       "purpose": "Plan lightweight websites and navigation.",
@@ -891,7 +806,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-052",
+      "id": "APS-047",
       "name": "Landing Page Copywriter",
       "department": "Website, SEO & Publishing",
       "purpose": "Draft clear service and product pages.",
@@ -908,7 +823,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-053",
+      "id": "APS-048",
       "name": "SEO Auditor",
       "department": "Website, SEO & Publishing",
       "purpose": "Check technical and on-page SEO basics.",
@@ -925,41 +840,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-054",
-      "name": "Internal Linking Planner",
-      "department": "Website, SEO & Publishing",
-      "purpose": "Recommend useful internal links based on page purpose.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-055",
-      "name": "Schema Markup Reviewer",
-      "department": "Website, SEO & Publishing",
-      "purpose": "Validate structured-data proposals against page facts.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-056",
+      "id": "APS-049",
       "name": "Accessibility Reviewer",
       "department": "Website, SEO & Publishing",
       "purpose": "Check semantic structure, contrast guidance and accessible wording.",
@@ -976,7 +857,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-057",
+      "id": "APS-050",
       "name": "Performance Optimizer",
       "department": "Website, SEO & Publishing",
       "purpose": "Identify likely performance bottlenecks and low-cost fixes.",
@@ -993,7 +874,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-058",
+      "id": "APS-051",
       "name": "Conversion UX Reviewer",
       "department": "Website, SEO & Publishing",
       "purpose": "Review forms, calls to action and trust signals.",
@@ -1010,7 +891,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-059",
+      "id": "APS-052",
       "name": "Editorial Planner",
       "department": "Website, SEO & Publishing",
       "purpose": "Create topic clusters and a sustainable publication schedule.",
@@ -1027,7 +908,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-060",
+      "id": "APS-053",
       "name": "Publishing Safety Gate",
       "department": "Website, SEO & Publishing",
       "purpose": "Require source, originality, quality and human approval before publishing.",
@@ -1044,7 +925,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-061",
+      "id": "APS-054",
       "name": "Portfolio Concept Designer",
       "department": "Design & Digital Products",
       "purpose": "Create clearly labelled speculative portfolio concepts.",
@@ -1061,7 +942,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-062",
+      "id": "APS-055",
       "name": "Visual QA Reviewer",
       "department": "Design & Digital Products",
       "purpose": "Check consistency, hierarchy, spacing and export readiness.",
@@ -1078,7 +959,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-063",
+      "id": "APS-056",
       "name": "Brand Kit Planner",
       "department": "Design & Digital Products",
       "purpose": "Define reusable colors, typography and usage guidance.",
@@ -1095,7 +976,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-064",
+      "id": "APS-057",
       "name": "Digital Product Ideator",
       "department": "Design & Digital Products",
       "purpose": "Generate products grounded in audience needs.",
@@ -1112,24 +993,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-065",
-      "name": "Template Product Builder",
-      "department": "Design & Digital Products",
-      "purpose": "Specify useful reusable templates and their file structure.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-066",
+      "id": "APS-058",
       "name": "PDF Product QA",
       "department": "Design & Digital Products",
       "purpose": "Check structure, readability, links and export quality.",
@@ -1146,7 +1010,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-067",
+      "id": "APS-059",
       "name": "POD Demand Researcher",
       "department": "Design & Digital Products",
       "purpose": "Research product niches without claiming guaranteed demand.",
@@ -1163,7 +1027,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-068",
+      "id": "APS-060",
       "name": "Originality & IP Checker",
       "department": "Design & Digital Products",
       "purpose": "Flag trademark, copyright and similarity risks for review.",
@@ -1180,7 +1044,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-069",
+      "id": "APS-061",
       "name": "Print File QA",
       "department": "Design & Digital Products",
       "purpose": "Check dimensions, transparency, resolution and format requirements.",
@@ -1197,7 +1061,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-070",
+      "id": "APS-062",
       "name": "Product Listing Writer",
       "department": "Design & Digital Products",
       "purpose": "Draft accurate product titles, descriptions and tags.",
@@ -1214,7 +1078,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-071",
+      "id": "APS-063",
       "name": "Dataset Curator",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Build small lawful datasets from permitted sources or synthetic examples.",
@@ -1231,7 +1095,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-072",
+      "id": "APS-064",
       "name": "Data Labeling Worker",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Label records using explicit instructions and uncertainty tags.",
@@ -1248,7 +1112,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-073",
+      "id": "APS-065",
       "name": "Labeling QA Critic",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Review labels for consistency and edge cases.",
@@ -1265,7 +1129,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-074",
+      "id": "APS-066",
       "name": "Annotation Guideline Writer",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Write precise labeling instructions and examples.",
@@ -1282,7 +1146,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-075",
+      "id": "APS-067",
       "name": "Data Cleaning Agent",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Detect duplicates, malformed rows and missing values.",
@@ -1299,7 +1163,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-076",
+      "id": "APS-068",
       "name": "Privacy & PII Checker",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Flag personal data and recommend minimization.",
@@ -1316,7 +1180,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-077",
+      "id": "APS-069",
       "name": "Evaluation Set Builder",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Create versioned regression fixtures without leaking secrets.",
@@ -1333,7 +1197,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-078",
+      "id": "APS-070",
       "name": "Benchmark Runner",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Run repeatable offline evaluations and report metrics.",
@@ -1350,7 +1214,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-079",
+      "id": "APS-071",
       "name": "Hallucination Detector",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Identify claims not supported by supplied evidence.",
@@ -1367,7 +1231,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-080",
+      "id": "APS-072",
       "name": "Error Taxonomist",
       "department": "Data, Labeling & Evaluation",
       "purpose": "Classify failures into actionable categories.",
@@ -1384,7 +1248,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-081",
+      "id": "APS-073",
       "name": "Repository Scout",
       "department": "Engineering & Reliability",
       "purpose": "Map repository structure and identify relevant files.",
@@ -1401,7 +1265,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-082",
+      "id": "APS-074",
       "name": "CI Failure Triager",
       "department": "Engineering & Reliability",
       "purpose": "Read logs and identify evidence-supported failure causes.",
@@ -1418,7 +1282,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-083",
+      "id": "APS-075",
       "name": "Test Designer",
       "department": "Engineering & Reliability",
       "purpose": "Create unit and regression tests for defined behavior.",
@@ -1435,7 +1299,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-084",
+      "id": "APS-076",
       "name": "Python Code Reviewer",
       "department": "Engineering & Reliability",
       "purpose": "Review Python changes for correctness and maintainability.",
@@ -1452,7 +1316,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-085",
+      "id": "APS-077",
       "name": "Android QA Planner",
       "department": "Engineering & Reliability",
       "purpose": "Prepare Android build and runtime verification checklists.",
@@ -1469,7 +1333,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-086",
+      "id": "APS-078",
       "name": "Dependency & License Auditor",
       "department": "Engineering & Reliability",
       "purpose": "Review dependency licenses, maintenance and transitive footprint.",
@@ -1486,7 +1350,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-087",
+      "id": "APS-079",
       "name": "Security Reviewer",
       "department": "Engineering & Reliability",
       "purpose": "Check secrets handling, permissions and unsafe execution paths.",
@@ -1503,7 +1367,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-088",
+      "id": "APS-080",
       "name": "Documentation Maintainer",
       "department": "Engineering & Reliability",
       "purpose": "Keep docs aligned with implemented behavior.",
@@ -1520,7 +1384,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-089",
+      "id": "APS-081",
       "name": "Release Manager",
       "department": "Engineering & Reliability",
       "purpose": "Prepare changelogs, version bumps and rollback notes.",
@@ -1537,7 +1401,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-090",
+      "id": "APS-082",
       "name": "Rollback Planner",
       "department": "Engineering & Reliability",
       "purpose": "Define safe revert steps and recovery checks.",
@@ -1554,7 +1418,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-091",
+      "id": "APS-083",
       "name": "Workflow Automation Planner",
       "department": "Operations, Finance & Compliance",
       "purpose": "Design low-cost automations with explicit trigger and action boundaries.",
@@ -1571,7 +1435,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-092",
+      "id": "APS-084",
       "name": "Schedule & Queue Planner",
       "department": "Operations, Finance & Compliance",
       "purpose": "Plan task queues and schedules without assuming a running scheduler.",
@@ -1588,24 +1452,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-093",
-      "name": "Artifact Organizer",
-      "department": "Operations, Finance & Compliance",
-      "purpose": "Name, classify and retain generated artifacts safely.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-094",
+      "id": "APS-085",
       "name": "Expense Guard",
       "department": "Operations, Finance & Compliance",
       "purpose": "Check every proposed action against the ₹0 budget.",
@@ -1622,7 +1469,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-095",
+      "id": "APS-086",
       "name": "Unit Economics Analyst",
       "department": "Operations, Finance & Compliance",
       "purpose": "Estimate time, costs and margin using stated assumptions.",
@@ -1639,7 +1486,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-096",
+      "id": "APS-087",
       "name": "Invoice Draft Assistant",
       "department": "Operations, Finance & Compliance",
       "purpose": "Prepare invoice drafts for human review.",
@@ -1656,7 +1503,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-097",
+      "id": "APS-088",
       "name": "Record Reconciliation Agent",
       "department": "Operations, Finance & Compliance",
       "purpose": "Compare task, invoice and user-confirmed payment records.",
@@ -1673,7 +1520,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-098",
+      "id": "APS-089",
       "name": "Terms & Policy Reader",
       "department": "Operations, Finance & Compliance",
       "purpose": "Summarize official terms and flag ambiguity.",
@@ -1690,7 +1537,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-099",
+      "id": "APS-090",
       "name": "Compliance Checklist Builder",
       "department": "Operations, Finance & Compliance",
       "purpose": "Create jurisdiction-aware review checklists without pretending to be legal counsel.",
@@ -1707,7 +1554,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-100",
+      "id": "APS-091",
       "name": "Operations Auditor",
       "department": "Operations, Finance & Compliance",
       "purpose": "Check evidence trails, approvals and reproducibility.",
@@ -1724,7 +1571,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-101",
+      "id": "APS-092",
       "name": "Model Capability Evaluator",
       "department": "Learning, Memory & Governance",
       "purpose": "Compare candidate models on a fixed task set.",
@@ -1741,7 +1588,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-102",
+      "id": "APS-093",
       "name": "Prompt Version Manager",
       "department": "Learning, Memory & Governance",
       "purpose": "Track prompt versions and evaluation results.",
@@ -1758,7 +1605,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-103",
+      "id": "APS-094",
       "name": "Agent Version Manager",
       "department": "Learning, Memory & Governance",
       "purpose": "Track agent IDs, semantic versions and compatibility.",
@@ -1775,24 +1622,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-104",
-      "name": "Knowledge Distiller",
-      "department": "Learning, Memory & Governance",
-      "purpose": "Turn reviewed outcomes into concise reusable guidance.",
-      "agent_version": "0.1.0",
-      "status": "planned",
-      "framework": "native-python-first",
-      "model_profile": "unassigned",
-      "model_version": "unassigned",
-      "prompt_version": "0.1.0",
-      "tool_access": "deny-by-default",
-      "network_access": "disabled-unless-explicitly-approved",
-      "approval_required": true,
-      "evaluation_status": "not-run",
-      "last_verified_commit": null
-    },
-    {
-      "id": "APS-105",
+      "id": "APS-095",
       "name": "Failure Replay Agent",
       "department": "Learning, Memory & Governance",
       "purpose": "Reproduce prior failures using safe test fixtures.",
@@ -1809,7 +1639,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-106",
+      "id": "APS-096",
       "name": "Regression Sentinel",
       "department": "Learning, Memory & Governance",
       "purpose": "Block releases when previously passing cases regress.",
@@ -1826,7 +1656,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-107",
+      "id": "APS-097",
       "name": "Feedback Triage Agent",
       "department": "Learning, Memory & Governance",
       "purpose": "Sort human feedback into bugs, preferences and policy concerns.",
@@ -1843,7 +1673,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-108",
+      "id": "APS-098",
       "name": "Experiment Designer",
       "department": "Learning, Memory & Governance",
       "purpose": "Define controlled experiments and success metrics.",
@@ -1860,7 +1690,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-109",
+      "id": "APS-099",
       "name": "Model Router Evaluator",
       "department": "Learning, Memory & Governance",
       "purpose": "Choose models using measured quality, latency, license and cost.",
@@ -1877,7 +1707,7 @@
       "last_verified_commit": null
     },
     {
-      "id": "APS-110",
+      "id": "APS-100",
       "name": "Governance & Audit Recorder",
       "department": "Learning, Memory & Governance",
       "purpose": "Record evidence, approvals, version changes and rollback decisions.",
