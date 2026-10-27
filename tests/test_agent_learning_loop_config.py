@@ -57,7 +57,7 @@ class SpecialistLearningLoopConfigTests(unittest.TestCase):
         self.assertIn("not evidence", self.config["status"])
         for agent in self.config["agents"]:
             self.assertEqual(agent["model_profile"], "unassigned")
-            self.assertIn("not", agent["status"])
+            self.assertEqual(agent["status"], "planned")
 
 
 if __name__ == "__main__":
