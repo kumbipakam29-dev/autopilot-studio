@@ -55,6 +55,8 @@ def run_learning_cycle(
         decision = "reject_candidate_regression_failed"
     elif comparison["decision"] == "reject_candidate":
         decision = "reject_candidate_safety_or_score"
+    elif candidate_score["weighted_score"] < baseline_score["weighted_score"]:
+        decision = "reject_candidate_quality_regression"
     elif not reviewer_approved:
         decision = "awaiting_human_approval"
     else:
