@@ -30,7 +30,7 @@ class EvidenceGraderTests(unittest.TestCase):
             "country_eligibility": "unknown",
             "task_rate_unit": "TBD",
             "acceptance_criteria": "",
-            "payout_details": "not stated",
+            "payout_details": "",
         })
         self.assertEqual(report["status"], "needs_human_review")
         self.assertFalse(report["evidence_complete"])
@@ -40,6 +40,18 @@ class EvidenceGraderTests(unittest.TestCase):
         self.assertIn("task_rate_unit", fields)
         self.assertIn("acceptance_criteria", fields)
         self.assertIn("payout_details", fields)
+
+    def test_explicit_not_stated_is_acceptable_but_never_proves_payment(self):
+        report = grader.grade_evidence({
+            "official_source_url": "https://official.example/jobs/2",
+            "country_eligibility": "India explicitly listed",
+            "task_rate_unit": "not stated by the official source",
+            "acceptance_criteria": "Complete the provided annotation rubric",
+            "payout_details": "not stated by the official source",
+        })
+        self.assertTrue(report["evidence_complete"])
+        self.assertFalse(report["payment_verified"])
+        self.assertEqual(report["status"], "evidence_complete_review_required")
 
     def test_non_dictionary_input_rejected(self):
         with self.assertRaises(TypeError):
