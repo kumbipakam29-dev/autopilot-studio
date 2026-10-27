@@ -20,6 +20,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [100-agent registry (versioned JSON)](config/agent_registry_v1.json) — catalog only; agents are not all deployed or running.
 - [15 specialized agents across three framework patterns](config/specialist_agents_15_v1.json) — five distinct agent specifications each inspired by smolagents, LangGraph, and CrewAI; specifications only, not 15 running model-backed agents.
 - [15-agent catalog integrity tests](tests/test_specialist_agents_15.py)
+- [15 offline specialist capability prototypes](agents/specialist_capabilities.py) — deterministic, standard-library-only MVPs with no model calls or network access; drafts and classifiers only, not autonomous external actions.
+- [Offline capability regression tests](tests/test_specialist_capabilities.py)
 - [Agent versioning and supervised learning standard](docs/AGENT_VERSIONING_AND_SUPERVISED_LEARNING.md)
 - [Pinned GitHub upstream agent sources](config/upstream_agent_sources_v1.json) — 10 public projects with commit pins, licenses and adaptation roles.
 - [GitHub agent source adoption plan](docs/GITHUB_UPSTREAM_AGENT_SOURCES.md) — staged adoption, including first read-only evidence grader.
