@@ -90,6 +90,20 @@ class LearningCycleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "change_rationale"):
             run_learning_cycle(**args)
 
+    def test_lower_quality_candidate_is_rejected_even_with_approval(self):
+        result = run_learning_cycle(
+            task_id="fixture-006",
+            baseline_output={"draft": "baseline"},
+            candidate_output={"draft": "worse"},
+            baseline_review=rubric(task=95),
+            candidate_review=rubric(task=80),
+            regression_results={"fixture": True},
+            change_rationale="Test a proposed rewrite.",
+            reviewer_approved=True,
+        )
+        self.assertEqual(result["decision"], "reject_candidate_quality_regression")
+        self.assertFalse(result["auto_release"])
+
 
 if __name__ == "__main__":
     unittest.main()
