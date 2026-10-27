@@ -3,3 +3,7 @@ dist
 android
 .env
 .DS_Store
+# Local CRM data is private; never commit leads, contacts, notes or payment records.
+crm/*.sqlite3
+crm/*.sqlite3-*
+crm/private_exports/
