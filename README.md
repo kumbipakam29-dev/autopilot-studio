@@ -29,6 +29,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Ahmedabad prospect research starter list](docs/PROSPECT_RESEARCH_AHMEDABAD_2026-10.md) — public-source candidates to manually qualify; no businesses contacted.
 - [Ahmedabad prospect research — batch 2](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_2_2026-10.md) — additional candidates and content hypotheses; no businesses contacted.
 - [Ahmedabad prospect research — batch 3](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_3_2026-10.md) — additional official-source café candidates; no businesses contacted.
+- [Ahmedabad prospect research — batch 4](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_4_2026-10.md) — four more candidates; research-only, not yet qualified.
+- [Prospect qualification scorecard](docs/PROSPECT_QUALIFICATION_SCORECARD.md) — hard gates, evidence scoring, and status/payment integrity rules.
 - [Portfolio spec work: café + local service](docs/PORTFOLIO_SPEC_WORK_CAFE_AND_LOCAL_SERVICE.md) — two fictional examples with post concepts, captions, 17-second Reels, and seven-day calendars.
 - [Ahmedabad outreach drafts](docs/AHMEDABAD_OUTREACH_DRAFTS_2026-10.md) — four fact-grounded drafts for manual review; unsent.
 - [Specialist capability GitHub Actions workflow](.github/workflows/specialist-capability-tests.yml) — runs the full offline unittest suite on pushes and pull requests.
