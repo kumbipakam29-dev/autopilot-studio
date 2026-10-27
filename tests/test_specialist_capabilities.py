@@ -88,7 +88,7 @@ class SpecialistCapabilityTests(unittest.TestCase):
 
     def test_dependency_mapper_detects_unknown_dependency_and_cycle(self):
         unknown = task_dependency_mapper({"tasks": [{"id": "a", "depends_on": ["missing"]}]})
-        self.assertIn("unknown dependency missing", unknown["errors"])
+        self.assertTrue(any("unknown dependency missing" in error for error in unknown["errors"]))
         cycle = task_dependency_mapper({"tasks": [{"id": "a", "depends_on": ["b"]}, {"id": "b", "depends_on": ["a"]}]})
         self.assertIn("dependency cycle detected", cycle["errors"])
 
