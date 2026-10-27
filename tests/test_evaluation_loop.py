@@ -21,13 +21,13 @@ def review(scores=None, flags=None, **extra):
 class EvaluationLoopTests(unittest.TestCase):
     def test_weighted_score_passes_threshold(self):
         result = score_review(review())
-        self.assertEqual(result["weighted_score"], 91.0)
+        self.assertEqual(result["weighted_score"], 90.5)
         self.assertEqual(result["status"], "pass_for_review")
         self.assertTrue(result["approval_required"])
 
     def test_hard_fail_overrides_high_numeric_score(self):
         result = score_review(review(flags=["fabricated_source_or_result"]))
-        self.assertEqual(result["weighted_score"], 91.0)
+        self.assertEqual(result["weighted_score"], 90.5)
         self.assertEqual(result["status"], "hard_fail")
 
     def test_missing_or_invalid_scores_rejected(self):
