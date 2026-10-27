@@ -40,6 +40,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Local-first CRM guide](crm/README.md) — private SQLite lead/client tracking, sourcing rules, and setup.
 - [CRM CLI](crm/crm_cli.py) — standard-library CRM commands, CSV import, pipeline stages, and customizable unsent outreach drafts.
 - [Blank CRM import template](crm/import_template.csv) — schema only; no real lead data.
+- [Ahmedabad CRM intake batch 7 (CSV)](crm/lead_import_batch_7.csv) — ten initial records with source status, offer hypotheses and verification gates; import manually after review.
+- [Ahmedabad CRM intake batch 7 research notes](docs/CRM_LEAD_INTAKE_BATCH_7_2026-10.md) — evidence notes and qualification steps.
 - [Prospect qualification scorecard](docs/PROSPECT_QUALIFICATION_SCORECARD.md) — hard gates, evidence scoring, and status/payment integrity rules.
 - [Portfolio spec work: café + local service](docs/PORTFOLIO_SPEC_WORK_CAFE_AND_LOCAL_SERVICE.md) — two fictional examples with post concepts, captions, 17-second Reels, and seven-day calendars.
 - [Ahmedabad outreach drafts](docs/AHMEDABAD_OUTREACH_DRAFTS_2026-10.md) — four fact-grounded drafts for manual review; unsent.
