@@ -57,6 +57,10 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Ahmedabad intake batch 7](crm/lead_import_batch_7.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_7_2026-10.md)
 - [Ahmedabad intake batch 8](crm/lead_import_batch_8.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_8_2026-10.md)
 
+- [15-specialist supervised learning loop](docs/15_SPECIALIST_AGENT_LEARNING_LOOP.md) — bounded specialist contracts, feedback-to-regression workflow, safety gates, and scoring rubric.
+- [15-specialist learning-loop configuration](config/agent_learning_loop_v1.json) — versioned JSON profiles (catalog only; not 15 running processes).
+- [Offline configuration tests](tests/test_agent_learning_loop_config.py) — checks specialist count, unique IDs, contract fields, scoring weights and approval gates.
+
 ## Research documents
 - [Deep research, system gap audit, free tools/models and zero-budget roadmap](docs/DEEP_RESEARCH_ZERO_BUDGET.md)
 - [1,224 categorized opportunity hypotheses (CSV)](docs/IDEA_BANK_1200.csv)
