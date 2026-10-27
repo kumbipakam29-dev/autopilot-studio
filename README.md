@@ -30,6 +30,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Ahmedabad prospect research — batch 2](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_2_2026-10.md) — additional candidates and content hypotheses; no businesses contacted.
 - [Ahmedabad prospect research — batch 3](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_3_2026-10.md) — additional official-source café candidates; no businesses contacted.
 - [Ahmedabad prospect research — batch 4](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_4_2026-10.md) — four more candidates; research-only, not yet qualified.
+- [Ahmedabad bulk coverage plan](docs/AHMEDABAD_BULK_COVERAGE_PLAN.md) — category × neighbourhood discovery method, qualification gates, and coverage clusters.
+- [Ahmedabad prospect inventory v1 (CSV)](docs/AHMEDABAD_PROSPECT_INVENTORY_V1.csv) — 20 public-directory candidates, all marked unqualified and not contacted.
 - [Prospect qualification scorecard](docs/PROSPECT_QUALIFICATION_SCORECARD.md) — hard gates, evidence scoring, and status/payment integrity rules.
 - [Portfolio spec work: café + local service](docs/PORTFOLIO_SPEC_WORK_CAFE_AND_LOCAL_SERVICE.md) — two fictional examples with post concepts, captions, 17-second Reels, and seven-day calendars.
 - [Ahmedabad outreach drafts](docs/AHMEDABAD_OUTREACH_DRAFTS_2026-10.md) — four fact-grounded drafts for manual review; unsent.
