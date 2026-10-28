@@ -53,7 +53,11 @@ jobs:
               --output "artifacts/creative-tool-intelligence/observations/${name}.json"
           done
           python -m agents.creative_tool_intelligence --cycle examples/creative-reverse-engineering-cycle.json \
+            --ledger artifacts/creative-tool-intelligence/learning-ledger.jsonl \
             --output artifacts/creative-tool-intelligence/reverse-engineering-template-report.json
+          python -m agents.creative_tool_intelligence --history \
+            --ledger artifacts/creative-tool-intelligence/learning-ledger.jsonl \
+            --output artifacts/creative-tool-intelligence/learning-history.json
       - name: Add creative artifact summary
         if: always()
         run: |
@@ -110,6 +114,7 @@ jobs:
             artifacts/creative-pipelines/*.json
             artifacts/creative-tool-intelligence/*.json
             artifacts/creative-tool-intelligence/**/*.json
+            artifacts/creative-tool-intelligence/*.jsonl
           if-no-files-found: warn
           retention-days: 14
       - name: Run harmless demo task
