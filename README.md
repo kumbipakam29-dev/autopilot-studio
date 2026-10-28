@@ -18,6 +18,7 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 ## Creative production prototype
 - [Cinematic watch-ad production specification and six-shot prompts](docs/CINEMATIC_PRODUCT_AD_PIPELINE.md)
 - [Runnable Wan2.1 watch-motion smoke test notebook (GPU required; free allocation not guaranteed)](notebooks/WATCH_MOTION_SMOKE_TEST.ipynb)
+- [Multi-shot vertical watch-reel renderer (experimental; free GPU required)](notebooks/WATCH_PREMIUM_REEL_RENDER.ipynb)
 
 ## Research documents
 - [Deep research, system gap audit, free tools/models and zero-budget roadmap](docs/DEEP_RESEARCH_ZERO_BUDGET.md)
