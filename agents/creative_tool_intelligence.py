@@ -269,6 +269,12 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("experiment_name must be a non-empty string")
     baseline = _validate_metrics(raw.get("baseline_metrics"), "baseline_metrics")
     candidate = _validate_metrics(raw.get("candidate_metrics"), "candidate_metrics")
+    metrics_are_actual = raw.get("metrics_are_actual")
+    if not isinstance(metrics_are_actual, bool):
+        raise ValueError("metrics_are_actual must be true only after reviewing actual rendered outputs")
+    metric_provenance = raw.get("metric_provenance")
+    if not isinstance(metric_provenance, str) or not metric_provenance.strip():
+        raise ValueError("metric_provenance must identify the actual evaluator/reviewer or clearly mark a template")
     gates = raw.get("hard_gates")
     if not isinstance(gates, dict) or any(not isinstance(gates.get(key), bool) for key in HARD_GATES):
         raise ValueError("hard_gates must provide boolean values for: " + ", ".join(HARD_GATES))
@@ -279,8 +285,7 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
     candidate_score = _weighted_score(candidate)
     delta = round(candidate_score - baseline_score, 2)
     gates_passed = all(gates[key] is True for key in HARD_GATES)
-    if gates_passed and delta > 0:
-        decision = "PROMOTE_CANDIDATE_TO_HUMAN_REVIEW"
+    if not metrics_are_actual:\n        decision = "NEED_REAL_OUTPUT_MEASUREMENTS"\n    elif gates_passed and delta > 0:\n        decision = "PROMOTE_CANDIDATE_TO_HUMAN_REVIEW"
     elif not gates_passed:
         decision = "BLOCK_PROMOTION_FIX_HARD_GATES"
     else:
@@ -291,7 +296,7 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
         "baseline_metrics": baseline,
         "candidate_metrics": candidate,
         "hard_gates": gates,
-        "original_changes": change_log,
+        "metric_provenance": metric_provenance,\n        "metrics_are_actual": metrics_are_actual,\n        "original_changes": change_log,
     }, ensure_ascii=False, sort_keys=True)
     return {
         "schema_version": REGISTRY_VERSION,
@@ -308,14 +313,14 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
             "baseline_score": baseline_score,
             "candidate_score": candidate_score,
             "delta": delta,
-            "scores_are_measured_inputs": True,
+            "scores_are_measured_inputs": metrics_are_actual,
+            "metric_provenance": metric_provenance,
             "independent_quality_or_sales_claim": False,
         },
         "hard_gates": gates,
         "hard_gates_passed": gates_passed,
         "decision": decision,
-        "next_loop": (
-            "Have a human compare output files, approve/reject the candidate, record issues, and run the same benchmark again."
+        "next_loop": (\n            "Replace placeholder scores with measurements from actual output files before ranking a candidate."\n            if decision == "NEED_REAL_OUTPUT_MEASUREMENTS" else\n            "Have a human compare output files, approve/reject the candidate, record issues, and run the same benchmark again."
             if decision == "PROMOTE_CANDIDATE_TO_HUMAN_REVIEW"
             else "Record failed metrics, change one or two implementation variables, then rerun the same benchmark."
         ),
