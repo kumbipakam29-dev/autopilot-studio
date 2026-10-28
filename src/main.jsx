@@ -765,6 +765,87 @@ function App() {
         {agentRuns.length > 0 && <section className="panel"><div className="panel-head"><div><h3>Recent local draft runs</h3><p>Stored on this device only; not an authoritative cloud activity log.</p></div></div>{agentRuns.slice(0, 5).map(run => <div className="task" key={run.id}><span className="task-icon">✧</span><div><b>{run.businessName}</b><small>{new Date(run.createdAt).toLocaleString()} · {run.generationMode}</small></div><span className="status warn">Review required</span><button className="secondary" type="button" onClick={() => { setAgentOutput(run); setNotice('Loaded a saved local draft run.'); }}>View</button></div>)}</section>}
       </section>}
 
+      {tab === 'Creative Intelligence' && <section className="training-lab">
+        <section className="welcome">
+          <div>
+            <p className="eyebrow">PUBLIC TOOL INTELLIGENCE · ORIGINAL IMPLEMENTATION</p>
+            <h2>Study the workflow. Build our own better.</h2>
+            <p>Compare visible capabilities, record source evidence, design original experiments and keep quality gates in the loop.</p>
+          </div>
+          <div className="spark">↻</div>
+        </section>
+        <div className="notice"><b>Honest execution status</b><p>This dashboard version is browser-local and rule-based. It does not fetch the source URL, call an LLM, render media or connect to ComfyUI. The Python tool catalog, reverse-engineering ledger, creative planners and guarded ComfyUI runner are in the draft GitHub PR. Do not treat a hypothesis or hand-entered score as proof of quality or sales.</p></div>
+        <section className="panel">
+          <div className="panel-head">
+            <div><h3>Creative tools worth studying</h3><p>Public product behaviour → our own implementation idea. Access, licenses, model versions and costs can change.</p></div>
+            <button className="secondary" type="button" onClick={exportCreativeIntelligence}>Export local evidence ↓</button>
+          </div>
+          <div className="earning-source-grid">{CREATIVE_TOOL_CARDS.map(tool => <article className="earning-source" key={tool.name}>
+            <div className="earning-lead-top"><h4>{tool.name}</h4><span className="status">{tool.access}</span></div>
+            <p>{tool.purpose}</p>
+            <p><b>AutoPilot idea:</b> {tool.autopilot}</p>
+            <a href={tool.url} target="_blank" rel="noreferrer">Open public source ↗</a>
+          </article>)}</div>
+          <div className="notice"><b>Zero-budget routing principle</b><p>Prioritize local tools such as ComfyUI, Wan2.2, FFmpeg, Pillow, OpenCV, Whisper and VBench when the hardware and license fit. Hosted products can be comparison references, but never silently route a job to a paid endpoint.</p></div>
+        </section>
+
+        <section className="panel">
+          <div className="panel-head"><div><h3>1. Public observation → original hypotheses</h3><p>Record only what you can see in public demos/docs. Unknown internals stay unknown.</p></div></div>
+          <form className="training-form" onSubmit={analyzeCreativeObservation}>
+            <label>Tool / product<input required value={creativeObservation.toolName} onChange={e => updateCreativeObservation('toolName', e.target.value)} placeholder="e.g. a photo-to-video ad tool" /></label>
+            <label>Public source URL<input required type="url" value={creativeObservation.sourceUrl} onChange={e => updateCreativeObservation('sourceUrl', e.target.value)} placeholder="https://official-docs-or-public-demo..." /></label>
+            <label>Observation date<input required type="date" value={creativeObservation.observedOn} onChange={e => updateCreativeObservation('observedOn', e.target.value)} /></label>
+            <label className="training-wide">What did the public tool visibly do?<textarea rows="3" required value={creativeObservation.publicBehavior} onChange={e => updateCreativeObservation('publicBehavior', e.target.value)} placeholder="Describe visible features only: e.g. transitions between ordered keyframes, storyboard, editable text…" /></label>
+            <label className="training-wide">Observed inputs → outputs<textarea rows="3" required value={creativeObservation.inputOutputObserved} onChange={e => updateCreativeObservation('inputOutputObserved', e.target.value)} placeholder="Input photo / brief / keyframes → visible result and constraints…" /></label>
+            <label className="training-wide">Unknowns and limitations<textarea rows="2" required value={creativeObservation.unknowns} onChange={e => updateCreativeObservation('unknowns', e.target.value)} /></label>
+            <button className="primary training-wide" type="submit">Derive original experiment ideas</button>
+          </form>
+          {creativeObservationRuns.length === 0 ? <div className="empty">No public observations recorded on this device yet.</div> :
+            <div className="training-history">{creativeObservationRuns.map(run => <article className="training-run" key={run.id}>
+              <div className="training-run-head"><div><b>{run.toolName}</b><small>{new Date(run.createdAt).toLocaleString()} · source date {run.observedOn}</small></div><span className="status warn">Review required</span></div>
+              <p>{run.publicBehavior}</p>
+              <a href={run.sourceUrl} target="_blank" rel="noreferrer">Open the public source ↗</a>
+              <h4>Original hypotheses to test</h4>
+              {run.hypotheses.map((idea, i) => <div className="agent-output-card" key={idea.title}><div><b>{i + 1}. {idea.title}</b><p><b>Our implementation:</b> {idea.proposal}</p><p><b>Test:</b> {idea.test}</p><small>{idea.basis}</small></div></div>)}
+              <small>Source fetch: not performed · private code copied: false · access controls bypassed: false</small>
+            </article>)}</div>}
+        </section>
+
+        <section className="panel">
+          <div className="panel-head"><div><h3>2. Baseline vs candidate learning loop</h3><p>Use actual output files and the same brief; do not promote a candidate from placeholder scores.</p></div></div>
+          <form className="training-form" onSubmit={recordCreativeExperimentCycle}>
+            <label className="training-wide">Experiment name<input required value={creativeCycleForm.experimentName} onChange={e => updateCreativeCycleForm('experimentName', e.target.value)} /></label>
+            <label>Baseline score (0–100)<input type="number" min="0" max="100" required value={creativeCycleForm.baselineScore} onChange={e => updateCreativeCycleForm('baselineScore', e.target.value)} /></label>
+            <label>Candidate score (0–100)<input type="number" min="0" max="100" required value={creativeCycleForm.candidateScore} onChange={e => updateCreativeCycleForm('candidateScore', e.target.value)} /></label>
+            <label className="training-wide">Actual outputs and reviewer evidence<textarea rows="3" required value={creativeCycleForm.evidence} onChange={e => updateCreativeCycleForm('evidence', e.target.value)} placeholder="Describe actual baseline/candidate files, same test brief, reviewer/evaluator and the measured quality differences. Do not enter secrets." /></label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.actualOutputsReviewed} onChange={e => updateCreativeCycleForm('actualOutputsReviewed', e.target.checked)} /> Actual baseline and candidate media files were reviewed</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.assetRightsConfirmed} onChange={e => updateCreativeCycleForm('assetRightsConfirmed', e.target.checked)} /> Asset rights and subject consent confirmed</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.commercialLicenseCleared} onChange={e => updateCreativeCycleForm('commercialLicenseCleared', e.target.checked)} /> Model, custom-node, font and music licenses checked for this use</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.noUnsupportedClaims} onChange={e => updateCreativeCycleForm('noUnsupportedClaims', e.target.checked)} /> No unsupported claims, offers, testimonials or metrics</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.noDirectImitation} onChange={e => updateCreativeCycleForm('noDirectImitation', e.target.checked)} /> Original execution; no direct copying of a protected ad, brand or character</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.privacyReviewed} onChange={e => updateCreativeCycleForm('privacyReviewed', e.target.checked)} /> Client data and privacy reviewed</label>
+            <button className="primary training-wide" type="submit">Record benchmark cycle</button>
+          </form>
+          {creativeCycles.length === 0 ? <div className="empty">No creative evaluation cycles recorded on this device yet.</div> :
+            <div className="training-history">{creativeCycles.map(cycle => <article className="training-run" key={cycle.id}>
+              <div className="training-run-head"><div><b>{cycle.experimentName}</b><small>{new Date(cycle.createdAt).toLocaleString()} · device-local evidence</small></div><span className={'status ' + (cycle.decision === 'PROMOTE_CANDIDATE_TO_HUMAN_REVIEW' ? 'good' : 'warn')}>{cycle.decision}</span></div>
+              <div className="training-score-row"><div><small>Baseline</small><strong>{cycle.baselineScore}/100</strong></div><div><small>Candidate</small><strong>{cycle.candidateScore}/100</strong></div><div><small>Delta</small><strong>{cycle.delta > 0 ? '+' : ''}{cycle.delta}</strong></div><div><small>Measured outputs</small><strong>{cycle.metricsAreActual ? 'Yes' : 'No'}</strong></div></div>
+              <p className="muted">{cycle.evidence}</p>
+              <p className="training-blocked">No deployment, publishing, paid provider selection or model-weight update was performed.</p>
+            </article>)}</div>}
+          <div className="notice"><b>Promotion rule</b><p>The dashboard only marks an improved candidate as “eligible for human review” when actual media was reviewed, evidence was recorded, and every rights/license/factuality/originality/privacy gate is checked. This is a local user-entered record, not an independent model evaluation or server-backed audit ledger.</p></div>
+        </section>
+
+        <section className="panel">
+          <div className="panel-head"><div><h3>3. Python agent pipeline + CI evidence</h3><p>The Python tools and CI samples are separate from the browser-local prototype above.</p></div></div>
+          <div className="earning-actions">
+            <a href="https://github.com/kumbipakam29-dev/autopilot-studio/pull/62" target="_blank" rel="noreferrer">Open draft implementation PR ↗</a>
+            <a href="https://api.github.com/repos/kumbipakam29-dev/autopilot-studio/actions/artifacts/12788574385/zip" target="_blank" rel="noreferrer">Download creative evidence ZIP ↗</a>
+          </div>
+          <div className="notice"><b>What's inside the ZIP</b><p>Three client-specific campaign packs (salon, auto-parts, retail), 18-second shot plans, prompt sets, 11-agent handoff reports, source-linked tool registry, five public-tool hypothesis reports, learning ledger snapshot and hard-task test report. Packs are prompts/plans—not finished rendered Reels.</p></div>
+        </section>
+      </section>}
+
       {tab === 'Training Loop' && <section className="training-lab">
         <section className="panel">
           <p className="eyebrow">SUPERVISED EVALUATION · HUMAN GATE</p>
