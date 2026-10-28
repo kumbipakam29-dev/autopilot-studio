@@ -4,12 +4,20 @@ on:
     paths:
       - 'runtime/**'
       - 'agents/**'
+      - 'src/**'
+      - 'package.json'
+      - 'index.html'
+      - 'vite.config.*'
       - 'tests/**'
       - '.github/workflows/agent-runtime-tests.yml'
   pull_request:
     paths:
       - 'runtime/**'
       - 'agents/**'
+      - 'src/**'
+      - 'package.json'
+      - 'index.html'
+      - 'vite.config.*'
       - 'tests/**'
       - '.github/workflows/agent-runtime-tests.yml'
   workflow_dispatch:
@@ -22,6 +30,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Build Android dashboard frontend
+        run: |
+          npm install --no-package-lock --audit=false --fund=false
+          npm run build
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
