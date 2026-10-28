@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "project": "AutoPilot-Studio",
+  "title": "PDF Agent Ecosystem Crosswalk",
+  "source_documents": [
+    {
+      "filename": "Zero-Budget AI Agent Ecosystem Map - 10 Unique 2026-10-28.pdf",
+      "roles_mapped": 10,
+      "note": "Role names and architecture are taken from the uploaded PDF; this file does not assert that every role is independently running."
+    },
+    {
+      "filename": "चरण 1 - लाइब्रेरी इन्स्टॉल करें 2026-10-28.pdf",
+      "roles_mapped": 3,
+      "note": "The Researcher, Writer, and Editor workflow is represented by the Researcher, Writer, and Reviewer entries below."
+    }
+  ],
+  "budget_policy": "No new dependencies, model API keys, paid APIs, subscriptions, or model downloads are introduced by this crosswalk.",
+  "framework_policy": "CrewAI, LangGraph, ChromaDB, and hosted model endpoints are not installed or activated by this mapping.",
+  "status_policy": {
+    "partial": "Some related deterministic/read-only/draft functionality exists, but the PDF role is not implemented as a full independent model-backed agent.",
+    "not_implemented": "No adequate safe implementation of the named capability is currently mapped."
+  },
+  "claim_of_running_model_backed_agents": false,
+  "roles": [
+    {
+      "pdf_role": "Architect",
+      "status": "partial",
+      "implementation_paths": [
+        "runtime/runner.py",
+        "agents/specialist_capabilities.py"
+      ],
+      "current_behavior": "The runtime routes a known task type to a registered handler; a specialist can map task dependencies. This is deterministic routing, not autonomous planning.",
+      "gap": "No general planner that converts arbitrary goals into validated multi-step plans.",
+      "safe_next_step": "Add a bounded plan schema and test it with offline fixtures before connecting workers."
+    },
+    {
+      "pdf_role": "Coder",
+      "status": "not_implemented",
+      "implementation_paths": [],
+      "current_behavior": "The mapped system does not claim to generate, patch, or execute arbitrary code.",
+      "gap": "No tested code-generation worker with sandboxing, syntax checks, diff limits, and regression tests.",
+      "safe_next_step": "Do not add arbitrary shell execution. If needed, propose code diffs only, then run offline tests in CI."
+    },
+    {
+      "pdf_role": "Reviewer",
+      "status": "partial",
+      "implementation_paths": [
+        "agents/annotation_quality_check.py",
+        "agents/evidence_grader.py",
+        "agents/specialist_capabilities.py"
+      ],
+      "current_behavior": "Deterministic checks can flag annotation/evidence quality and review supplied inputs; they are not a general code-security auditor.",
+      "gap": "No broad static-analysis or security-review agent for arbitrary generated code.",
+      "safe_next_step": "Use existing deterministic checks plus Python compile/tests and vetted static-analysis tools when available."
+    },
+    {
+      "pdf_role": "Researcher",
+      "status": "partial",
+      "implementation_paths": [
+        "agents/earnings_hunter.py",
+        "agents/data_labeling_hunter.py",
+        "agents/specialist_capabilities.py"
+      ],
+      "current_behavior": "Existing hunters perform bounded research against configured public sources; the source-verifier specialist checks user-supplied evidence shape without fetching URLs.",
+      "gap": "No universal open-web research worker with guaranteed freshness or completeness.",
+      "safe_next_step": "Keep source URL, checked timestamp, quote/snippet and eligibility status attached to each lead; require human verification."
+    },
+    {
+      "pdf_role": "Writer",
+      "status": "partial",
+      "implementation_paths": [
+        "agents/client_acquisition_pipeline.py",
+        "agents/specialist_capabilities.py"
+      ],
+      "current_behavior": "The offline content pipeline creates captions, a seven-day calendar, short Reel scripts, spec-work concepts and unsent outreach drafts from supplied facts.",
+      "gap": "Deterministic templates are not equivalent to a connected model-backed writer and may need human rewriting.",
+      "safe_next_step": "Use existing output as a draft and fact-check all business claims before publishing."
+    },
+    {
+      "pdf_role": "Analyst",
+      "status": "partial",
+      "implementation_paths": [
+        "runtime/opportunity_tracker.py",
+        "agents/earning_task_ledger.py"
+      ],
+      "current_behavior": "Structured opportunity and ledger data can be tracked and summarized; this does not promise sophisticated ML analysis.",
+      "gap": "No general-purpose natural-language data analyst or model-backed visualization agent is connected by this crosswalk.",
+      "safe_next_step": "Add reproducible CSV summary tests and display sample size, source and last-checked date."
+    },
+    {
+      "pdf_role": "Communicator",
+      "status": "partial",
+      "implementation_paths": [
+        "agents/client_acquisition_pipeline.py",
+        "agents/specialist_capabilities.py"
+      ],
+      "current_behavior": "The system drafts customer-facing copy and permission-first outreach for human review; it does not send messages or run a sentiment-aware chat agent.",
+      "gap": "No live conversational channel or authorized message-sending integration.",
+      "safe_next_step": "Keep all communications as drafts unless the owner separately approves a connected, supported send action."
+    },
+    {
+      "pdf_role": "Executor",
+      "status": "partial",
+      "implementation_paths": [
+        "runtime/runner.py",
+        "agents/specialist_capabilities.py"
+      ],
+      "current_behavior": "The runtime dispatches bounded local tasks and writes a task event; approval-gate capabilities classify sensitive actions. It does not perform arbitrary shell commands or external account actions.",
+      "gap": "No general-purpose external-action executor, intentionally.",
+      "safe_next_step": "Maintain deny-by-default tool access and human approval for publishing, outreach, account changes, spend and payment actions."
+    },
+    {
+      "pdf_role": "Memory",
+      "status": "partial",
+      "implementation_paths": [
+        "agents/learning_cycle.py",
+        "agents/evaluation_loop.py"
+      ],
+      "current_behavior": "The branch contains a supervised, versioned learning/evaluation loop; this is not ChromaDB-backed semantic conversation memory.",
+      "gap": "No validated persistent vector store or privacy-reviewed retrieval policy is connected.",
+      "safe_next_step": "Do not add a vector database until storage, deletion, data-minimization and regression-test behavior are defined."
+    },
+    {
+      "pdf_role": "Orchestrator",
+      "status": "partial",
+      "implementation_paths": [
+        "runtime/runner.py",
+        "agents/specialist_runner.py",
+        "agents/client_acquisition_pipeline.py"
+      ],
+      "current_behavior": "A deterministic task runner and offline specialist pipeline coordinate bounded local capabilities. The LangGraph/CrewAI frameworks are not installed.",
+      "gap": "No distributed, model-backed graph orchestrator or dynamic agent-to-agent dialogue.",
+      "safe_next_step": "Use the current standard-library workflow first; adopt an external framework only after a tested requirement and verified no-cost deployment path exist."
+    }
+  ]
+}

@@ -50,6 +50,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [Pinned GitHub upstream agent sources](config/upstream_agent_sources_v1.json) — 10 public projects with commit pins, licenses and adaptation roles.
 - [GitHub agent source adoption plan](docs/GITHUB_UPSTREAM_AGENT_SOURCES.md) — staged adoption, including first read-only evidence grader.
 - [Open-source agent learning and integration roadmap](docs/OPEN_SOURCE_AGENT_LEARNING_ROADMAP.md)
+- [PDF-derived 10-agent ecosystem crosswalk](docs/PDF_AGENT_ECOSYSTEM_CROSSWALK.md) — maps both uploaded PDF outlines to the existing code and tested/partial/missing states.
+- [Machine-readable PDF role mapping](config/pdf_agent_ecosystem_crosswalk_v1.json) and [integrity tests](tests/test_pdf_agent_ecosystem_crosswalk.py).
 
 ## CRM and prospect intake
 - [Local-first CRM guide](crm/README.md) and [CRM CLI](crm/crm_cli.py) — local SQLite tracking and unsent draft generation; no automatic outreach.
