@@ -12,7 +12,7 @@ from typing import Any
 from agents.evaluation_loop import score_review
 
 EVOLUTION_SCHEMA = "autopilot_agent_evolution_v1"
-SEMVER_RE = re.compile(r"^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$")
+SEMVER_RE = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 
 def _semver_parts(version: str) -> tuple[int, int, int]:
     if not isinstance(version, str) or not SEMVER_RE.fullmatch(version):
