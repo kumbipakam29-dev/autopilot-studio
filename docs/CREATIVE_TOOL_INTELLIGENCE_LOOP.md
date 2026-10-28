@@ -38,8 +38,11 @@ CI runs this analysis for source-linked public observations about Pika keyframes
 Run an evidence-and-benchmark cycle:
 
 ```bash
-python -m agents.creative_tool_intelligence --cycle examples/creative-reverse-engineering-cycle.json
+python -m agents.creative_tool_intelligence --cycle examples/creative-reverse-engineering-cycle.json --ledger artifacts/creative-tool-intelligence/learning-ledger.jsonl
+python -m agents.creative_tool_intelligence --history --ledger artifacts/creative-tool-intelligence/learning-ledger.jsonl
 ```
+
+The JSONL ledger deduplicates cycle IDs, records metric provenance and excludes placeholder/unmeasured scores from the best-candidate comparison. Reuse the same local ledger path to persist cycles across runs; a fresh CI run creates a fresh artifact snapshot unless a prior ledger is deliberately restored.
 
 All metric scores must be supplied from actual output reviews or a documented evaluator, on a 0–5 scale. The program does not fabricate measurements. A score increase without rights, factuality, privacy, originality and actual-output gates cannot promote a candidate. A passed score recommends human review, not automatic production deployment.
 
