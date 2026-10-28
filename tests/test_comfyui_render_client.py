@@ -85,7 +85,7 @@ class ComfyUIRenderClientTests(unittest.TestCase):
             self.assertEqual(result["prompt_id"], "job_123")
             self.assertEqual(submitted["2"]["inputs"]["image"], "uploaded.png")
             self.assertEqual(submitted["3"]["inputs"]["seed"], 42)
-            self.assertFalse(result["model_inference_confirmed"])
+            self.assertFalse(result["output_downloaded"])
 
     def test_provider_nodes_blocked_by_default(self):
         with tempfile.TemporaryDirectory() as temp:
