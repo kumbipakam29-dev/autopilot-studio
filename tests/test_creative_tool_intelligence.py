@@ -3,6 +3,7 @@ import unittest
 from agents.creative_tool_intelligence import (
     HARD_GATES,
     TOOL_CATALOG,
+    analyze_public_observation,
     build_reverse_engineering_cycle,
     recommend_tools,
 )
@@ -46,7 +47,7 @@ def cycle_input(baseline=3, candidate=4, gates=True):
 
 class CreativeToolIntelligenceTests(unittest.TestCase):
     def test_registry_has_sources_and_cautions(self):
-        self.assertGreaterEqual(len(TOOL_CATALOG), 10)
+        self.assertGreaterEqual(len(TOOL_CATALOG), 13)
         for tool in TOOL_CATALOG:
             self.assertTrue(tool["sources"])
             self.assertTrue(tool["cautions"])
@@ -61,6 +62,21 @@ class CreativeToolIntelligenceTests(unittest.TestCase):
     def test_unsupported_task_rejected(self):
         with self.assertRaises(ValueError):
             recommend_tools("mind_reading")
+
+    def test_public_observation_creates_original_hypotheses(self):
+        observation = cycle_input()["observation"]
+        report = analyze_public_observation(observation)
+        titles = [item["title"] for item in report["original_hypotheses"]]
+        self.assertIn("Reference-image anchoring", titles)
+        self.assertFalse(report["safety_truth"]["private_code_copied"])
+        self.assertTrue(all(item["basis"] == "publicly observable behavior only"
+                            for item in report["original_hypotheses"]))
+
+    def test_typography_observation_suggests_editable_text_layers(self):
+        observation = cycle_input()["observation"]
+        observation["public_behavior"] = "The public tool demonstrates text rendering for a promotional poster."
+        report = analyze_public_observation(observation)
+        self.assertIn("Editable typography pass", [item["title"] for item in report["original_hypotheses"]])
 
     def test_cycle_promotes_only_when_score_improves_and_all_gates_pass(self):
         report = build_reverse_engineering_cycle(cycle_input())
