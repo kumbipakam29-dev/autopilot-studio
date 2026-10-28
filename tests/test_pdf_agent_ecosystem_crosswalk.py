@@ -37,8 +37,8 @@ class PdfAgentCrosswalkTests(unittest.TestCase):
         self.assertFalse(self.data["claim_of_running_model_backed_agents"])
 
     def test_no_framework_install_or_paid_api_is_claimed(self):
-        self.assertEqual(self.data["framework_policy"].count("not installed"), 2)
-        self.assertEqual(self.data["budget_policy"].find("No new dependencies"), 0)
+        self.assertIn("not installed or activated", self.data["framework_policy"])
+        self.assertTrue(self.data["budget_policy"].startswith("No new dependencies"))
 
 
 if __name__ == "__main__":
