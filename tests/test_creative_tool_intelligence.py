@@ -4,8 +4,11 @@ from agents.creative_tool_intelligence import (
     HARD_GATES,
     TOOL_CATALOG,
     analyze_public_observation,
+    append_cycle_ledger,
     build_reverse_engineering_cycle,
+    next_experiment,
     recommend_tools,
+    summarize_cycle_ledger,
 )
 
 
@@ -121,6 +124,41 @@ class CreativeToolIntelligenceTests(unittest.TestCase):
         report = build_reverse_engineering_cycle(data)
         self.assertEqual(report["decision"], "NEED_REAL_OUTPUT_MEASUREMENTS")
         self.assertFalse(report["benchmark"]["scores_are_measured_inputs"])
+
+    def test_ledger_appends_once_and_summarizes_measured_results(self):
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "ledger.jsonl"
+            report = build_reverse_engineering_cycle(cycle_input())
+            first = append_cycle_ledger(path, report)
+            second = append_cycle_ledger(path, report)
+            summary = summarize_cycle_ledger(path)
+        self.assertTrue(first["inserted"])
+        self.assertFalse(second["inserted"])
+        self.assertEqual(summary["cycle_count"], 1)
+        self.assertEqual(summary["measured_cycle_count"], 1)
+        self.assertIsNotNone(summary["best_measured_candidate"])
+
+    def test_ledger_excludes_placeholder_metrics_from_best_candidate(self):
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "ledger.jsonl"
+            data = cycle_input()
+            data["metrics_are_actual"] = False
+            report = build_reverse_engineering_cycle(data)
+            append_cycle_ledger(path, report)
+            summary = summarize_cycle_ledger(path)
+        self.assertEqual(summary["measured_cycle_count"], 0)
+        self.assertIsNone(summary["best_measured_candidate"])
+
+    def test_next_experiment_targets_weakest_measured_dimension(self):
+        result = next_experiment(metrics(4), metrics_are_actual=True)
+        self.assertIn(result["target_dimension"], metrics(4))
+        self.assertTrue(result["experiment"])
+        unmeasured = next_experiment(metrics(0), metrics_are_actual=False)
+        self.assertEqual(unmeasured["target_dimension"], "unmeasured")
 
     def test_observation_requires_https_public_evidence(self):
         data = cycle_input()
