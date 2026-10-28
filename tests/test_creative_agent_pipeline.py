@@ -33,6 +33,10 @@ class CreativeAgentPipelineTests(unittest.TestCase):
         self.assertEqual(len(names), len(set(names)))
         self.assertEqual(len(result["cinematic_ad_pack"]["concepts"]), 3)
         self.assertTrue(result["execution_truth"]["rule_based_creative_plan_generated"])
+        self.assertEqual(result["tool_intelligence"]["registry_version"], "creative_tool_intelligence_v1")
+        self.assertFalse(result["tool_intelligence"]["live_tool_discovery_performed"])
+        self.assertTrue(result["tool_intelligence"]["recommendations"])
+        self.assertTrue(all(item["policy"]["no_silent_paid_fallback"] for item in result["tool_intelligence"]["recommendations"]))
 
     def test_does_not_claim_render_or_publish(self):
         result = build_agent_pipeline(self.brief())
