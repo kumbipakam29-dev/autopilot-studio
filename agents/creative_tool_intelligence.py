@@ -426,7 +426,7 @@ def append_cycle_ledger(path: str | Path, report: dict[str, Any]) -> dict[str, A
         "next_experiment": report.get("next_experiment"),
     }
     with ledger.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\\n")
+        handle.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\n")
     return {"path": str(ledger), "inserted": True, "entry_count": len(entries) + 1}
 
 
