@@ -1,0 +1,9 @@
+{
+  "tool_name": "VBench",
+  "source_url": "https://github.com/Vchitect/VBench",
+  "observed_on": "2026-10-28",
+  "public_behavior": "The public benchmark project describes separate video-generation evaluation dimensions including subject/background consistency, temporal flicker, motion smoothness, aesthetic quality and image quality.",
+  "input_output_observed": "Video-generation outputs can be evaluated with dimension-specific methods rather than a single unqualified quality number.",
+  "unknowns": "Benchmark results do not independently prove commercial conversion, customer satisfaction or suitability for a specific local-business ad.",
+  "evidence_scope": "public_research_paper"
+}
