@@ -1,0 +1,36 @@
+{
+  "client_name": "Fictional Neighbourhood Retail Store",
+  "business_type": "general store retail",
+  "audience": "local families and everyday shoppers",
+  "goal": "show useful product categories and invite store visits",
+  "offer_or_topic": "everyday household essentials and selected products",
+  "brand_voice": "helpful, bright, friendly and clear",
+  "call_to_action": "Visit the store to explore the range",
+  "work_types": [
+    "reel_video",
+    "social_content",
+    "poster_design"
+  ],
+  "platforms": [
+    "instagram",
+    "facebook"
+  ],
+  "approved_facts": [],
+  "prohibited_claims": [
+    "lowest prices in town",
+    "number one",
+    "award-winning",
+    "fake testimonials",
+    "unsupported discounts"
+  ],
+  "brand_colors": [
+    "deep green",
+    "warm yellow",
+    "cream"
+  ],
+  "reference_notes": [
+    "Fictional sample brief for testing only; replace with actual store, product and promotion details."
+  ],
+  "client_asset_permission_confirmed": false,
+  "publish_approval": false
+}

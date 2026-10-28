@@ -1,0 +1,33 @@
+{
+  "client_name": "Fictional Demo Salon",
+  "business_type": "salon",
+  "audience": "local customers considering hair styling services",
+  "goal": "show service craft and invite genuine appointment enquiries",
+  "offer_or_topic": "hair styling consultation and styling service",
+  "brand_voice": "premium, modern, warm and confident",
+  "call_to_action": "Message us to ask about appointments",
+  "work_types": [
+    "reel_video",
+    "social_content"
+  ],
+  "platforms": [
+    "instagram"
+  ],
+  "approved_facts": [],
+  "prohibited_claims": [
+    "guaranteed results",
+    "best salon in Ahmedabad",
+    "award-winning",
+    "fake testimonials",
+    "guaranteed hair transformation"
+  ],
+  "brand_colors": [
+    "black",
+    "rose gold"
+  ],
+  "reference_notes": [
+    "Fictional sample brief for testing only; replace with real client-approved information and assets."
+  ],
+  "client_asset_permission_confirmed": false,
+  "publish_approval": false
+}

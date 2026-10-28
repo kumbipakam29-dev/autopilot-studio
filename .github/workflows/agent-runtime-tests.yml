@@ -4,12 +4,20 @@ on:
     paths:
       - 'runtime/**'
       - 'agents/**'
+      - 'src/**'
+      - 'package.json'
+      - 'index.html'
+      - 'vite.config.*'
       - 'tests/**'
       - '.github/workflows/agent-runtime-tests.yml'
   pull_request:
     paths:
       - 'runtime/**'
       - 'agents/**'
+      - 'src/**'
+      - 'package.json'
+      - 'index.html'
+      - 'vite.config.*'
       - 'tests/**'
       - '.github/workflows/agent-runtime-tests.yml'
   workflow_dispatch:
@@ -22,6 +30,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Build Android dashboard frontend
+        run: |
+          npm install --no-package-lock --audit=false --fund=false
+          npm run build
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -32,6 +44,44 @@ jobs:
         run: |
           mkdir -p artifacts
           python -m agents.hard_task_simulation --output artifacts/hard-task-learning-report.json
+      - name: Generate creative portfolios, tool shortlist, poster previews and learning-loop evidence
+        run: |
+          mkdir -p artifacts/creative-packs artifacts/creative-pipelines artifacts/creative-tool-intelligence/observations artifacts/poster-previews
+          for business in salon auto-parts retail; do
+            python -m agents.cinematic_ad_planner --brief "examples/cinematic-ad-brief-${business}.json" --output "artifacts/creative-packs/${business}.json"
+            python -m agents.creative_agent_pipeline --brief "examples/cinematic-ad-brief-${business}.json" --output "artifacts/creative-pipelines/${business}.json"
+            python -m agents.premium_poster_renderer --brief "examples/cinematic-ad-brief-${business}.json" --output "artifacts/poster-previews/${business}.svg"
+          done
+          python -m agents.creative_tool_intelligence --list-tools --output artifacts/creative-tool-intelligence/catalog.json
+          python -m agents.creative_tool_intelligence --task premium_cinematic_reel --output artifacts/creative-tool-intelligence/premium-reel-shortlist.json
+          for observation in examples/creative-tool-observation-*.json; do
+            name=$(basename "$observation" .json)
+            python -m agents.creative_tool_intelligence --observation "$observation" --output "artifacts/creative-tool-intelligence/observations/${name}.json"
+          done
+          python -m agents.creative_tool_intelligence --cycle examples/creative-reverse-engineering-cycle.json --ledger artifacts/creative-tool-intelligence/learning-ledger.jsonl --output artifacts/creative-tool-intelligence/reverse-engineering-template-report.json
+          python -m agents.creative_tool_intelligence --history --ledger artifacts/creative-tool-intelligence/learning-ledger.jsonl --output artifacts/creative-tool-intelligence/learning-history.json
+      - name: Add creative artifact summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          with summary.open("a", encoding="utf-8") as out:
+              out.write("\\n## Creative tool intelligence outputs\\n")
+              for path in sorted(Path("artifacts/creative-packs").glob("*.json")):
+                  data = json.loads(path.read_text(encoding="utf-8"))
+                  out.write(f"- {path.name}: {len(data.get('concepts', []))} concepts; rendered={data.get('execution_truth', {}).get('video_rendered', False)}\\n")
+              for path in sorted(Path("artifacts/creative-pipelines").glob("*.json")):
+                  data = json.loads(path.read_text(encoding="utf-8"))
+                  out.write(f"- Pipeline {path.name}: {len(data.get('agent_tasks', []))} agents; published={data.get('execution_truth', {}).get('published', False)}\\n")
+              previews = sorted(Path("artifacts/poster-previews").glob("*.svg"))
+              out.write(f"- Vector poster prototypes: {len(previews)}; these are abstract editable layouts, not final client assets.\\n")
+              cycle = Path("artifacts/creative-tool-intelligence/reverse-engineering-template-report.json")
+              if cycle.exists():
+                  data = json.loads(cycle.read_text(encoding="utf-8"))
+                  out.write("- Reverse-engineering loop: **" + data["decision"] + "** (placeholder metrics; no production claim)\\n")
+          PY
       - name: Add report summary
         if: always()
         run: |
@@ -41,26 +91,33 @@ jobs:
           with open("artifacts/hard-task-learning-report.json", encoding="utf-8") as source:
               report = json.load(source)
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-              summary.write("# AutoPilot Studio hard-task report\n\n")
-              summary.write("- Run ID: " + report["run_id"] + "\n")
+              summary.write("# AutoPilot Studio hard-task report\\n\\n")
+              summary.write("- Run ID: " + report["run_id"] + "\\n")
               for key, label in (("A_compute_virtual_ram", "Compute / virtual RAM"), ("B_customer_creative_workflow", "Creative workflow")):
                   track = report["tracks"][key]
-                  summary.write("- " + label + ": **" + track["status"] + "** (" + str(track["score"]) + "/100)\n")
-              summary.write("- Quality gate: **" + report["quality_gate"]["status"] + "**\n")
-              summary.write("- Customer delivery allowed: **false**\n")
-              summary.write("- Live model inference: **not performed**\n")
-              summary.write("- External actions: **not performed**\n")
-              summary.write("\n## Alerts\n")
+                  summary.write("- " + label + ": **" + track["status"] + "** (" + str(track["score"]) + "/100)\\n")
+              summary.write("- Quality gate: **" + report["quality_gate"]["status"] + "**\\n")
+              summary.write("- Customer delivery allowed: **false**\\n")
+              summary.write("- Live model inference: **not performed**\\n")
+              summary.write("- External actions: **not performed**\\n")
+              summary.write("\\n## Alerts\\n")
               for alert in report["alerts"]:
-                  summary.write("- **" + alert["severity"].upper() + "** — " + alert["message"] + "\n")
+                  summary.write("- **" + alert["severity"].upper() + "** — " + alert["message"] + "\\n")
           PY
           fi
-      - name: Upload machine-readable report
+      - name: Upload machine-readable report and creative previews
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hard-task-learning-report
-          path: artifacts/hard-task-learning-report.json
+          name: autopilot-creative-evidence
+          path: |
+            artifacts/hard-task-learning-report.json
+            artifacts/creative-packs/*.json
+            artifacts/creative-pipelines/*.json
+            artifacts/creative-tool-intelligence/*.json
+            artifacts/creative-tool-intelligence/**/*.json
+            artifacts/creative-tool-intelligence/*.jsonl
+            artifacts/poster-previews/*.svg
           if-no-files-found: warn
           retention-days: 14
       - name: Run harmless demo task

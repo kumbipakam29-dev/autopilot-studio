@@ -3,8 +3,42 @@ import { createRoot } from 'react-dom/client';
 import { POD_CONCEPTS, REVIEW_STAGES } from './podData.js';
 import './style.css';
 
-const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Training Loop', 'Task Queue', 'Reports', 'Settings'];
-const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Training Loop': '↻', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
+const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Creative Intelligence', 'Training Loop', 'Task Queue', 'Reports', 'Settings'];
+const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Creative Intelligence': '✧', 'Training Loop': '↻', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
+
+const CREATIVE_TOOL_CARDS = [
+  { name: 'ComfyUI', access: 'Local workflow graph', purpose: 'Run connected image/video/audio workflows and expose them through a local API.', url: 'https://github.com/Comfy-Org/ComfyUI', autopilot: 'Versioned workflow nodes and explicit input/output contracts.' },
+  { name: 'Wan2.2', access: 'Open weights · local', purpose: 'Candidate for text-to-video and image-to-video generation.', url: 'https://github.com/Wan-Video/Wan2.2', autopilot: 'Local rendering option after GPU, checkpoint and license validation.' },
+  { name: 'LTX-2.5', access: 'Community license', purpose: 'Video/audio model family with version-specific usage conditions.', url: 'https://github.com/Lightricks/LTX-2', autopilot: 'Optional candidate; commercial license clearance is a hard gate.' },
+  { name: 'VBench', access: 'Evaluation tools', purpose: 'Video quality dimensions such as motion smoothness, flicker and subject/background consistency.', url: 'https://github.com/Vchitect/VBench', autopilot: 'Compare actual exports with a fixed benchmark, not sales claims.' },
+  { name: 'Ideogram', access: 'Hosted service', purpose: 'Text-heavy poster and typography generation.', url: 'https://ideogram.ai/features/text-rendering/', autopilot: 'Proofread copy and keep critical text editable whenever possible.' },
+  { name: 'Pika', access: 'Hosted · credits/plan', purpose: 'Photo animation and transitions between ordered keyframes.', url: 'https://creation.pika.art/apps/pikaframes?tab=video-tools', autopilot: 'Implement our own keyframe planner and measure continuity.' },
+  { name: 'Krea', access: 'Hosted multi-model', purpose: 'Image/video generation, editing and enhancement in one workspace.', url: 'https://www.krea.ai/', autopilot: 'Separate generation, edit, enhancement and style/identity checks.' },
+  { name: 'Canva Magic Video', access: 'Hosted freemium', purpose: 'Template-guided assembly of photos/clips, transitions and music.', url: 'https://www.canva.com/help/magic-video/', autopilot: 'Use template assembly after the custom concept passes originality checks.' },
+  { name: 'Adobe Firefly Agent', access: 'Proprietary hosted', purpose: 'Brand kits, storyboards-to-video, product-photo video and first-cut editing.', url: 'https://news.adobe.com/news/2026/06/adobe-unveils-major-expansion', autopilot: 'Independent modular pipeline: brief → storyboard → shots → edit.' },
+  { name: 'Runway Workflows', access: 'Proprietary · credits/API', purpose: 'Reusable multi-model workflow chains and model routing.', url: 'https://dev.runwayml.com/workflows', autopilot: 'Transparent local-first router, cost/latency evidence and no silent paid fallback.' },
+  { name: 'FFmpeg', access: 'Local media pipeline', purpose: 'Deterministic cut, transcode, crop, audio mix and export.', url: 'https://www.ffmpeg.org/ffmpeg.html', autopilot: 'Validate final dimensions, frame rate, duration, codec and audio.' },
+  { name: 'Pillow', access: 'Local image library', purpose: 'Exact pixel-level text and image composition.', url: 'https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html', autopilot: 'Build crisp poster text overlays using approved copy and licensed fonts.' },
+  { name: 'OpenCV', access: 'Local vision library', purpose: 'Frame analysis, image processing and image/video quality signals.', url: 'https://github.com/opencv/opencv', autopilot: 'Screen for blur, crop shifts and frame differences, then human-review.' },
+  { name: 'Whisper', access: 'Open source · local', purpose: 'Speech transcription and subtitle drafts.', url: 'https://github.com/openai/whisper', autopilot: 'Proofread names, prices, accents, subtitle timing and audio consent.' }
+];
+
+function deriveCreativeHypotheses(observation) {
+  const text = [observation.publicBehavior, observation.inputOutputObserved].join(' ').toLowerCase();
+  const rules = [
+    { terms: ['keyframe', 'ordered image', 'first and last frame'], title: 'Keyframe continuity planner', proposal: 'Plan ordered reference frames and a separate motion instruction for each transition.', test: 'Compare subject/product continuity at the start, middle and end frames.' },
+    { terms: ['image to video', 'photo', 'uploaded image', 'reference image', 'image-to-video'], title: 'Reference-image anchoring', proposal: 'Preserve approved product, person, framing and colour attributes through each shot prompt.', test: 'Inspect identity and product details at three points in the clip.' },
+    { terms: ['workflow', 'node graph', 'multi-step', 'pipeline', 'storyboard'], title: 'Versioned workflow graph', proposal: 'Split research, concepts, shot prompts, rendering, editing and QA into versioned stages.', test: 'Replay the same brief and seed; compare reproducibility and recovery from failed stages.' },
+    { terms: ['typography', 'text rendering', 'editable text', 'headline', 'poster'], title: 'Editable typography layer', proposal: 'Generate the visual separately and add approved copy/logo as editable layout layers.', test: 'Verify exact text, contrast and readability at phone size and 200% zoom.' },
+    { terms: ['router', 'latency', 'cost', 'quality', 'model selection'], title: 'Transparent local-first router', proposal: 'Route by task fit, hardware, license and measured quality; never silently use a paid fallback.', test: 'Run a fixed prompt suite and log actual latency, validity and cost for each backend.' },
+    { terms: ['flicker', 'consistency', 'motion smoothness', 'benchmark', 'evaluation'], title: 'Temporal and identity QA', proposal: 'Check frame-to-frame identity, flicker, blur, crop and continuity before editing.', test: 'Compare automated signals with human labels on the same output sample.' },
+    { terms: ['audio', 'sound', 'music', 'voice', 'subtitle', 'caption'], title: 'Rights-aware audio and caption stage', proposal: 'Keep soundtrack, transcript, subtitle timing and audio rights as separate reviewable artifacts.', test: 'Review transcript, timing, loudness and license/consent evidence.' },
+    { terms: ['upscale', 'enhance', 'resolution', 'sharpness'], title: 'Post-generation enhancement', proposal: 'Enhance only after the best identity-consistent source is chosen; retain originals and settings.', test: 'Compare source and enhanced frames for detail loss and false texture.' }
+  ];
+  const results = rules.filter(rule => rule.terms.some(term => text.includes(term)));
+  return (results.length ? results : [{ title: 'Input/output contract', proposal: 'Document public inputs, visible outputs, constraints and unknowns before designing an independent module.', test: 'Repeat an authorized input and compare validity, consistency and failure handling.' }])
+    .map(({ title, proposal, test }) => ({ title, proposal, test, basis: 'Public behaviour only; proprietary internals not inferred or copied.' }));
+}
 
 const EARNING_SOURCES = [
   { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Phone-based voice/data tasks', note: 'Last checked listings showed ₹2 per approved recording. Easy to start, but below the ₹50–₹200 task target; verify available tasks and payout terms.' },
@@ -167,6 +201,18 @@ function App() {
   const [earningRateCurrency, setEarningRateCurrency] = React.useState('INR');
   const [earningUrl, setEarningUrl] = React.useState('');
   const [earningStatus, setEarningStatus] = React.useState('Lead found');
+  const [creativeObservation, setCreativeObservation] = React.useState(() => readStore('aps-creative-observation-form', {
+    toolName: '', sourceUrl: '', observedOn: new Date().toISOString().slice(0, 10),
+    publicBehavior: '', inputOutputObserved: '', unknowns: 'Underlying model, internal prompts and private implementation details are not verified.'
+  }));
+  const [creativeObservationRuns, setCreativeObservationRuns] = React.useState(() => readStore('aps-creative-observation-runs', []));
+  const [creativeCycleForm, setCreativeCycleForm] = React.useState(() => readStore('aps-creative-cycle-form', {
+    experimentName: 'Client-specific cinematic ad experiment',
+    baselineScore: '60', candidateScore: '75', evidence: '',
+    actualOutputsReviewed: false, assetRightsConfirmed: false, commercialLicenseCleared: false,
+    noUnsupportedClaims: false, noDirectImitation: false, privacyReviewed: false
+  }));
+  const [creativeCycles, setCreativeCycles] = React.useState(() => readStore('aps-creative-cycles', []));
 
   React.useEffect(() => { localStorage.setItem('aps-notes', JSON.stringify(notes)); }, [notes]);
   React.useEffect(() => { localStorage.setItem('aps-agent-brief', JSON.stringify(agentBrief)); }, [agentBrief]);
@@ -176,6 +222,10 @@ function App() {
   React.useEffect(() => { localStorage.setItem('aps-training-form', JSON.stringify(trainingForm)); }, [trainingForm]);
   React.useEffect(() => { localStorage.setItem('aps-pod-state', JSON.stringify(podState)); }, [podState]);
   React.useEffect(() => { localStorage.setItem('aps-earnings-log', JSON.stringify(earningsLog)); }, [earningsLog]);
+  React.useEffect(() => { localStorage.setItem('aps-creative-observation-form', JSON.stringify(creativeObservation)); }, [creativeObservation]);
+  React.useEffect(() => { localStorage.setItem('aps-creative-observation-runs', JSON.stringify(creativeObservationRuns.slice(0, 30))); }, [creativeObservationRuns]);
+  React.useEffect(() => { localStorage.setItem('aps-creative-cycle-form', JSON.stringify(creativeCycleForm)); }, [creativeCycleForm]);
+  React.useEffect(() => { localStorage.setItem('aps-creative-cycles', JSON.stringify(creativeCycles.slice(0, 50))); }, [creativeCycles]);
 
   function add() {
     if (!task.trim()) return;
@@ -435,6 +485,117 @@ function App() {
     setEarningsLog(prev => prev.filter(item => item.id !== id));
     setNotice('Tracker entry removed from this device.');
   }
+  function updateCreativeObservation(field, value) {
+    setCreativeObservation(prev => ({ ...prev, [field]: value }));
+  }
+  function analyzeCreativeObservation(event) {
+    event.preventDefault();
+    const observation = {
+      toolName: creativeObservation.toolName.trim(),
+      sourceUrl: creativeObservation.sourceUrl.trim(),
+      observedOn: creativeObservation.observedOn,
+      publicBehavior: creativeObservation.publicBehavior.trim(),
+      inputOutputObserved: creativeObservation.inputOutputObserved.trim(),
+      unknowns: creativeObservation.unknowns.trim()
+    };
+    if (!observation.toolName || !observation.publicBehavior || !observation.inputOutputObserved || !observation.unknowns) {
+      setNotice('Fill the tool name, visible behaviour, observed input/output and unknowns first.');
+      return;
+    }
+    if (!observation.sourceUrl.startsWith('https://')) {
+      setNotice('Use a public HTTPS source URL. Private pages, code or bypassed access are out of scope.');
+      return;
+    }
+    const run = {
+      id: 'observation-' + Date.now(),
+      createdAt: new Date().toISOString(),
+      ...observation,
+      hypotheses: deriveCreativeHypotheses({
+        publicBehavior: observation.publicBehavior,
+        inputOutputObserved: observation.inputOutputObserved
+      }),
+      executionTruth: {
+        pageFetched: false,
+        privateCodeCopied: false,
+        accessControlsBypassed: false,
+        generatedBy: 'Browser-local rule-based hypothesis mapper'
+      },
+      status: 'review_required'
+    };
+    setCreativeObservationRuns(prev => [run, ...prev].slice(0, 30));
+    setNotice('Observation saved locally and original experiment ideas generated. The URL was not fetched; review the public source yourself.');
+  }
+  function updateCreativeCycleForm(field, value) {
+    setCreativeCycleForm(prev => ({ ...prev, [field]: value }));
+  }
+  function recordCreativeExperimentCycle(event) {
+    event.preventDefault();
+    const baseline = Number(creativeCycleForm.baselineScore);
+    const candidate = Number(creativeCycleForm.candidateScore);
+    if (!creativeCycleForm.experimentName.trim() || !Number.isFinite(baseline) || !Number.isFinite(candidate) ||
+        baseline < 0 || baseline > 100 || candidate < 0 || candidate > 100) {
+      setNotice('Enter an experiment name and valid baseline/candidate scores between 0 and 100.');
+      return;
+    }
+    const hardGates = {
+      assetRightsConfirmed: creativeCycleForm.assetRightsConfirmed,
+      commercialLicenseCleared: creativeCycleForm.commercialLicenseCleared,
+      noUnsupportedClaims: creativeCycleForm.noUnsupportedClaims,
+      noDirectImitation: creativeCycleForm.noDirectImitation,
+      privacyReviewed: creativeCycleForm.privacyReviewed,
+      actualOutputsExist: creativeCycleForm.actualOutputsReviewed && Boolean(creativeCycleForm.evidence.trim())
+    };
+    const allGatesPass = Object.values(hardGates).every(Boolean);
+    let decision;
+    if (!creativeCycleForm.actualOutputsReviewed || !creativeCycleForm.evidence.trim()) decision = 'NEED_REAL_OUTPUT_MEASUREMENTS';
+    else if (!allGatesPass) decision = 'BLOCK_PROMOTION_FIX_HARD_GATES';
+    else if (candidate > baseline) decision = 'PROMOTE_CANDIDATE_TO_HUMAN_REVIEW';
+    else decision = 'KEEP_BASELINE_OR_RUN_ANOTHER_EXPERIMENT';
+    const cycle = {
+      id: 'creative-cycle-' + Date.now(),
+      createdAt: new Date().toISOString(),
+      experimentName: creativeCycleForm.experimentName.trim(),
+      baselineScore: baseline,
+      candidateScore: candidate,
+      delta: Number((candidate - baseline).toFixed(2)),
+      scoreMethod: 'Manual reviewer-entered scores; not an independent AI evaluation.',
+      evidence: creativeCycleForm.evidence.trim(),
+      metricsAreActual: creativeCycleForm.actualOutputsReviewed && Boolean(creativeCycleForm.evidence.trim()),
+      hardGates,
+      hardGatesPassed: allGatesPass,
+      decision,
+      productionAutoDeployed: false,
+      paidProviderAutoSelected: false,
+      modelWeightsChanged: false
+    };
+    setCreativeCycles(prev => [cycle, ...prev].slice(0, 50));
+    setNotice(decision === 'PROMOTE_CANDIDATE_TO_HUMAN_REVIEW'
+      ? 'Candidate is eligible for human review only. Nothing was deployed or published.'
+      : decision === 'NEED_REAL_OUTPUT_MEASUREMENTS'
+        ? 'Cycle recorded as unmeasured. Placeholder scores cannot promote a candidate.'
+        : decision === 'BLOCK_PROMOTION_FIX_HARD_GATES'
+          ? 'Promotion blocked: resolve every rights, license, factuality, originality, privacy and output gate.'
+          : 'Baseline retained. Change one variable and compare actual outputs using the same brief.');
+  }
+  function exportCreativeIntelligence() {
+    const output = {
+      exportedAt: new Date().toISOString(),
+      registryVersion: 'browser-local-creative-intelligence-prototype-v1',
+      tools: CREATIVE_TOOL_CARDS,
+      observations: creativeObservationRuns,
+      cycles: creativeCycles,
+      limitations: [
+        'This dashboard prototype stores data in this browser; it is not synced to the Python CLI or GitHub ledger.',
+        'The hypothesis mapper uses the text you enter; it does not fetch the source URL or inspect private internals.',
+        'Scores are reviewer-entered and do not prove sales, virality or model learning.',
+        'The page does not run an LLM, render images/videos, call ComfyUI or publish content.',
+        'No private code is copied; no access controls are bypassed; no paid provider is selected automatically.'
+      ]
+    };
+    saveDownload('autopilot-creative-intelligence-evidence.json', JSON.stringify(output, null, 2), 'application/json;charset=utf-8;');
+    setNotice('Creative Intelligence evidence exported. Check the limitations in the JSON before interpreting it.');
+  }
+
   const earnedTotal = earningsLog.reduce((sum, item) => sum + (Number(item.earnedInr) || 0), 0);
   const payoutTotal = earningsLog.reduce((sum, item) => sum + (Number(item.payoutInr) || 0), 0);
   const targetLeadCount = EARNING_LEADS.filter(item => item.ratePerTaskInr !== null && item.ratePerTaskInr >= 50 && item.ratePerTaskInr <= 200).length;
@@ -602,6 +763,87 @@ function App() {
         </section>
 
         {agentRuns.length > 0 && <section className="panel"><div className="panel-head"><div><h3>Recent local draft runs</h3><p>Stored on this device only; not an authoritative cloud activity log.</p></div></div>{agentRuns.slice(0, 5).map(run => <div className="task" key={run.id}><span className="task-icon">✧</span><div><b>{run.businessName}</b><small>{new Date(run.createdAt).toLocaleString()} · {run.generationMode}</small></div><span className="status warn">Review required</span><button className="secondary" type="button" onClick={() => { setAgentOutput(run); setNotice('Loaded a saved local draft run.'); }}>View</button></div>)}</section>}
+      </section>}
+
+      {tab === 'Creative Intelligence' && <section className="training-lab">
+        <section className="welcome">
+          <div>
+            <p className="eyebrow">PUBLIC TOOL INTELLIGENCE · ORIGINAL IMPLEMENTATION</p>
+            <h2>Study the workflow. Build our own better.</h2>
+            <p>Compare visible capabilities, record source evidence, design original experiments and keep quality gates in the loop.</p>
+          </div>
+          <div className="spark">↻</div>
+        </section>
+        <div className="notice"><b>Honest execution status</b><p>This dashboard version is browser-local and rule-based. It does not fetch the source URL, call an LLM, render media or connect to ComfyUI. The Python tool catalog, reverse-engineering ledger, creative planners and guarded ComfyUI runner are in the draft GitHub PR. Do not treat a hypothesis or hand-entered score as proof of quality or sales.</p></div>
+        <section className="panel">
+          <div className="panel-head">
+            <div><h3>Creative tools worth studying</h3><p>Public product behaviour → our own implementation idea. Access, licenses, model versions and costs can change.</p></div>
+            <button className="secondary" type="button" onClick={exportCreativeIntelligence}>Export local evidence ↓</button>
+          </div>
+          <div className="creative-tool-grid">{CREATIVE_TOOL_CARDS.map(tool => <article className="creative-tool-card" key={tool.name}>
+            <div className="earning-lead-top"><h4>{tool.name}</h4></div><span className="status creative-access">{tool.access}</span>
+            <p>{tool.purpose}</p>
+            <p><b>AutoPilot idea:</b> {tool.autopilot}</p>
+            <a href={tool.url} target="_blank" rel="noreferrer">Open public source ↗</a>
+          </article>)}</div>
+          <div className="notice"><b>Zero-budget routing principle</b><p>Prioritize local tools such as ComfyUI, Wan2.2, FFmpeg, Pillow, OpenCV, Whisper and VBench when the hardware and license fit. Hosted products can be comparison references, but never silently route a job to a paid endpoint.</p></div>
+        </section>
+
+        <section className="panel">
+          <div className="panel-head"><div><h3>1. Public observation → original hypotheses</h3><p>Record only what you can see in public demos/docs. Unknown internals stay unknown.</p></div></div>
+          <form className="training-form" onSubmit={analyzeCreativeObservation}>
+            <label>Tool / product<input required value={creativeObservation.toolName} onChange={e => updateCreativeObservation('toolName', e.target.value)} placeholder="e.g. a photo-to-video ad tool" /></label>
+            <label>Public source URL<input required type="url" value={creativeObservation.sourceUrl} onChange={e => updateCreativeObservation('sourceUrl', e.target.value)} placeholder="https://official-docs-or-public-demo..." /></label>
+            <label>Observation date<input required type="date" value={creativeObservation.observedOn} onChange={e => updateCreativeObservation('observedOn', e.target.value)} /></label>
+            <label className="training-wide">What did the public tool visibly do?<textarea rows="3" required value={creativeObservation.publicBehavior} onChange={e => updateCreativeObservation('publicBehavior', e.target.value)} placeholder="Describe visible features only: e.g. transitions between ordered keyframes, storyboard, editable text…" /></label>
+            <label className="training-wide">Observed inputs → outputs<textarea rows="3" required value={creativeObservation.inputOutputObserved} onChange={e => updateCreativeObservation('inputOutputObserved', e.target.value)} placeholder="Input photo / brief / keyframes → visible result and constraints…" /></label>
+            <label className="training-wide">Unknowns and limitations<textarea rows="2" required value={creativeObservation.unknowns} onChange={e => updateCreativeObservation('unknowns', e.target.value)} /></label>
+            <button className="primary training-wide" type="submit">Derive original experiment ideas</button>
+          </form>
+          {creativeObservationRuns.length === 0 ? <div className="empty">No public observations recorded on this device yet.</div> :
+            <div className="training-history">{creativeObservationRuns.map(run => <article className="training-run" key={run.id}>
+              <div className="training-run-head"><div><b>{run.toolName}</b><small>{new Date(run.createdAt).toLocaleString()} · source date {run.observedOn}</small></div><span className="status warn">Review required</span></div>
+              <p>{run.publicBehavior}</p>
+              <a href={run.sourceUrl} target="_blank" rel="noreferrer">Open the public source ↗</a>
+              <h4>Original hypotheses to test</h4>
+              {run.hypotheses.map((idea, i) => <div className="agent-output-card" key={idea.title}><div><b>{i + 1}. {idea.title}</b><p><b>Our implementation:</b> {idea.proposal}</p><p><b>Test:</b> {idea.test}</p><small>{idea.basis}</small></div></div>)}
+              <small>Source fetch: not performed · private code copied: false · access controls bypassed: false</small>
+            </article>)}</div>}
+        </section>
+
+        <section className="panel">
+          <div className="panel-head"><div><h3>2. Baseline vs candidate learning loop</h3><p>Use actual output files and the same brief; do not promote a candidate from placeholder scores.</p></div></div>
+          <form className="training-form" onSubmit={recordCreativeExperimentCycle}>
+            <label className="training-wide">Experiment name<input required value={creativeCycleForm.experimentName} onChange={e => updateCreativeCycleForm('experimentName', e.target.value)} /></label>
+            <label>Baseline score (0–100)<input type="number" min="0" max="100" required value={creativeCycleForm.baselineScore} onChange={e => updateCreativeCycleForm('baselineScore', e.target.value)} /></label>
+            <label>Candidate score (0–100)<input type="number" min="0" max="100" required value={creativeCycleForm.candidateScore} onChange={e => updateCreativeCycleForm('candidateScore', e.target.value)} /></label>
+            <label className="training-wide">Actual outputs and reviewer evidence<textarea rows="3" required value={creativeCycleForm.evidence} onChange={e => updateCreativeCycleForm('evidence', e.target.value)} placeholder="Describe actual baseline/candidate files, same test brief, reviewer/evaluator and the measured quality differences. Do not enter secrets." /></label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.actualOutputsReviewed} onChange={e => updateCreativeCycleForm('actualOutputsReviewed', e.target.checked)} /> Actual baseline and candidate media files were reviewed</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.assetRightsConfirmed} onChange={e => updateCreativeCycleForm('assetRightsConfirmed', e.target.checked)} /> Asset rights and subject consent confirmed</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.commercialLicenseCleared} onChange={e => updateCreativeCycleForm('commercialLicenseCleared', e.target.checked)} /> Model, custom-node, font and music licenses checked for this use</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.noUnsupportedClaims} onChange={e => updateCreativeCycleForm('noUnsupportedClaims', e.target.checked)} /> No unsupported claims, offers, testimonials or metrics</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.noDirectImitation} onChange={e => updateCreativeCycleForm('noDirectImitation', e.target.checked)} /> Original execution; no direct copying of a protected ad, brand or character</label>
+            <label className="creative-gate"><input type="checkbox" checked={creativeCycleForm.privacyReviewed} onChange={e => updateCreativeCycleForm('privacyReviewed', e.target.checked)} /> Client data and privacy reviewed</label>
+            <button className="primary training-wide" type="submit">Record benchmark cycle</button>
+          </form>
+          {creativeCycles.length === 0 ? <div className="empty">No creative evaluation cycles recorded on this device yet.</div> :
+            <div className="training-history">{creativeCycles.map(cycle => <article className="training-run" key={cycle.id}>
+              <div className="training-run-head"><div><b>{cycle.experimentName}</b><small>{new Date(cycle.createdAt).toLocaleString()} · device-local evidence</small></div><span className={'status ' + (cycle.decision === 'PROMOTE_CANDIDATE_TO_HUMAN_REVIEW' ? 'good' : 'warn')}>{cycle.decision}</span></div>
+              <div className="training-score-row"><div><small>Baseline</small><strong>{cycle.baselineScore}/100</strong></div><div><small>Candidate</small><strong>{cycle.candidateScore}/100</strong></div><div><small>Delta</small><strong>{cycle.delta > 0 ? '+' : ''}{cycle.delta}</strong></div><div><small>Measured outputs</small><strong>{cycle.metricsAreActual ? 'Yes' : 'No'}</strong></div></div>
+              <p className="muted">{cycle.evidence}</p>
+              <p className="training-blocked">No deployment, publishing, paid provider selection or model-weight update was performed.</p>
+            </article>)}</div>}
+          <div className="notice"><b>Promotion rule</b><p>The dashboard only marks an improved candidate as “eligible for human review” when actual media was reviewed, evidence was recorded, and every rights/license/factuality/originality/privacy gate is checked. This is a local user-entered record, not an independent model evaluation or server-backed audit ledger.</p></div>
+        </section>
+
+        <section className="panel">
+          <div className="panel-head"><div><h3>3. Python agent pipeline + CI evidence</h3><p>The Python tools and CI samples are separate from the browser-local prototype above.</p></div></div>
+          <div className="earning-actions">
+            <a href="https://github.com/kumbipakam29-dev/autopilot-studio/pull/62" target="_blank" rel="noreferrer">Open draft implementation PR ↗</a>
+            <a href="https://api.github.com/repos/kumbipakam29-dev/autopilot-studio/actions/artifacts/12789776395/zip" target="_blank" rel="noreferrer">Download creative evidence ZIP ↗</a>
+          </div>
+          <div className="notice"><b>What's inside the ZIP</b><p>Three client-specific campaign packs (salon, auto-parts, retail), 18-second shot plans, prompt sets, 11-agent handoff reports, source-linked tool registry, five public-tool hypothesis reports, learning ledger snapshot and hard-task test report. Packs are prompts/plans—not finished rendered Reels.</p></div>
+        </section>
       </section>}
 
       {tab === 'Training Loop' && <section className="training-lab">

@@ -1,0 +1,591 @@
+"""Creative tool intelligence registry and evidence-led improvement loop.
+
+This module turns public, citable observations into original experiments and
+compares candidate outputs with a transparent rubric. It does not clone private
+code, bypass access controls, or assert performance without measured evidence.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+from datetime import date
+from pathlib import Path
+from typing import Any
+
+REGISTRY_VERSION = "creative_tool_intelligence_v1"
+
+# Treat this as a research starter catalog, not an endorsement or fixed price list.
+# License/cost status should be rechecked before each commercial deployment.
+TOOL_CATALOG: list[dict[str, Any]] = [
+    {
+        "id": "comfyui",
+        "name": "ComfyUI",
+        "category": ["workflow_orchestration", "image", "video", "audio", "3d", "editing"],
+        "access": "open_source_local_core",
+        "cost_model": "no mandatory local-core subscription; hardware, models and custom nodes vary",
+        "useful_public_behaviour": ["node graph workflows", "reusable subgraphs", "local API", "workflow JSON", "offload and quantized model support"],
+        "autopilot_adaptation": "Build a pluggable workflow runner with input/output contracts and saved, versioned graphs.",
+        "cautions": ["custom-node licenses vary", "inspect graphs for paid/provider nodes", "local hardware and model requirements vary"],
+        "sources": [
+            "https://github.com/Comfy-Org/ComfyUI",
+            "https://github.com/Comfy-Org/docs/blob/main/development/api-development/workflow-api-format.mdx",
+        ],
+    },
+    {
+        "id": "wan22",
+        "name": "Wan2.2",
+        "category": ["text_to_video", "image_to_video", "video"],
+        "access": "open_weights_local",
+        "cost_model": "no per-generation API fee when run locally; hardware and setup required",
+        "useful_public_behaviour": ["video generation from text or images", "published inference code and weights"],
+        "autopilot_adaptation": "Offer as a local image-to-video candidate after device, version and license checks.",
+        "cautions": ["confirm exact checkpoint and dependency requirements", "test actual VRAM/runtime before promising speed or quality"],
+        "sources": ["https://github.com/Wan-Video/Wan2.2"],
+    },
+    {
+        "id": "ltx25",
+        "name": "LTX-2.5",
+        "category": ["text_to_video", "image_to_video", "audio_video"],
+        "access": "open_weights_community_license",
+        "cost_model": "local inference may avoid per-call API fees; hardware and license terms apply",
+        "useful_public_behaviour": ["video generation ecosystem", "audio/video workflow"],
+        "autopilot_adaptation": "Evaluate as an optional local workflow candidate, gated on exact release license and commercial eligibility.",
+        "cautions": ["not treat as unrestricted Apache/MIT", "read current license for the exact version before commercial use"],
+        "sources": ["https://github.com/Lightricks/LTX-2", "https://github.com/Lightricks/LTX-2/blob/main/LICENSE-2_x"],
+    },
+    {
+        "id": "vbench",
+        "name": "VBench",
+        "category": ["video_evaluation", "benchmark"],
+        "access": "open_source_evaluation_code",
+        "cost_model": "code is public; running evaluations may require compute and dependencies",
+        "useful_public_behaviour": ["separates video quality into dimensions", "includes subject/background consistency, flicker, motion smoothness, aesthetic and imaging quality"],
+        "autopilot_adaptation": "Borrow the evaluation dimensions as inspiration; build a lightweight first-pass QA rubric and add VBench later if hardware allows.",
+        "cautions": ["a score is not customer-sales proof", "check dataset/code/model terms before use"],
+        "sources": ["https://github.com/Vchitect/VBench"],
+    },
+    {
+        "id": "ideogram",
+        "name": "Ideogram",
+        "category": ["image_generation", "poster_typography", "image_editing"],
+        "access": "hosted_service",
+        "cost_model": "free/paid entitlements and API terms may change",
+        "useful_public_behaviour": ["designed for text-heavy image composition", "editable text layer workflows"],
+        "autopilot_adaptation": "Use as an optional comparison reference for poster typography; keep final business text editable and proofread.",
+        "cautions": ["vendor accuracy numbers are claims, not independent guarantees", "verify plan, commercial use and data retention"],
+        "sources": ["https://ideogram.ai/features/text-rendering/", "https://docs.ideogram.ai/"],
+    },
+    {
+        "id": "pika",
+        "name": "Pika",
+        "category": ["image_to_video", "keyframe_animation", "effects"],
+        "access": "hosted_service",
+        "cost_model": "credit-based; limits, watermark and pricing depend on plan/model",
+        "useful_public_behaviour": ["animate a still", "transition between ordered keyframes", "prompt-guided motion"],
+        "autopilot_adaptation": "Implement an original keyframe-bridging stage; compare our locally rendered transitions against references.",
+        "cautions": ["credits and watermark affect cost", "review current terms and consent rights for uploaded faces"],
+        "sources": ["https://creation.pika.art/apps/pikaframes?tab=video-tools", "https://pika.art/faq"],
+    },
+    {
+        "id": "krea",
+        "name": "Krea",
+        "category": ["image_generation", "video_generation", "upscale", "editing", "realtime"],
+        "access": "hosted_multi_model_service",
+        "cost_model": "free access and paid limits vary; confirm current usage terms",
+        "useful_public_behaviour": ["multi-model image/video access", "editing and enhancement", "style/product tuning"],
+        "autopilot_adaptation": "Study the separation between generation, edit, enhancement and reusable brand/style references.",
+        "cautions": ["hosted model access is not the same as local/open weights", "check rights and privacy for client uploads"],
+        "sources": ["https://www.krea.ai/"],
+    },
+    {
+        "id": "canva_magic_video",
+        "name": "Canva Magic Video / Magic Studio",
+        "category": ["social_design", "video_assembly", "template_adaptation"],
+        "access": "hosted_freemium",
+        "cost_model": "feature availability varies by plan, account and locale",
+        "useful_public_behaviour": ["turn clips/photos into template-guided edits with transitions and music", "editable design workflow"],
+        "autopilot_adaptation": "Create editable layout/export templates only after our concept and story have passed originality checks.",
+        "cautions": ["template-first output can look generic", "verify AI-feature access and commercial asset licenses"],
+        "sources": ["https://www.canva.com/help/magic-video/"],
+    },
+    {
+        "id": "adobe_firefly_agent",
+        "name": "Adobe Firefly Creative Agent",
+        "category": ["brand_system", "storyboard", "product_video", "quick_cut"],
+        "access": "proprietary_hosted",
+        "cost_model": "plan/credit limits apply; verify current terms",
+        "useful_public_behaviour": ["brand kit generation", "storyboards to video", "product-photo video", "automated first cut"],
+        "autopilot_adaptation": "Implement the same broad stage separation independently: brand context, storyboard, shot generation and editorial assembly.",
+        "cautions": ["do not claim access to private Adobe internals", "licensed asset and model terms must be checked"],
+        "sources": ["https://news.adobe.com/news/2026/06/adobe-unveils-major-expansion"],
+    },
+    {
+        "id": "runway_workflows",
+        "name": "Runway Workflows / Ads",
+        "category": ["model_routing", "product_video", "workflow_automation", "ad_creative"],
+        "access": "proprietary_hosted",
+        "cost_model": "credit-based/API billing; not assumed free",
+        "useful_public_behaviour": ["chain multiple generation/editing steps", "reusable workflows", "route models by cost, quality and latency"],
+        "autopilot_adaptation": "Create our own transparent model-router interface with measured latency/cost/quality and fallback rules.",
+        "cautions": ["no hidden paid fallback in AutoPilot", "connectors require an explicit budget/permission check"],
+        "sources": ["https://dev.runwayml.com/workflows", "https://dev.runwayml.com/learn/generate-product-videos"],
+    },
+    {
+        "id": "ffmpeg",
+        "name": "FFmpeg",
+        "category": ["video_editing", "transcode", "audio_mix", "export"],
+        "access": "open_source_local",
+        "cost_model": "no per-render API fee; binary and build license depend on configuration",
+        "useful_public_behaviour": ["video/audio filters", "transcoding", "format and bitrate control", "stream mapping"],
+        "autopilot_adaptation": "Use for deterministic assembly, crop/scale, audio mix and platform export after AI shots arrive.",
+        "cautions": ["inspect build/licensing when redistributing", "validate codec, aspect ratio, safe area and output size"],
+        "sources": ["https://www.ffmpeg.org/ffmpeg.html", "https://www.ffmpeg.org/documentation.html"],
+    },
+    {
+        "id": "pillow",
+        "name": "Pillow",
+        "category": ["poster_composition", "typography_overlay", "image_export"],
+        "access": "open_source_local",
+        "cost_model": "local Python library; no per-image API fee",
+        "useful_public_behaviour": ["programmatic composition", "sharp editable text overlays", "image resizing and export"],
+        "autopilot_adaptation": "Build native high-resolution poster layers with exact approved copy instead of trusting generated pixels to spell offers correctly.",
+        "cautions": ["font licenses must be checked separately", "proof at target phone size and at 200% zoom"],
+        "sources": ["https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html"],
+    },
+    {
+        "id": "opencv",
+        "name": "OpenCV",
+        "category": ["image_quality", "video_quality", "motion_analysis", "vision"],
+        "access": "open_source_local",
+        "cost_model": "local library; no per-frame API fee",
+        "useful_public_behaviour": ["image/video processing", "computer-vision operations", "frame analysis"],
+        "autopilot_adaptation": "Add frame-to-frame similarity, blur, crop, scene-boundary and logo-region checks around generated media.",
+        "cautions": ["metrics are proxies and need human validation", "individual model weights and third-party modules have their own terms"],
+        "sources": ["https://github.com/opencv/opencv"],
+    },
+    {
+        "id": "whisper",
+        "name": "Whisper",
+        "category": ["speech_to_text", "subtitle_draft", "audio_review"],
+        "access": "open_source_local",
+        "cost_model": "local model inference; compute and model download required",
+        "useful_public_behaviour": ["local speech transcription", "subtitle draft generation"],
+        "autopilot_adaptation": "Generate a transcript/subtitle draft from narration, then proofread product names, prices, accents and regional language before export.",
+        "cautions": ["transcription can be wrong, especially names and noisy audio", "obtain consent and protect client audio"],
+        "sources": ["https://github.com/openai/whisper"],
+    },
+]
+
+TASK_TOOL_MAP = {
+    "premium_cinematic_reel": ["comfyui", "wan22", "ltx25", "pika", "krea", "runway_workflows", "ffmpeg", "vbench"],
+    "image_to_video": ["comfyui", "wan22", "ltx25", "pika", "krea", "runway_workflows"],
+    "text_heavy_poster": ["pillow", "ideogram", "canva_magic_video", "comfyui", "adobe_firefly_agent"],
+    "poster_composition": ["pillow", "opencv", "comfyui", "ideogram"],
+    "captioned_video": ["whisper", "ffmpeg", "comfyui"],
+    "image_quality_pipeline": ["opencv", "pillow", "vbench", "comfyui"],
+    "storyboard": ["comfyui", "adobe_firefly_agent", "runway_workflows", "krea"],
+    "video_quality_review": ["vbench", "ffmpeg", "comfyui"],
+    "brand_consistency": ["comfyui", "krea", "adobe_firefly_agent", "runway_workflows"],
+    "video_edit_export": ["ffmpeg", "canva_magic_video", "runway_workflows"],
+}
+
+METRIC_WEIGHTS = {
+    "brief_fit": 0.18,
+    "concept_diversity": 0.14,
+    "product_identity_fidelity": 0.18,
+    "temporal_consistency": 0.15,
+    "factuality": 0.18,
+    "visual_legibility": 0.10,
+    "technical_export": 0.07,
+}
+HARD_GATES = (
+    "asset_rights_confirmed",
+    "commercial_license_cleared",
+    "no_unsupported_claims",
+    "no_direct_imitation",
+    "privacy_review_passed",
+    "actual_outputs_exist",
+)
+
+
+def list_tools() -> list[dict[str, Any]]:
+    return [dict(tool) for tool in TOOL_CATALOG]
+
+
+def recommend_tools(task: str, *, zero_budget: bool = True, local_only: bool = True) -> dict[str, Any]:
+    requested = task.strip().lower()
+    if requested not in TASK_TOOL_MAP:
+        raise ValueError("Unsupported task. Choose: " + ", ".join(sorted(TASK_TOOL_MAP)))
+    lookup = {tool["id"]: tool for tool in TOOL_CATALOG}
+    candidates = []
+    for tool_id in TASK_TOOL_MAP[requested]:
+        tool = lookup[tool_id]
+        reasons = []
+        penalty = 0
+        if zero_budget:
+            if tool["access"] in {"open_source_local", "open_source_local_core", "open_weights_local", "open_source_evaluation_code"}:
+                reasons.append("local/public-code candidate; still check model and dependency terms")
+            elif tool["access"] == "open_weights_community_license":
+                reasons.append("local candidate, but license check is a hard commercial gate")
+                penalty += 2
+            else:
+                reasons.append("hosted proprietary/free-tier availability must be verified")
+                penalty += 4
+        if local_only and ("hosted" in tool["access"] or "proprietary" in tool["access"]):
+            reasons.append("does not meet strict local-only preference")
+            penalty += 5
+        candidates.append({
+            "tool_id": tool_id,
+            "name": tool["name"],
+            "access": tool["access"],
+            "cost_model": tool["cost_model"],
+            "reasons": reasons,
+            "preference_penalty": penalty,
+            "autopilot_adaptation": tool["autopilot_adaptation"],
+            "sources": tool["sources"],
+        })
+    candidates.sort(key=lambda item: (item["preference_penalty"], item["tool_id"]))
+    return {
+        "task": requested,
+        "policy": {"zero_budget_preferred": zero_budget, "local_only_preferred": local_only,
+                   "no_silent_paid_fallback": True},
+        "recommendations": candidates,
+        "disclaimer": "Rank is a policy-based shortlist, not a quality benchmark. Validate current license, hardware, access and actual output.",
+    }
+
+
+def _validate_metrics(metrics: dict[str, Any], field: str) -> dict[str, float]:
+    if not isinstance(metrics, dict):
+        raise ValueError(f"{field} must be an object of metric scores from 0 to 5")
+    out = {}
+    for metric in METRIC_WEIGHTS:
+        value = metrics.get(metric)
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or not 0 <= value <= 5:
+            raise ValueError(f"{field}.{metric} must be a numeric value from 0 to 5")
+        out[metric] = float(value)
+    return out
+
+
+def _validate_observation(observation: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(observation, dict):
+        raise TypeError("observation must be a JSON object")
+    required = ("tool_name", "source_url", "observed_on", "public_behavior", "input_output_observed", "unknowns")
+    normalized = dict(observation)
+    for key in required:
+        value = normalized.get(key)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"observation.{key} must be a non-empty string")
+    if not re.match(r"^https://", normalized["source_url"]):
+        raise ValueError("source_url must be an HTTPS URL to public evidence")
+    try:
+        date.fromisoformat(normalized["observed_on"])
+    except ValueError:
+        raise ValueError("observed_on must use YYYY-MM-DD") from None
+    if normalized.get("private_code_accessed") is True or normalized.get("access_controls_bypassed") is True:
+        raise ValueError("The loop accepts public/authorized observations only; private code or bypassed access is out of scope")
+    normalized["evidence_scope"] = normalized.get("evidence_scope", "public_demo_or_documentation")
+    if normalized["evidence_scope"] not in {"public_demo_or_documentation", "authorized_test_output", "public_research_paper"}:
+        raise ValueError("evidence_scope must reference public or authorized evidence only")
+    normalized["private_code_accessed"] = False
+    normalized["access_controls_bypassed"] = False
+    return normalized
+
+
+def derive_original_hypotheses(observation: dict[str, Any]) -> list[dict[str, str]]:
+    """Map observed public behaviour to independently testable implementation ideas."""
+    validated = _validate_observation(observation)
+    text = (validated["public_behavior"] + " " + validated["input_output_observed"]).lower()
+    rules = [
+        (("keyframe", "ordered image", "first and last frame"), "Keyframe continuity planner",
+         "Represent a campaign as ordered reference frames with one motion instruction per transition.",
+         "Compare subject/product identity and transition artifacts across the same fixed keyframe pair."),
+        (("image to video", "photo", "uploaded image", "reference image", "image-to-video"),
+         "Reference-image anchoring",
+         "Use the approved photo as an explicit input and lock subject, framing, colour and product attributes in every shot prompt.",
+         "Score product/subject identity at the opening, middle and final frames."),
+        (("workflow", "node graph", "multi-step", "pipeline", "storyboard"),
+         "Versioned creative workflow graph",
+         "Represent research, concept, shot prompts, rendering, editing and QA as separate versioned stages with typed inputs/outputs.",
+         "Replay the same brief and seed; compare reproducibility, failure recovery and completed outputs."),
+        (("typography", "text rendering", "editable text", "headline", "poster"),
+         "Editable typography pass",
+         "Render visual backgrounds separately and place approved copy/logo as editable layout layers.",
+         "Check exact text, contrast, safe zones and readability at phone size and 200% zoom."),
+        (("router", "latency", "cost", "quality", "model selection"),
+         "Transparent local-first model router",
+         "Select models using task fit, hardware, license, latency and measured quality, with no silent paid fallback.",
+         "Run the same prompt suite against each configured backend and record latency, output validity and actual cost."),
+        (("flicker", "consistency", "motion smoothness", "benchmark", "evaluation"),
+         "Temporal and identity QA gate",
+         "Inspect selected frames for identity drift, flicker, blur, crop and temporal breaks before final edit.",
+         "Compare automated frame checks with a human-reviewed labelled sample; do not treat proxy scores as truth."),
+        (("audio", "sound", "music", "voice", "subtitle", "caption"),
+         "Rights-aware sound and caption stage",
+         "Keep sound design, speech transcript, captions and licensed/original music as separate reviewable artifacts.",
+         "Check transcript error rate, caption timing, loudness and audio-use permission."),
+        (("upscale", "enhance", "resolution", "sharpness"),
+         "Post-generation enhancement stage",
+         "Enhance only after selecting the best identity-consistent source; retain source files and log processing settings.",
+         "Compare sharpness and text/detail fidelity against the untouched source at target export size."),
+    ]
+    hypotheses = []
+    seen = set()
+    for triggers, title, implementation, test in rules:
+        if any(term in text for term in triggers) and title not in seen:
+            hypotheses.append({
+                "title": title,
+                "independent_implementation": implementation,
+                "experiment": test,
+                "basis": "publicly observable behavior only",
+                "not_a_claim": "Underlying proprietary models, prompts and internal code have not been inferred or copied.",
+            })
+            seen.add(title)
+    if not hypotheses:
+        hypotheses.append({
+            "title": "Input-output contract and failure logging",
+            "independent_implementation": "Record approved inputs, visible outputs, constraints and uncertainty before designing our own module.",
+            "experiment": "Repeat the same approved input and compare output validity, consistency and failure handling.",
+            "basis": "publicly observable behavior only",
+            "not_a_claim": "No private implementation detail is inferred.",
+        })
+    return hypotheses
+
+
+def analyze_public_observation(raw: dict[str, Any]) -> dict[str, Any]:
+    observation = _validate_observation(raw)
+    hypotheses = derive_original_hypotheses(observation)
+    return {
+        "schema_version": REGISTRY_VERSION,
+        "source_observation": observation,
+        "original_hypotheses": hypotheses,
+        "next_step": "Implement one hypothesis independently, benchmark it on a fixed fixture, and record actual-output metrics before promotion.",
+        "safety_truth": {"private_code_copied": False, "access_controls_bypassed": False},
+    }
+
+
+def _weighted_score(metrics: dict[str, float]) -> float:
+    return round(sum(metrics[name] * weight for name, weight in METRIC_WEIGHTS.items()) / 5 * 100, 2)
+
+
+NEXT_EXPERIMENTS = {
+    "brief_fit": "Add approved customer segment, product/service details and the actual campaign objective to the brief.",
+    "concept_diversity": "Change the narrative mechanism and focal action, not only palette, camera or background.",
+    "product_identity_fidelity": "Increase approved reference-image use and compare product/logo regions across the shot.",
+    "temporal_consistency": "Use keyframes for the shot start/end and reduce the number of simultaneous moving elements.",
+    "factuality": "Restrict copy to the approved-facts list and render offers/claims as editable post-production text.",
+    "visual_legibility": "Move all critical text to editable layers; measure contrast and inspect at phone size.",
+    "technical_export": "Use deterministic FFmpeg export settings and verify resolution, frame rate, duration, codec and audio.",
+}
+
+
+def next_experiment(metrics: dict[str, float], *, metrics_are_actual: bool) -> dict[str, str]:
+    if not metrics_are_actual:
+        return {
+            "target_dimension": "unmeasured",
+            "experiment": "Generate actual baseline and candidate media; record reviewer/evaluator and score evidence.",
+        }
+    weakest = min(metrics, key=metrics.get)
+    return {"target_dimension": weakest, "experiment": NEXT_EXPERIMENTS[weakest]}
+
+
+def append_cycle_ledger(path: str | Path, report: dict[str, Any]) -> dict[str, Any]:
+    ledger = Path(path)
+    ledger.parent.mkdir(parents=True, exist_ok=True)
+    entries = []
+    if ledger.exists():
+        for line_number, line in enumerate(ledger.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                raise ValueError(f"Ledger has invalid JSON on line {line_number}") from None
+            if not isinstance(item, dict) or not isinstance(item.get("cycle_id"), str):
+                raise ValueError(f"Ledger line {line_number} is missing a cycle_id")
+            entries.append(item)
+    cycle_id = report.get("cycle_id")
+    if not isinstance(cycle_id, str):
+        raise ValueError("Only a reverse-engineering cycle report can be appended to the ledger")
+    if any(item["cycle_id"] == cycle_id for item in entries):
+        return {"path": str(ledger), "inserted": False, "entry_count": len(entries), "reason": "duplicate_cycle"}
+    benchmark = report.get("benchmark", {})
+    entry = {
+        "cycle_id": cycle_id,
+        "recorded_on": date.today().isoformat(),
+        "experiment_name": report.get("experiment_name"),
+        "observed_tool": report.get("observed_tool", {}).get("tool_name"),
+        "decision": report.get("decision"),
+        "metrics_are_actual": benchmark.get("scores_are_measured_inputs", False),
+        "baseline_score": benchmark.get("baseline_score"),
+        "candidate_score": benchmark.get("candidate_score"),
+        "delta": benchmark.get("delta"),
+        "metric_provenance": benchmark.get("metric_provenance"),
+        "hard_gates_passed": report.get("hard_gates_passed", False),
+        "next_experiment": report.get("next_experiment"),
+    }
+    with ledger.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\n")
+    return {"path": str(ledger), "inserted": True, "entry_count": len(entries) + 1}
+
+
+def summarize_cycle_ledger(path: str | Path) -> dict[str, Any]:
+    ledger = Path(path)
+    if not ledger.exists():
+        entries = []
+    else:
+        entries = []
+        for line_number, line in enumerate(ledger.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                raise ValueError(f"Ledger has invalid JSON on line {line_number}") from None
+            if not isinstance(item, dict) or not isinstance(item.get("cycle_id"), str):
+                raise ValueError(f"Ledger line {line_number} is missing a cycle_id")
+            entries.append(item)
+    decisions: dict[str, int] = {}
+    for entry in entries:
+        decision = str(entry.get("decision", "unknown"))
+        decisions[decision] = decisions.get(decision, 0) + 1
+    measured = [entry for entry in entries if entry.get("metrics_are_actual") is True]
+    best = max(measured, key=lambda entry: entry.get("candidate_score", -1), default=None)
+    return {
+        "schema_version": REGISTRY_VERSION,
+        "ledger_path": str(ledger),
+        "cycle_count": len(entries),
+        "decision_counts": decisions,
+        "measured_cycle_count": len(measured),
+        "best_measured_candidate": best,
+        "note": "Only entries marked metrics_are_actual=true are included in best-candidate comparison.",
+    }
+
+
+def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
+    """Compare an original candidate with a measured baseline from public/authorized evidence."""
+    if not isinstance(raw, dict):
+        raise TypeError("cycle input must be an object")
+    observation = _validate_observation(raw.get("observation"))
+    experiment_name = raw.get("experiment_name")
+    if not isinstance(experiment_name, str) or not experiment_name.strip():
+        raise ValueError("experiment_name must be a non-empty string")
+    baseline = _validate_metrics(raw.get("baseline_metrics"), "baseline_metrics")
+    candidate = _validate_metrics(raw.get("candidate_metrics"), "candidate_metrics")
+    metrics_are_actual = raw.get("metrics_are_actual")
+    if not isinstance(metrics_are_actual, bool):
+        raise ValueError("metrics_are_actual must be true only after reviewing actual rendered outputs")
+    metric_provenance = raw.get("metric_provenance")
+    if not isinstance(metric_provenance, str) or not metric_provenance.strip():
+        raise ValueError("metric_provenance must identify the actual evaluator/reviewer or clearly mark a template")
+    gates = raw.get("hard_gates")
+    if not isinstance(gates, dict) or any(not isinstance(gates.get(key), bool) for key in HARD_GATES):
+        raise ValueError("hard_gates must provide boolean values for: " + ", ".join(HARD_GATES))
+    change_log = raw.get("original_changes")
+    if not isinstance(change_log, list) or not change_log or any(not isinstance(item, str) or not item.strip() for item in change_log):
+        raise ValueError("original_changes must be a non-empty list of original implementation changes")
+    baseline_score = _weighted_score(baseline)
+    candidate_score = _weighted_score(candidate)
+    delta = round(candidate_score - baseline_score, 2)
+    gates_passed = all(gates[key] is True for key in HARD_GATES)
+    if not metrics_are_actual:
+        decision = "NEED_REAL_OUTPUT_MEASUREMENTS"
+    elif gates_passed and delta > 0:
+        decision = "PROMOTE_CANDIDATE_TO_HUMAN_REVIEW"
+    elif not gates_passed:
+        decision = "BLOCK_PROMOTION_FIX_HARD_GATES"
+    else:
+        decision = "KEEP_BASELINE_OR_RUN_ANOTHER_EXPERIMENT"
+    suggested_experiment = next_experiment(candidate, metrics_are_actual=metrics_are_actual)
+    serial = json.dumps({
+        "experiment_name": experiment_name,
+        "observation": observation,
+        "baseline_metrics": baseline,
+        "candidate_metrics": candidate,
+        "hard_gates": gates,
+        "metric_provenance": metric_provenance,
+        "metrics_are_actual": metrics_are_actual,
+        "original_changes": change_log,
+    }, ensure_ascii=False, sort_keys=True)
+    return {
+        "schema_version": REGISTRY_VERSION,
+        "cycle_id": hashlib.sha256(serial.encode("utf-8")).hexdigest()[:16],
+        "experiment_name": experiment_name,
+        "observed_tool": observation,
+        "reverse_engineering_scope": "public_behavioral_analysis_and_original_reimplementation",
+        "original_changes": change_log,
+        "benchmark": {
+            "metric_scale": "0-5; must be assessed from actual outputs by rubric or evaluator",
+            "weights": METRIC_WEIGHTS,
+            "baseline_metrics": baseline,
+            "candidate_metrics": candidate,
+            "baseline_score": baseline_score,
+            "candidate_score": candidate_score,
+            "delta": delta,
+            "scores_are_measured_inputs": metrics_are_actual,
+            "metric_provenance": metric_provenance,
+            "independent_quality_or_sales_claim": False,
+        },
+        "hard_gates": gates,
+        "hard_gates_passed": gates_passed,
+        "decision": decision,
+        "next_experiment": suggested_experiment,
+        "next_loop": (
+            "Replace placeholder scores with measurements from actual output files before ranking a candidate."
+            if decision == "NEED_REAL_OUTPUT_MEASUREMENTS" else
+            "Have a human compare output files, approve/reject the candidate, record issues, and run the same benchmark again."
+            if decision == "PROMOTE_CANDIDATE_TO_HUMAN_REVIEW"
+            else "Record failed metrics, change one or two implementation variables, then rerun the same benchmark."
+        ),
+        "safety_truth": {
+            "private_code_copied": False,
+            "access_controls_bypassed": False,
+            "production_auto_deployed": False,
+            "paid_provider_auto_selected": False,
+        },
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--list-tools", action="store_true")
+    parser.add_argument("--task", help="Task for a tool shortlist")
+    parser.add_argument("--allow-hosted", action="store_true", help="Do not prefer local-only tools")
+    parser.add_argument("--allow-paid-options", action="store_true", help="Do not prioritize zero-budget tools")
+    parser.add_argument("--cycle", help="Path to a JSON evidence/benchmark cycle input")
+    parser.add_argument("--observation", help="Path to a public evidence observation JSON")
+    parser.add_argument("--ledger", help="Optional JSONL path to append a cycle result or read history")
+    parser.add_argument("--history", action="store_true", help="Summarize the cycle history in --ledger")
+    parser.add_argument("--output", default="artifacts/creative-tool-intelligence.json")
+    args = parser.parse_args()
+    try:
+        if args.list_tools:
+            result: Any = {"registry_version": REGISTRY_VERSION, "tools": list_tools()}
+        elif args.task:
+            result = recommend_tools(args.task, zero_budget=not args.allow_paid_options, local_only=not args.allow_hosted)
+        elif args.cycle:
+            result = build_reverse_engineering_cycle(json.loads(Path(args.cycle).read_text(encoding="utf-8")))
+            if args.ledger:
+                result["ledger_update"] = append_cycle_ledger(args.ledger, result)
+        elif args.history:
+            if not args.ledger:
+                parser.error("--history requires --ledger")
+            result = summarize_cycle_ledger(args.ledger)
+        elif args.observation:
+            result = analyze_public_observation(json.loads(Path(args.observation).read_text(encoding="utf-8")))
+        else:
+            parser.error("use --list-tools, --task, --observation, --cycle, or --history")
+        path = Path(args.output)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(json.dumps({"status": "REPORT_CREATED", "output": str(path),
+                          "registry_version": REGISTRY_VERSION}, ensure_ascii=False))
+        return 0
+    except (OSError, json.JSONDecodeError, TypeError, ValueError) as exc:
+        print(json.dumps({"status": "FAILED", "error_type": type(exc).__name__, "error": str(exc)}, ensure_ascii=False))
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

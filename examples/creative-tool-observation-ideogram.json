@@ -1,0 +1,9 @@
+{
+  "tool_name": "Ideogram Text Rendering",
+  "source_url": "https://ideogram.ai/features/text-rendering/",
+  "observed_on": "2026-10-28",
+  "public_behavior": "Ideogram publicly positions image text rendering as a strength for text-heavy posters and branding and advertises an accuracy figure.",
+  "input_output_observed": "The user specifies exact copy and typographic placement; generated images attempt to render the requested typography.",
+  "unknowns": "Vendor accuracy claims are not independent guarantees; exact output quality varies by prompt, language, length and model version.",
+  "evidence_scope": "public_demo_or_documentation"
+}

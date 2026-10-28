@@ -1,0 +1,45 @@
+{
+  "experiment_name": "creative-ad-learning-cycle-template",
+  "observation": {
+    "tool_name": "ComfyUI workflow system",
+    "source_url": "https://github.com/Comfy-Org/ComfyUI",
+    "observed_on": "2026-10-28",
+    "public_behavior": "Public repository documents reusable node-graph workflows and a local API for connecting creative stages.",
+    "input_output_observed": "Public documentation describes JSON workflow graphs whose outputs can be passed into later processing stages.",
+    "unknowns": "This template does not measure a generated video, does not inspect private internals, and does not verify a specific model or custom node.",
+    "evidence_scope": "public_demo_or_documentation"
+  },
+  "baseline_metrics": {
+    "brief_fit": 0,
+    "concept_diversity": 0,
+    "product_identity_fidelity": 0,
+    "temporal_consistency": 0,
+    "factuality": 0,
+    "visual_legibility": 0,
+    "technical_export": 0
+  },
+  "candidate_metrics": {
+    "brief_fit": 0,
+    "concept_diversity": 0,
+    "product_identity_fidelity": 0,
+    "temporal_consistency": 0,
+    "factuality": 0,
+    "visual_legibility": 0,
+    "technical_export": 0
+  },
+  "metrics_are_actual": false,
+  "metric_provenance": "TEMPLATE ONLY: replace scores and identify the reviewer/evaluator after inspecting actual baseline and candidate media files.",
+  "hard_gates": {
+    "asset_rights_confirmed": false,
+    "commercial_license_cleared": false,
+    "no_unsupported_claims": false,
+    "no_direct_imitation": false,
+    "privacy_review_passed": false,
+    "actual_outputs_exist": false
+  },
+  "original_changes": [
+    "Template idea: generate three structurally different story routes from a client brief.",
+    "Template idea: keep logo and offer typography editable in post production.",
+    "Template idea: evaluate four timed shots before assembling the final video."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "tool_name": "Pika Pikaframes",
+  "source_url": "https://creation.pika.art/apps/pikaframes?tab=video-tools",
+  "observed_on": "2026-10-28",
+  "public_behavior": "The public product page describes turning two to five ordered still images into a video, with one optional prompt guiding motion between consecutive keyframes.",
+  "input_output_observed": "Input is an ordered set of still frames and optional motion text; visible output is a short sequence with transitions between supplied keyframes.",
+  "unknowns": "Underlying model weights, private prompts, motion-planning internals, serving stack and the tool's exact measured quality are not verified.",
+  "evidence_scope": "public_demo_or_documentation"
+}
