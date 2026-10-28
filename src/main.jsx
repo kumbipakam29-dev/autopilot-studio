@@ -485,6 +485,117 @@ function App() {
     setEarningsLog(prev => prev.filter(item => item.id !== id));
     setNotice('Tracker entry removed from this device.');
   }
+  function updateCreativeObservation(field, value) {
+    setCreativeObservation(prev => ({ ...prev, [field]: value }));
+  }
+  function analyzeCreativeObservation(event) {
+    event.preventDefault();
+    const observation = {
+      toolName: creativeObservation.toolName.trim(),
+      sourceUrl: creativeObservation.sourceUrl.trim(),
+      observedOn: creativeObservation.observedOn,
+      publicBehavior: creativeObservation.publicBehavior.trim(),
+      inputOutputObserved: creativeObservation.inputOutputObserved.trim(),
+      unknowns: creativeObservation.unknowns.trim()
+    };
+    if (!observation.toolName || !observation.publicBehavior || !observation.inputOutputObserved || !observation.unknowns) {
+      setNotice('Fill the tool name, visible behaviour, observed input/output and unknowns first.');
+      return;
+    }
+    if (!observation.sourceUrl.startsWith('https://')) {
+      setNotice('Use a public HTTPS source URL. Private pages, code or bypassed access are out of scope.');
+      return;
+    }
+    const run = {
+      id: 'observation-' + Date.now(),
+      createdAt: new Date().toISOString(),
+      ...observation,
+      hypotheses: deriveCreativeHypotheses({
+        publicBehavior: observation.publicBehavior,
+        inputOutputObserved: observation.inputOutputObserved
+      }),
+      executionTruth: {
+        pageFetched: false,
+        privateCodeCopied: false,
+        accessControlsBypassed: false,
+        generatedBy: 'Browser-local rule-based hypothesis mapper'
+      },
+      status: 'review_required'
+    };
+    setCreativeObservationRuns(prev => [run, ...prev].slice(0, 30));
+    setNotice('Observation saved locally and original experiment ideas generated. The URL was not fetched; review the public source yourself.');
+  }
+  function updateCreativeCycleForm(field, value) {
+    setCreativeCycleForm(prev => ({ ...prev, [field]: value }));
+  }
+  function recordCreativeExperimentCycle(event) {
+    event.preventDefault();
+    const baseline = Number(creativeCycleForm.baselineScore);
+    const candidate = Number(creativeCycleForm.candidateScore);
+    if (!creativeCycleForm.experimentName.trim() || !Number.isFinite(baseline) || !Number.isFinite(candidate) ||
+        baseline < 0 || baseline > 100 || candidate < 0 || candidate > 100) {
+      setNotice('Enter an experiment name and valid baseline/candidate scores between 0 and 100.');
+      return;
+    }
+    const hardGates = {
+      assetRightsConfirmed: creativeCycleForm.assetRightsConfirmed,
+      commercialLicenseCleared: creativeCycleForm.commercialLicenseCleared,
+      noUnsupportedClaims: creativeCycleForm.noUnsupportedClaims,
+      noDirectImitation: creativeCycleForm.noDirectImitation,
+      privacyReviewed: creativeCycleForm.privacyReviewed,
+      actualOutputsExist: creativeCycleForm.actualOutputsReviewed && Boolean(creativeCycleForm.evidence.trim())
+    };
+    const allGatesPass = Object.values(hardGates).every(Boolean);
+    let decision;
+    if (!creativeCycleForm.actualOutputsReviewed || !creativeCycleForm.evidence.trim()) decision = 'NEED_REAL_OUTPUT_MEASUREMENTS';
+    else if (!allGatesPass) decision = 'BLOCK_PROMOTION_FIX_HARD_GATES';
+    else if (candidate > baseline) decision = 'PROMOTE_CANDIDATE_TO_HUMAN_REVIEW';
+    else decision = 'KEEP_BASELINE_OR_RUN_ANOTHER_EXPERIMENT';
+    const cycle = {
+      id: 'creative-cycle-' + Date.now(),
+      createdAt: new Date().toISOString(),
+      experimentName: creativeCycleForm.experimentName.trim(),
+      baselineScore: baseline,
+      candidateScore: candidate,
+      delta: Number((candidate - baseline).toFixed(2)),
+      scoreMethod: 'Manual reviewer-entered scores; not an independent AI evaluation.',
+      evidence: creativeCycleForm.evidence.trim(),
+      metricsAreActual: creativeCycleForm.actualOutputsReviewed && Boolean(creativeCycleForm.evidence.trim()),
+      hardGates,
+      hardGatesPassed: allGatesPass,
+      decision,
+      productionAutoDeployed: false,
+      paidProviderAutoSelected: false,
+      modelWeightsChanged: false
+    };
+    setCreativeCycles(prev => [cycle, ...prev].slice(0, 50));
+    setNotice(decision === 'PROMOTE_CANDIDATE_TO_HUMAN_REVIEW'
+      ? 'Candidate is eligible for human review only. Nothing was deployed or published.'
+      : decision === 'NEED_REAL_OUTPUT_MEASUREMENTS'
+        ? 'Cycle recorded as unmeasured. Placeholder scores cannot promote a candidate.'
+        : decision === 'BLOCK_PROMOTION_FIX_HARD_GATES'
+          ? 'Promotion blocked: resolve every rights, license, factuality, originality, privacy and output gate.'
+          : 'Baseline retained. Change one variable and compare actual outputs using the same brief.');
+  }
+  function exportCreativeIntelligence() {
+    const output = {
+      exportedAt: new Date().toISOString(),
+      registryVersion: 'browser-local-creative-intelligence-prototype-v1',
+      tools: CREATIVE_TOOL_CARDS,
+      observations: creativeObservationRuns,
+      cycles: creativeCycles,
+      limitations: [
+        'This dashboard prototype stores data in this browser; it is not synced to the Python CLI or GitHub ledger.',
+        'The hypothesis mapper uses the text you enter; it does not fetch the source URL or inspect private internals.',
+        'Scores are reviewer-entered and do not prove sales, virality or model learning.',
+        'The page does not run an LLM, render images/videos, call ComfyUI or publish content.',
+        'No private code is copied; no access controls are bypassed; no paid provider is selected automatically.'
+      ]
+    };
+    saveDownload('autopilot-creative-intelligence-evidence.json', JSON.stringify(output, null, 2), 'application/json;charset=utf-8;');
+    setNotice('Creative Intelligence evidence exported. Check the limitations in the JSON before interpreting it.');
+  }
+
   const earnedTotal = earningsLog.reduce((sum, item) => sum + (Number(item.earnedInr) || 0), 0);
   const payoutTotal = earningsLog.reduce((sum, item) => sum + (Number(item.payoutInr) || 0), 0);
   const targetLeadCount = EARNING_LEADS.filter(item => item.ratePerTaskInr !== null && item.ratePerTaskInr >= 50 && item.ratePerTaskInr <= 200).length;
