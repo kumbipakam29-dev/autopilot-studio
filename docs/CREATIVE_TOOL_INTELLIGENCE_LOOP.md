@@ -27,6 +27,14 @@ python -m agents.creative_tool_intelligence --task premium_cinematic_reel
 
 Other tasks: `image_to_video`, `text_heavy_poster`, `storyboard`, `video_quality_review`, `brand_consistency`, `video_edit_export`.
 
+Turn a public observation into original, testable engineering hypotheses:
+
+```bash
+python -m agents.creative_tool_intelligence --observation examples/creative-tool-observation-pika.json
+```
+
+CI runs this analysis for source-linked public observations about Pika keyframes, Adobe multi-step creative workflows, VBench quality dimensions, ComfyUI workflow graphs and Ideogram typography.
+
 Run an evidence-and-benchmark cycle:
 
 ```bash
@@ -48,6 +56,9 @@ All metric scores must be supplied from actual output reviews or a documented ev
 - **Adobe Firefly Creative Agent** describes brand kits, storyboards-to-video, product-photo video and quick-cut workflows. AutoPilot can independently implement the broad stages without attempting to copy private internals. Source: https://news.adobe.com/news/2026/06/adobe-unveils-major-expansion
 - **Runway Workflows** documents chaining multiple model and editing steps into reusable workflows, and describes model routing across quality/cost/latency trade-offs. It is an architectural reference, not assumed free infrastructure. Source: https://dev.runwayml.com/workflows and https://dev.runwayml.com/learn/generate-product-videos
 - **FFmpeg** provides local media filtering, transcoding and export controls; check the specific build and its licensing before redistribution. Source: https://www.ffmpeg.org/ffmpeg.html
+- **Pillow** provides local pixel-level image composition and drawing APIs, useful for exact text overlays added after image generation. Source: https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html
+- **OpenCV** provides local computer-vision and frame processing operations that can help detect blur, crop changes and frame differences. Source: https://github.com/opencv/opencv
+- **Whisper** publishes speech-recognition code and model weights under MIT according to its repository, useful for subtitle drafts that still require proofreading. Source: https://github.com/openai/whisper
 
 ## Useful AutoPilot differentiators to benchmark
 
@@ -63,4 +74,4 @@ All metric scores must be supplied from actual output reviews or a documented ev
 
 ## Important boundary
 
-This is an evidence-led research and experiment framework. It does not automatically browse the web, inspect paid-tool internals, generate model weights, run real media benchmarks, or prove that a candidate is superior until real outputs and documented measurements have been reviewed.
+This is an evidence-led research and experiment framework. It currently analyzes supplied, source-linked public observations; it does not automatically browse for new tools, inspect paid-tool internals, generate model weights, run real media benchmarks, or prove that a candidate is superior until real outputs and documented measurements have been reviewed.
