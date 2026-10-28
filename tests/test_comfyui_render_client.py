@@ -106,7 +106,7 @@ class ComfyUIRenderClientTests(unittest.TestCase):
                 result = client.wait_for_outputs("job_123", temp, timeout_seconds=2)
             self.assertEqual(result["status"], "completed")
             self.assertTrue(Path(result["outputs"][0]).is_file())
-            self.assertTrue(result["model_inference_confirmed"])
+            self.assertTrue(result["workflow_completed_with_outputs"])
 
 
 if __name__ == "__main__":
