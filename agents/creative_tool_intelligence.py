@@ -181,7 +181,8 @@ TOOL_CATALOG: list[dict[str, Any]] = [
 TASK_TOOL_MAP = {
     "premium_cinematic_reel": ["comfyui", "wan22", "ltx25", "pika", "krea", "runway_workflows", "ffmpeg", "vbench"],
     "image_to_video": ["comfyui", "wan22", "ltx25", "pika", "krea", "runway_workflows"],
-    "text_heavy_poster": ["pillow", "ideogram", "canva_magic_video", "comfyui", "adobe_firefly_agent"],\n    "poster_composition": ["pillow", "opencv", "comfyui", "ideogram"],\n    "captioned_video": ["whisper", "ffmpeg", "comfyui"],\n    "image_quality_pipeline": ["opencv", "pillow", "vbench", "comfyui"],
+    "text_heavy_poster": ["pillow", "ideogram", "canva_magic_video", "comfyui", "adobe_firefly_agent"],
+    "poster_composition": ["pillow", "opencv", "comfyui", "ideogram"],\n    "captioned_video": ["whisper", "ffmpeg", "comfyui"],\n    "image_quality_pipeline": ["opencv", "pillow", "vbench", "comfyui"],
     "storyboard": ["comfyui", "adobe_firefly_agent", "runway_workflows", "krea"],
     "video_quality_review": ["vbench", "ffmpeg", "comfyui"],
     "brand_consistency": ["comfyui", "krea", "adobe_firefly_agent", "runway_workflows"],
@@ -290,6 +291,78 @@ def _validate_observation(observation: dict[str, Any]) -> dict[str, Any]:
     return normalized
 
 
+def derive_original_hypotheses(observation: dict[str, Any]) -> list[dict[str, str]]:
+    """Map observed public behaviour to independently testable implementation ideas."""
+    validated = _validate_observation(observation)
+    text = (validated["public_behavior"] + " " + validated["input_output_observed"]).lower()
+    rules = [
+        (("keyframe", "ordered image", "first and last frame"), "Keyframe continuity planner",
+         "Represent a campaign as ordered reference frames with one motion instruction per transition.",
+         "Compare subject/product identity and transition artifacts across the same fixed keyframe pair."),
+        (("image to video", "photo", "uploaded image", "reference image", "image-to-video"),
+         "Reference-image anchoring",
+         "Use the approved photo as an explicit input and lock subject, framing, colour and product attributes in every shot prompt.",
+         "Score product/subject identity at the opening, middle and final frames."),
+        (("workflow", "node graph", "multi-step", "pipeline", "storyboard"),
+         "Versioned creative workflow graph",
+         "Represent research, concept, shot prompts, rendering, editing and QA as separate versioned stages with typed inputs/outputs.",
+         "Replay the same brief and seed; compare reproducibility, failure recovery and completed outputs."),
+        (("typography", "text rendering", "editable text", "headline", "poster"),
+         "Editable typography pass",
+         "Render visual backgrounds separately and place approved copy/logo as editable layout layers.",
+         "Check exact text, contrast, safe zones and readability at phone size and 200% zoom."),
+        (("router", "latency", "cost", "quality", "model selection"),
+         "Transparent local-first model router",
+         "Select models using task fit, hardware, license, latency and measured quality, with no silent paid fallback.",
+         "Run the same prompt suite against each configured backend and record latency, output validity and actual cost."),
+        (("flicker", "consistency", "motion smoothness", "benchmark", "evaluation"),
+         "Temporal and identity QA gate",
+         "Inspect selected frames for identity drift, flicker, blur, crop and temporal breaks before final edit.",
+         "Compare automated frame checks with a human-reviewed labelled sample; do not treat proxy scores as truth."),
+        (("audio", "sound", "music", "voice", "subtitle", "caption"),
+         "Rights-aware sound and caption stage",
+         "Keep sound design, speech transcript, captions and licensed/original music as separate reviewable artifacts.",
+         "Check transcript error rate, caption timing, loudness and audio-use permission."),
+        (("upscale", "enhance", "resolution", "sharpness"),
+         "Post-generation enhancement stage",
+         "Enhance only after selecting the best identity-consistent source; retain source files and log processing settings.",
+         "Compare sharpness and text/detail fidelity against the untouched source at target export size."),
+    ]
+    hypotheses = []
+    seen = set()
+    for triggers, title, implementation, test in rules:
+        if any(term in text for term in triggers) and title not in seen:
+            hypotheses.append({
+                "title": title,
+                "independent_implementation": implementation,
+                "experiment": test,
+                "basis": "publicly observable behavior only",
+                "not_a_claim": "Underlying proprietary models, prompts and internal code have not been inferred or copied.",
+            })
+            seen.add(title)
+    if not hypotheses:
+        hypotheses.append({
+            "title": "Input-output contract and failure logging",
+            "independent_implementation": "Record approved inputs, visible outputs, constraints and uncertainty before designing our own module.",
+            "experiment": "Repeat the same approved input and compare output validity, consistency and failure handling.",
+            "basis": "publicly observable behavior only",
+            "not_a_claim": "No private implementation detail is inferred.",
+        })
+    return hypotheses
+
+
+def analyze_public_observation(raw: dict[str, Any]) -> dict[str, Any]:
+    observation = _validate_observation(raw)
+    hypotheses = derive_original_hypotheses(observation)
+    return {
+        "schema_version": REGISTRY_VERSION,
+        "source_observation": observation,
+        "original_hypotheses": hypotheses,
+        "next_step": "Implement one hypothesis independently, benchmark it on a fixed fixture, and record actual-output metrics before promotion.",
+        "safety_truth": {"private_code_copied": False, "access_controls_bypassed": False},
+    }
+
+
 def _weighted_score(metrics: dict[str, float]) -> float:
     return round(sum(metrics[name] * weight for name, weight in METRIC_WEIGHTS.items()) / 5 * 100, 2)
 
@@ -383,6 +456,7 @@ def main() -> int:
     parser.add_argument("--allow-hosted", action="store_true", help="Do not prefer local-only tools")
     parser.add_argument("--allow-paid-options", action="store_true", help="Do not prioritize zero-budget tools")
     parser.add_argument("--cycle", help="Path to a JSON evidence/benchmark cycle input")
+    parser.add_argument("--observation", help="Path to a public evidence observation JSON")
     parser.add_argument("--output", default="artifacts/creative-tool-intelligence.json")
     args = parser.parse_args()
     try:
@@ -392,8 +466,10 @@ def main() -> int:
             result = recommend_tools(args.task, zero_budget=not args.allow_paid_options, local_only=not args.allow_hosted)
         elif args.cycle:
             result = build_reverse_engineering_cycle(json.loads(Path(args.cycle).read_text(encoding="utf-8")))
+        elif args.observation:
+            result = analyze_public_observation(json.loads(Path(args.observation).read_text(encoding="utf-8")))
         else:
-            parser.error("use --list-tools, --task, or --cycle")
+            parser.error("use --list-tools, --task, --observation, or --cycle")
         path = Path(args.output)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
