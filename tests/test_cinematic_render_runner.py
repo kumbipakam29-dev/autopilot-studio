@@ -78,7 +78,10 @@ class CinematicRenderRunnerTests(unittest.TestCase):
         self.assertTrue(report["execution_truth"]["output_files_downloaded"])
         self.assertFalse(report["execution_truth"]["published"])
         self.assertTrue(all("Visual prompt" in item["positive_prompt"] for item in fake.submissions))
-        seeds = [item["seed"] for item in fake.submissions]\n        self.assertTrue(all(isinstance(value, int) for value in seeds))\n        self.assertEqual(len(set(seeds)), 4)\n
+        seeds = [item["seed"] for item in fake.submissions]
+        self.assertTrue(all(isinstance(value, int) for value in seeds))
+        self.assertEqual(len(set(seeds)), 4)
+
     def test_rejects_workflow_without_positive_prompt_placeholder(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
