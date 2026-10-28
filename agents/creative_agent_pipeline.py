@@ -35,8 +35,11 @@ def build_agent_pipeline(brief, *, use_llm=False):
     statuses = {
         "intake_agent": "BRIEF_VALIDATED" if brief_ok else "BLOCKED_BRIEF_QUALITY_GATE",
         "research_agent": "BLOCKED_NO_RESEARCH_CONNECTOR",
-        "creative_director_agent": ("DRAFT_GENERATED_BY_CONFIGURED_LLM" if cinematic_pack and cinematic_pack["generation_mode"] == "configured_llm" else "DRAFT_GENERATED_RULE_BASED") if cinematic_pack else (
-            "PLANNED" if brief_ok else "BLOCKED_BRIEF_QUALITY_GATE"),
+        "creative_director_agent": (
+            "DRAFT_GENERATED_BY_CONFIGURED_LLM"
+            if cinematic_pack and cinematic_pack["generation_mode"] == "configured_llm"
+            else "DRAFT_GENERATED_RULE_BASED"
+        ) if cinematic_pack else ("PLANNED" if brief_ok else "BLOCKED_BRIEF_QUALITY_GATE"),
         "script_agent": "DRAFT_SHOTLIST_GENERATED" if cinematic_pack else (
             "PLANNED" if brief_ok and wants_video else ("NOT_REQUIRED" if brief_ok else "BLOCKED_BRIEF_QUALITY_GATE")),
         "visual_agent": "DRAFT_VISUAL_PROMPTS_GENERATED" if cinematic_pack else (
@@ -52,6 +55,7 @@ def build_agent_pipeline(brief, *, use_llm=False):
     tasks = [{"agent": name, "purpose": purpose, "depends_on": deps, "status": statuses[name]}
              for name, purpose, deps in AGENTS]
     pid = hashlib.sha256((order["work_order_id"] + "|creative_agent_pipeline_v2").encode()).hexdigest()[:16]
+    llm_used = bool(cinematic_pack and cinematic_pack["execution_truth"]["llm_inference_used"])
     return {
         "schema_version": "creative_agent_pipeline_v2",
         "pipeline_id": pid,
@@ -60,9 +64,9 @@ def build_agent_pipeline(brief, *, use_llm=False):
         "cinematic_ad_pack": cinematic_pack,
         "agent_tasks": tasks,
         "execution_truth": {
-            "rule_based_creative_plan_generated": bool(cinematic_pack and cinematic_pack["generation_mode"] == "deterministic_industry_routes"),\n            "external_llm_used": bool(cinematic_pack and cinematic_pack["execution_truth"]["llm_inference_used"]),
+            "rule_based_creative_plan_generated": bool(cinematic_pack and cinematic_pack["generation_mode"] == "deterministic_industry_routes"),
+            "external_llm_used": llm_used,
             "public_research_performed": False,
-            "external_llm_used": False,
             "image_rendered": False,
             "video_rendered": False,
             "audio_rendered": False,
@@ -84,16 +88,19 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--brief", required=True)
     parser.add_argument("--output", default="artifacts/creative-agent-pipeline.json")
+    parser.add_argument("--use-llm", action="store_true",
+                        help="Use configured local/explicitly enabled LLM; fail rather than silently falling back")
     args = parser.parse_args()
     try:
         brief = json.loads(Path(args.brief).read_text(encoding="utf-8"))
-        report = build_agent_pipeline(brief)
+        report = build_agent_pipeline(brief, use_llm=args.use_llm)
         out = Path(args.output)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({"status": "PLANNED_WITH_BLOCKERS", "pipeline_id": report["pipeline_id"],
                           "agent_count": len(report["agent_tasks"]),
-                          "creative_pack_created": report["execution_truth"]["rule_based_creative_plan_generated"],
+                          "creative_pack_created": report["cinematic_ad_pack"] is not None,
+                          "external_llm_used": report["execution_truth"]["external_llm_used"],
                           "video_rendered": False, "published": False, "output": str(out)}))
         return 0
     except (OSError, ValueError, TypeError, RuntimeError) as exc:
