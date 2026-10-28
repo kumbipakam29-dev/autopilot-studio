@@ -173,7 +173,11 @@ def _llm_routes(brief: dict[str, Any]) -> tuple[list[tuple[str, str, str, str, s
     ], temperature=0.7, max_tokens=1800)
     raw = result["content"].strip()
     if raw.startswith("```"):
-        raw = re.sub(r"^\`\`\`(?:json)?\\s*|\\s*\`\`\`$", "", raw, flags=re.IGNORECASE)
+        raw = raw[3:].strip()
+        if raw.lower().startswith("json"):
+            raw = raw[4:].strip()
+        if raw.endswith("```"):
+            raw = raw[:-3].strip()
     try:
         items = json.loads(raw)
     except json.JSONDecodeError:
