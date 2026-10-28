@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { POD_CONCEPTS, REVIEW_STAGES } from './podData.js';
 import './style.css';
 
-const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Task Queue', 'Reports', 'Settings'];
-const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
+const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Training Loop', 'Task Queue', 'Reports', 'Settings'];
+const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Training Loop': '↻', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
 
 const EARNING_SOURCES = [
   { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Phone-based voice/data tasks', note: 'Last checked listings showed ₹2 per approved recording. Easy to start, but below the ₹50–₹200 task target; verify available tasks and payout terms.' },
@@ -143,6 +143,17 @@ function App() {
   const [agentBrief, setAgentBrief] = React.useState(() => readStore('aps-agent-brief', DEFAULT_AGENT_BRIEF));
   const [agentRuns, setAgentRuns] = React.useState(() => readStore('aps-agent-runs', []));
   const [agentOutput, setAgentOutput] = React.useState(() => readStore('aps-agent-output', null));
+  const [trainingRuns, setTrainingRuns] = React.useState(() => readStore('aps-training-runs', []));
+  const [trainingForm, setTrainingForm] = React.useState(() => readStore('aps-training-form', {
+    agent: 'Writer / Content Strategist',
+    task: 'Create a clear Instagram caption',
+    baselineScore: '60',
+    candidateScore: '75',
+    errorCategory: 'Clarity / completeness',
+    regression: 'pass',
+    evidence: '',
+    changeSummary: ''
+  }));
   const [podState, setPodState] = React.useState(() => readStore('aps-pod-state', {}));
   const [search, setSearch] = React.useState('');
   const [productFilter, setProductFilter] = React.useState('All products');
@@ -161,6 +172,8 @@ function App() {
   React.useEffect(() => { localStorage.setItem('aps-agent-brief', JSON.stringify(agentBrief)); }, [agentBrief]);
   React.useEffect(() => { localStorage.setItem('aps-agent-runs', JSON.stringify(agentRuns.slice(0, 10))); }, [agentRuns]);
   React.useEffect(() => { if (agentOutput) localStorage.setItem('aps-agent-output', JSON.stringify(agentOutput)); }, [agentOutput]);
+  React.useEffect(() => { localStorage.setItem('aps-training-runs', JSON.stringify(trainingRuns.slice(0, 30))); }, [trainingRuns]);
+  React.useEffect(() => { localStorage.setItem('aps-training-form', JSON.stringify(trainingForm)); }, [trainingForm]);
   React.useEffect(() => { localStorage.setItem('aps-pod-state', JSON.stringify(podState)); }, [podState]);
   React.useEffect(() => { localStorage.setItem('aps-earnings-log', JSON.stringify(earningsLog)); }, [earningsLog]);
 
@@ -168,6 +181,58 @@ function App() {
     if (!task.trim()) return;
     setNotes([{ text: task.trim(), status: 'Queued locally', time: new Date().toLocaleString() }, ...notes]);
     setTask('');
+  }
+
+  function updateTrainingForm(field, value) {
+    setTrainingForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  function recordTrainingCycle(event) {
+    event.preventDefault();
+    const baseline = Number(trainingForm.baselineScore);
+    const candidate = Number(trainingForm.candidateScore);
+    if (!Number.isFinite(baseline) || !Number.isFinite(candidate) || baseline < 0 || baseline > 100 || candidate < 0 || candidate > 100) {
+      setNotice('Baseline and candidate scores must be between 0 and 100.');
+      return;
+    }
+    const run = {
+      id: 'cycle-' + Date.now(),
+      createdAt: new Date().toISOString(),
+      agent: trainingForm.agent,
+      task: trainingForm.task.trim(),
+      baselineScore: baseline,
+      candidateScore: candidate,
+      delta: candidate - baseline,
+      errorCategory: trainingForm.errorCategory,
+      regression: trainingForm.regression,
+      evidence: trainingForm.evidence.trim(),
+      changeSummary: trainingForm.changeSummary.trim(),
+      approvalStatus: 'Pending human review',
+      status: trainingForm.regression === 'fail' ? 'blocked_regression' : 'review_required',
+      scoreMethod: 'Manually entered reviewer scores; not an independent AI evaluation',
+      approvedAt: null
+    };
+    setTrainingRuns(prev => [run, ...prev].slice(0, 30));
+    setNotice(trainingForm.regression === 'fail' ? 'Cycle recorded and blocked: regression failed. No approval or release performed.' : 'Cycle recorded for human review. Scores are manually entered and do not prove model learning.');
+  }
+
+  function decideTrainingCycle(id, decision) {
+    setTrainingRuns(prev => prev.map(run => run.id === id
+      ? { ...run, approvalStatus: decision === 'approve' ? 'Approved by user in dashboard' : 'Rejected by user in dashboard', status: decision === 'approve' && run.regression === 'pass' && run.delta >= 0 ? 'approved_for_manual_release' : 'rejected_or_blocked', approvedAt: new Date().toISOString() }
+      : run));
+    setNotice(decision === 'approve'
+      ? 'Marked approved for manual release only. This does not deploy code or change model weights.'
+      : 'Cycle rejected. No code or model weights were changed.');
+  }
+
+  function exportTrainingLog() {
+    saveDownload('autopilot-training-loop-evidence.json', JSON.stringify({
+      exportedAt: new Date().toISOString(),
+      source: 'device-local training loop dashboard',
+      limitations: ['Scores are manually entered, not independently generated.', 'No model weights are trained.', 'Approval records do not deploy code.', 'This local log is not a server-backed audit log.'],
+      runs: trainingRuns
+    }, null, 2), 'application/json;charset=utf-8;');
+    setNotice('Training-loop evidence exported. See the JSON limitations before interpreting results.');
   }
 
   function updateAgentBrief(field, value) {
@@ -499,6 +564,42 @@ function App() {
         {agentRuns.length > 0 && <section className="panel"><div className="panel-head"><div><h3>Recent local draft runs</h3><p>Stored on this device only; not an authoritative cloud activity log.</p></div></div>{agentRuns.slice(0, 5).map(run => <div className="task" key={run.id}><span className="task-icon">✧</span><div><b>{run.businessName}</b><small>{new Date(run.createdAt).toLocaleString()} · {run.generationMode}</small></div><span className="status warn">Review required</span><button className="secondary" type="button" onClick={() => { setAgentOutput(run); setNotice('Loaded a saved local draft run.'); }}>View</button></div>)}</section>}
       </section>}
 
+      {tab === 'Training Loop' && <section className="training-lab">
+        <section className="panel">
+          <p className="eyebrow">SUPERVISED EVALUATION · HUMAN GATE</p>
+          <h2>Training Loop & Evidence</h2>
+          <p className="muted">Record a before/after task review, the error category, regression result and approval decision. This dashboard tracks evidence; it does not train model weights or independently verify the scores.</p>
+          <div className="notice"><b>Honest status</b><p>Numbers entered below are reviewer-provided. A higher candidate score is a recorded comparison, not proof that an AI model learned. Approval means “eligible for a separate manual release review” only.</p></div>
+          <form className="training-form" onSubmit={recordTrainingCycle}>
+            <label>Specialist<select value={trainingForm.agent} onChange={e => updateTrainingForm('agent', e.target.value)}>{['Architect / Orchestrator','Coder','Browser Agent','Researcher / Source Verifier','Writer / Content Strategist','Reviewer / Quality Evaluator','Analyst','Communicator','Executor','Memory'].map(x => <option key={x}>{x}</option>)}</select></label>
+            <label>Task / benchmark<input required value={trainingForm.task} onChange={e => updateTrainingForm('task', e.target.value)} /></label>
+            <label>Baseline score (0–100)<input type="number" min="0" max="100" required value={trainingForm.baselineScore} onChange={e => updateTrainingForm('baselineScore', e.target.value)} /></label>
+            <label>Candidate score (0–100)<input type="number" min="0" max="100" required value={trainingForm.candidateScore} onChange={e => updateTrainingForm('candidateScore', e.target.value)} /></label>
+            <label>Error category<select value={trainingForm.errorCategory} onChange={e => updateTrainingForm('errorCategory', e.target.value)}>{['None observed','Factual accuracy / evidence','Clarity / completeness','Formatting','Tool failure / timeout','Safety / permission','Regression','Other'].map(x => <option key={x}>{x}</option>)}</select></label>
+            <label>Regression test<select value={trainingForm.regression} onChange={e => updateTrainingForm('regression', e.target.value)}><option value="pass">Pass</option><option value="fail">Fail — block approval</option><option value="not_run">Not run — review only</option></select></label>
+            <label className="training-wide">Change summary<input value={trainingForm.changeSummary} onChange={e => updateTrainingForm('changeSummary', e.target.value)} placeholder="What changed between baseline and candidate?" /></label>
+            <label className="training-wide">Evidence / reviewer notes<textarea rows="3" value={trainingForm.evidence} onChange={e => updateTrainingForm('evidence', e.target.value)} placeholder="Paste test result, example output, or reviewer notes. Do not enter secrets." /></label>
+            <button className="primary training-wide" type="submit">Record evaluation cycle</button>
+          </form>
+        </section>
+        <section className="panel">
+          <div className="panel-head"><div><h3>Evaluation history</h3><p>Device-local records · newest first · maximum 30 cycles</p></div><button className="secondary" type="button" onClick={exportTrainingLog}>Export JSON ↓</button></div>
+          {trainingRuns.length === 0 ? <div className="empty">No evaluation cycles recorded on this device yet. Add a real benchmark run above; example scores are not imported as real evidence.</div> :
+            <div className="training-history">{trainingRuns.map(run => <article key={run.id} className="training-run">
+              <div className="training-run-head"><div><b>{run.agent}</b><small>{new Date(run.createdAt).toLocaleString()} · {run.id}</small></div><span className={'status ' + (run.regression === 'fail' || run.status === 'rejected_or_blocked' ? 'warn' : 'good')}>{run.approvalStatus}</span></div>
+              <p className="training-task">{run.task}</p>
+              <div className="training-score-row"><div><small>Baseline</small><strong>{run.baselineScore}/100</strong></div><div><small>Candidate</small><strong>{run.candidateScore}/100</strong></div><div><small>Change</small><strong>{run.delta > 0 ? '+' : ''}{run.delta}</strong></div><div><small>Regression</small><strong>{run.regression}</strong></div></div>
+              <p className="muted training-meta">Error: {run.errorCategory} · {run.scoreMethod}</p>
+              {run.changeSummary && <p><b>Change:</b> {run.changeSummary}</p>}
+              {run.evidence && <p><b>Evidence:</b> {run.evidence}</p>}
+              {run.approvalStatus === 'Pending human review' && run.regression === 'pass' && run.delta >= 0 && <div className="training-actions"><button className="primary" type="button" onClick={() => decideTrainingCycle(run.id, 'approve')}>Approve for manual release review</button><button className="secondary" type="button" onClick={() => decideTrainingCycle(run.id, 'reject')}>Reject</button></div>}
+              {run.regression === 'fail' && <p className="training-blocked">Blocked: regression failed; approval controls disabled.</p>}
+              {run.regression === 'not_run' && <p className="training-blocked">Review only: run regression tests before any release decision.</p>}
+              {run.approvedAt && <small>Decision recorded: {new Date(run.approvedAt).toLocaleString()}</small>}
+            </article>)}</div>}
+        </section>
+        <section className="panel"><h3>What this dashboard does not claim</h3><ul className="training-limits"><li>No LLM fine-tuning or model-weight updates.</li><li>No autonomous code edits, deployment or production release.</li><li>No external evaluator is connected; scores are manually entered.</li><li>Records are stored in this browser/device, not synced to GitHub or a server.</li><li>For valid comparisons, use the same benchmark inputs and independently capture baseline/candidate outputs.</li></ul></section>
+      </section>}
       {tab === 'Task Queue' && <section className="panel"><h3>Add a task</h3><p className="muted">Tasks are stored locally; they are not executed automatically.</p><form onSubmit={e => { e.preventDefault(); add(); }} className="task-form"><input value={task} onChange={e => setTask(e.target.value)} placeholder="Describe a task to track…" aria-label="Task description"/><button className="primary">Add task</button></form>{notes.map((n,i) => <div className="task" key={i}><span className="task-icon">☷</span><div><b>{n.text}</b><small>{n.time}</small></div><span className="status">{n.status}</span></div>)}</section>}
 
       {tab === 'Reports' && <section className="panel"><h3>Reports</h3><p className="muted">Reports will appear after a backend or data source is connected.</p><div className="empty">No sales or marketplace reports available yet.</div></section>}
