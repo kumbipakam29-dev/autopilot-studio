@@ -1,0 +1,9 @@
+{
+  "tool_name": "Adobe Firefly Creative Agent",
+  "source_url": "https://news.adobe.com/news/2026/06/adobe-unveils-major-expansion",
+  "observed_on": "2026-10-28",
+  "public_behavior": "Adobe publicly describes combining brand-kit creation, storyboards-to-video, product-photo video and automatic first-cut editing in multi-step creative workflows.",
+  "input_output_observed": "A creative brief and assets can be used across a sequence of brand, storyboard, video and editing stages, according to the vendor's public product announcement.",
+  "unknowns": "Private orchestration, model mix, prompt routing, implementation code, data flows and independent performance results are not established by the announcement.",
+  "evidence_scope": "public_demo_or_documentation"
+}
