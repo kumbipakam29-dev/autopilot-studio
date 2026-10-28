@@ -1,0 +1,35 @@
+{
+  "client_name": "Fictional Demo Auto Parts Store",
+  "business_type": "auto parts store",
+  "audience": "drivers and repair garages researching replacement components",
+  "goal": "make real product details memorable and encourage relevant enquiries",
+  "offer_or_topic": "engine components, brake and suspension parts",
+  "brand_voice": "technical, precise, practical and confident",
+  "call_to_action": "Send your vehicle model and part request",
+  "work_types": [
+    "reel_video",
+    "social_content"
+  ],
+  "platforms": [
+    "instagram",
+    "facebook"
+  ],
+  "approved_facts": [],
+  "prohibited_claims": [
+    "guaranteed fitment",
+    "number one",
+    "best in the city",
+    "unverified performance claims",
+    "fake testimonials"
+  ],
+  "brand_colors": [
+    "midnight blue",
+    "steel silver",
+    "white"
+  ],
+  "reference_notes": [
+    "Fictional sample brief for workflow tests only; never invent vehicle compatibility or specifications."
+  ],
+  "client_asset_permission_confirmed": false,
+  "publish_approval": false
+}
