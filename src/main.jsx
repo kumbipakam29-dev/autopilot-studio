@@ -780,8 +780,8 @@ function App() {
             <div><h3>Creative tools worth studying</h3><p>Public product behaviour → our own implementation idea. Access, licenses, model versions and costs can change.</p></div>
             <button className="secondary" type="button" onClick={exportCreativeIntelligence}>Export local evidence ↓</button>
           </div>
-          <div className="earning-source-grid">{CREATIVE_TOOL_CARDS.map(tool => <article className="earning-source" key={tool.name}>
-            <div className="earning-lead-top"><h4>{tool.name}</h4><span className="status">{tool.access}</span></div>
+          <div className="creative-tool-grid">{CREATIVE_TOOL_CARDS.map(tool => <article className="creative-tool-card" key={tool.name}>
+            <div className="earning-lead-top"><h4>{tool.name}</h4></div><span className="status creative-access">{tool.access}</span>
             <p>{tool.purpose}</p>
             <p><b>AutoPilot idea:</b> {tool.autopilot}</p>
             <a href={tool.url} target="_blank" rel="noreferrer">Open public source ↗</a>
