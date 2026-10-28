@@ -6,6 +6,7 @@ publishes content or claims a job finished unless output files are retrieved.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -111,7 +112,9 @@ def run_concept(
             submission = client.submit_workflow(
                 workflow_path, approved=True, image_path=image_path,
                 positive_prompt=full_prompt, negative_prompt=negative_prompt,
-                seed=(seed + index - 1) if seed is not None else None,
+                seed=(seed + index - 1) if seed is not None else int(
+                    hashlib.sha256(f"{pack.get('pack_id')}:{concept_id}:{index}".encode()).hexdigest()[:8], 16
+                ),
                 output_prefix=prefix,
             )
             entry["prompt_id"] = submission["prompt_id"]
