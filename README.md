@@ -51,6 +51,8 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [GitHub agent source adoption plan](docs/GITHUB_UPSTREAM_AGENT_SOURCES.md) — staged adoption, including first read-only evidence grader.
 - [Open-source agent learning and integration roadmap](docs/OPEN_SOURCE_AGENT_LEARNING_ROADMAP.md)
 - [PDF-derived 10-agent ecosystem crosswalk](docs/PDF_AGENT_ECOSYSTEM_CROSSWALK.md) — maps both uploaded PDF outlines to the existing code and tested/partial/missing states.
+- [Training-loop evidence guide](docs/TRAINING_LOOP_EVIDENCE_GUIDE.md) and [Python CLI](agents/learning_cycle_cli.py) — generate an importable, supervised evaluation record without model training or auto-release.
+- [Training-loop CLI tests](tests/test_learning_cycle_cli.py).
 - [Machine-readable PDF role mapping](config/pdf_agent_ecosystem_crosswalk_v1.json) and [integrity tests](tests/test_pdf_agent_ecosystem_crosswalk.py).
 
 ## CRM and prospect intake

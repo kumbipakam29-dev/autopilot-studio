@@ -183,6 +183,46 @@ function App() {
     setTask('');
   }
 
+  async function importTrainingEvidenceFile(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const record = JSON.parse(await file.text());
+      if (record.record_type !== 'autopilot_learning_cycle_evidence_v1' || !record.result || !record.result.baseline_review || !record.result.candidate_review) {
+        throw new Error('This is not a supported Python learning-cycle evidence JSON file.');
+      }
+      const result = record.result;
+      const baselineScore = Number(result.baseline_review.weighted_score);
+      const candidateScore = Number(result.candidate_review.weighted_score);
+      const regression = result.regression_passed === true ? 'pass' : 'fail';
+      const run = {
+        id: result.task_id || 'imported-' + Date.now(),
+        createdAt: record.created_at || new Date().toISOString(),
+        agent: record.agent_name || 'Unspecified specialist',
+        task: result.task_id || 'Imported Python learning-cycle result',
+        baselineScore, candidateScore,
+        delta: Number(result.comparison?.delta ?? (candidateScore - baselineScore)),
+        errorCategory: record.error_category || 'Unspecified',
+        regression,
+        evidence: record.evidence_notes || result.change_rationale || '',
+        changeSummary: result.change_rationale || '',
+        approvalStatus: result.reviewer_approved ? 'Reviewer approved for manual release review' :
+          result.decision === 'awaiting_human_approval' ? 'Pending human review' : result.decision,
+        status: result.decision,
+        scoreMethod: 'Imported from actual Python evaluation-cycle output; rubric scores remain reviewer-supplied',
+        approvedAt: null,
+        importedEvidence: true,
+        result
+      };
+      setTrainingRuns(prev => [run, ...prev.filter(x => x.id !== run.id)].slice(0, 30));
+      setNotice('Python learning-cycle evidence imported. Decision: ' + result.decision + '. No code deployed and no model weights changed.');
+    } catch (error) {
+      setNotice('Import failed: ' + (error?.message || 'invalid JSON'));
+    } finally {
+      event.target.value = '';
+    }
+  }
+
   function updateTrainingForm(field, value) {
     setTrainingForm(prev => ({ ...prev, [field]: value }));
   }
@@ -584,6 +624,11 @@ function App() {
         </section>
         <section className="panel">
           <div className="panel-head"><div><h3>Evaluation history</h3><p>Device-local records · newest first · maximum 30 cycles</p></div><button className="secondary" type="button" onClick={exportTrainingLog}>Export JSON ↓</button></div>
+          <div className="training-import">
+            <label htmlFor="training-evidence-file">Import a real Python learning-cycle JSON record</label>
+            <input id="training-evidence-file" type="file" accept=".json,application/json" onChange={importTrainingEvidenceFile} />
+            <small>Generate the file with <code>python -m agents.learning_cycle_cli --input cycle.json --output evidence.json</code>. The CLI runs the repository's Python evaluation logic. Scores still need independent evidence and reviewer input.</small>
+          </div>
           {trainingRuns.length === 0 ? <div className="empty">No evaluation cycles recorded on this device yet. Add a real benchmark run above; example scores are not imported as real evidence.</div> :
             <div className="training-history">{trainingRuns.map(run => <article key={run.id} className="training-run">
               <div className="training-run-head"><div><b>{run.agent}</b><small>{new Date(run.createdAt).toLocaleString()} · {run.id}</small></div><span className={'status ' + (run.regression === 'fail' || run.status === 'rejected_or_blocked' ? 'warn' : 'good')}>{run.approvalStatus}</span></div>

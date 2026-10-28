@@ -136,3 +136,10 @@
  .training-actions{display:grid;grid-template-columns:minmax(0,1fr)}
  .training-actions button{width:100%;white-space:normal}
 }
+
+
+.training-import{display:grid;gap:8px;background:#f7f8fc;border:1px solid #e8ebf2;border-radius:11px;padding:14px;margin:12px 0 16px}
+.training-import label{font-size:12px;font-weight:800;color:#536078}
+.training-import input{width:100%;min-width:0;font-size:12px;color:#536078}
+.training-import small{font-size:11px;line-height:1.6;color:#78849a;overflow-wrap:anywhere}
+.training-import code{white-space:normal;overflow-wrap:anywhere;color:#5346b5}
