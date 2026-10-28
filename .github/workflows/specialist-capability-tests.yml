@@ -6,6 +6,7 @@ on:
       - main
       - feat/open-source-agent-learning-roadmap
       - feat/office-orchestrator-all-options
+      - feat/free-llm-router-qwen
   pull_request:
     branches:
       - main
