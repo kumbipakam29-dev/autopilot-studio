@@ -1,4 +1,6 @@
+import json
 import unittest
+from unittest.mock import patch
 
 from agents.cinematic_ad_planner import build_cinematic_ad_pack
 
@@ -29,12 +31,42 @@ class CinematicAdPlannerTests(unittest.TestCase):
         self.assertEqual(len({x["title"] for x in pack["concepts"]}), 3)
         self.assertTrue(all(len(x["shots"]) == 4 for x in pack["concepts"]))
         self.assertEqual(pack["quality_gate"]["status"], "DRAFT_REVIEW_REQUIRED")
+        self.assertEqual(pack["generation_mode"], "deterministic_industry_routes")
 
     def test_routes_are_business_specific(self):
         salon = build_cinematic_ad_pack(self.brief("salon"))
         auto = build_cinematic_ad_pack(self.brief("auto parts store"))
         self.assertIn("Mirror reveal", [x["title"] for x in salon["concepts"]])
         self.assertIn("Precision exploded view", [x["title"] for x in auto["concepts"]])
+
+    def test_optional_llm_routes_are_validated_and_attributed(self):
+        routes = [
+            {"title": "Material close-up", "story": "Start with a real service detail.",
+             "visual_mechanic": "macro_push", "motion_direction": "Slow forward camera move.",
+             "payoff": "Every detail matters."},
+            {"title": "Tools choreography", "story": "Choreograph approved tools around the service.",
+             "visual_mechanic": "tool_orbit", "motion_direction": "Precise low-speed orbit.",
+             "payoff": "Craft in motion."},
+            {"title": "Mirror moment", "story": "End with a consent-approved final look.",
+             "visual_mechanic": "mirror_match_cut", "motion_direction": "Soft match cut.",
+             "payoff": "Your moment, your style."},
+        ]
+        with patch("agents.llm_router.chat_completion", return_value={
+            "content": json.dumps(routes), "model": "qwen3:4b", "provider_mode": "local_endpoint"
+        }) as mocked:
+            pack = build_cinematic_ad_pack(self.brief(), use_llm=True)
+        mocked.assert_called_once()
+        self.assertEqual(pack["generation_mode"], "configured_llm")
+        self.assertEqual(pack["llm"]["model"], "qwen3:4b")
+        self.assertTrue(pack["execution_truth"]["llm_inference_used"])
+        self.assertFalse(pack["execution_truth"]["video_rendered"])
+
+    def test_llm_malformed_response_fails_closed(self):
+        with patch("agents.llm_router.chat_completion", return_value={
+            "content": "not-json", "model": "qwen3:4b", "provider_mode": "local_endpoint"
+        }):
+            with self.assertRaises(ValueError):
+                build_cinematic_ad_pack(self.brief(), use_llm=True)
 
     def test_pack_does_not_claim_media_rendered_or_published(self):
         pack = build_cinematic_ad_pack(self.brief())
