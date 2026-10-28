@@ -247,6 +247,8 @@ def _validate_observation(observation: dict[str, Any]) -> dict[str, Any]:
         date.fromisoformat(normalized["observed_on"])
     except ValueError:
         raise ValueError("observed_on must use YYYY-MM-DD") from None
+    if normalized.get("private_code_accessed") is True or normalized.get("access_controls_bypassed") is True:
+        raise ValueError("The loop accepts public/authorized observations only; private code or bypassed access is out of scope")
     normalized["evidence_scope"] = normalized.get("evidence_scope", "public_demo_or_documentation")
     if normalized["evidence_scope"] not in {"public_demo_or_documentation", "authorized_test_output", "public_research_paper"}:
         raise ValueError("evidence_scope must reference public or authorized evidence only")
