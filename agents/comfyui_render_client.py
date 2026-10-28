@@ -25,7 +25,7 @@ DEFAULT_BASE_URL = "http://127.0.0.1:8188"
 DEFAULT_TIMEOUT_SECONDS = 30
 OUTPUT_GROUPS = ("images", "gifs", "videos", "audio", "files")
 REMOTE_PROVIDER_TOKENS = (
-    "replicate", "falai", "openai", "kling", "luma", "runpod",
+    "replicate", "fal", "openai", "kling", "luma", "runpod",
     "stabilityai", "googleveo", "pika", "cloudapi",
 )
 
@@ -200,10 +200,11 @@ class ComfyUIClient:
             raise ComfyUIError("Input image exceeds the 40 MiB safety limit")
         boundary = uuid.uuid4().hex
         mime = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+        safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", path.name)[:120] or "input_image"
         image_bytes = path.read_bytes()
         body = (
             f"--{boundary}\r\n"
-            f'Content-Disposition: form-data; name="image"; filename="{path.name}"\r\n'
+            f'Content-Disposition: form-data; name="image"; filename="{safe_name}"\r\n'
             f"Content-Type: {mime}\r\n\r\n"
         ).encode("utf-8") + image_bytes + f"\r\n--{boundary}--\r\n".encode("utf-8")
         try:
@@ -231,6 +232,14 @@ class ComfyUIClient:
     ) -> dict[str, Any]:
         if not approved:
             raise ComfyUIError("Execution requires explicit approval via approved=True or CLI --execute")
+        if not re.fullmatch(r"[A-Za-z0-9_-]{1,60}", output_prefix):
+            raise ComfyUIError("output_prefix must be 1-60 letters, digits, underscores or hyphens")
+        if seed is not None and (not isinstance(seed, int) or isinstance(seed, bool) or seed < 0):
+            raise ComfyUIError("seed must be a non-negative integer")
+        if positive_prompt is not None and len(positive_prompt) > 20000:
+            raise ComfyUIError("positive_prompt exceeds the 20000-character limit")
+        if negative_prompt is not None and len(negative_prompt) > 4000:
+            raise ComfyUIError("negative_prompt exceeds the 4000-character limit")
         try:
             workflow = json.loads(Path(workflow_path).read_text(encoding="utf-8"))
         except OSError as exc:
