@@ -1,0 +1,111 @@
+{
+  "schema_version": "autopilot_agent_registry_v1",
+  "registry_version": "0.1.0",
+  "agents": [
+    {
+      "agent_id": "video_reel_writer",
+      "display_name": "Video & Reels Scriptwriter",
+      "current_version": "0.1.0",
+      "task_types": [
+        "video_script",
+        "reel_script",
+        "hook",
+        "shot_list",
+        "voiceover"
+      ],
+      "model_route": "video_script_reels",
+      "status": "prototype"
+    },
+    {
+      "agent_id": "social_content_creator",
+      "display_name": "Social Posts & Captions Creator",
+      "current_version": "0.1.0",
+      "task_types": [
+        "caption",
+        "carousel_copy",
+        "content_calendar",
+        "hashtags"
+      ],
+      "model_route": "social_captions_posts",
+      "status": "prototype"
+    },
+    {
+      "agent_id": "creative_brief_designer",
+      "display_name": "Creative Poster & Ad Brief Designer",
+      "current_version": "0.1.0",
+      "task_types": [
+        "poster_copy",
+        "creative_brief",
+        "layout_direction",
+        "image_prompt"
+      ],
+      "model_route": "poster_creative_brief",
+      "status": "prototype"
+    },
+    {
+      "agent_id": "app_builder_coder",
+      "display_name": "App Builder & Coder",
+      "current_version": "0.1.0",
+      "task_types": [
+        "code_draft",
+        "debug_plan",
+        "unit_test_draft",
+        "app_spec"
+      ],
+      "model_route": "app_building_code_drafts",
+      "status": "prototype"
+    },
+    {
+      "agent_id": "billing_system_architect",
+      "display_name": "Billing System Architect",
+      "current_version": "0.1.0",
+      "task_types": [
+        "billing_design",
+        "invoice_flow",
+        "ledger_design",
+        "test_mode_payment_spec"
+      ],
+      "model_route": "billing_system_design",
+      "status": "prototype"
+    },
+    {
+      "agent_id": "research_summarizer",
+      "display_name": "Research & Documentation Summarizer",
+      "current_version": "0.1.0",
+      "task_types": [
+        "research_summary",
+        "requirements",
+        "documentation"
+      ],
+      "model_route": "research_summarization",
+      "status": "prototype"
+    },
+    {
+      "agent_id": "data_extractor",
+      "display_name": "Structured Data Extractor",
+      "current_version": "0.1.0",
+      "task_types": [
+        "json_extraction",
+        "csv_schema",
+        "field_extraction"
+      ],
+      "model_route": "structured_data_extraction",
+      "status": "prototype"
+    }
+  ],
+  "lifecycle": [
+    "prototype",
+    "candidate",
+    "evaluated",
+    "approved",
+    "deprecated"
+  ],
+  "policy": {
+    "candidate_must_outscore_baseline": true,
+    "regression_tests_required": true,
+    "safety_score_must_not_drop": true,
+    "human_approval_required_for_promotion": true,
+    "agent_versions_are_config_versions_not_model_weights": true,
+    "no_automatic_external_actions": true
+  }
+}
