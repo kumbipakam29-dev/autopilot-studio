@@ -1,0 +1,155 @@
+{
+  "schema_version": "autopilot_model_catalog_v1",
+  "policy": {
+    "default_mode": "local_only",
+    "remote_inference_opt_in_required": true,
+    "silent_paid_fallback": false,
+    "download_all_models_automatically": false,
+    "license_and_hardware_check_required": true
+  },
+  "models": [
+    {
+      "id": "qwen3:0.6b",
+      "family": "Qwen3",
+      "parameters": "0.6B",
+      "strengths": [
+        "fast drafts",
+        "classification",
+        "simple summaries"
+      ],
+      "runtime": "Ollama",
+      "license": "Apache-2.0",
+      "hardware": "lowest-memory option; quality varies"
+    },
+    {
+      "id": "qwen3:1.7b",
+      "family": "Qwen3",
+      "parameters": "1.7B",
+      "strengths": [
+        "short writing",
+        "summaries",
+        "structured extraction"
+      ],
+      "runtime": "Ollama",
+      "license": "Apache-2.0",
+      "hardware": "low-memory local inference"
+    },
+    {
+      "id": "qwen3:4b",
+      "family": "Qwen3",
+      "parameters": "4B",
+      "strengths": [
+        "general writing",
+        "planning",
+        "reasoning",
+        "scripts"
+      ],
+      "runtime": "Ollama",
+      "license": "Apache-2.0",
+      "hardware": "balanced default; quantized model still needs several GB"
+    },
+    {
+      "id": "qwen3:8b",
+      "family": "Qwen3",
+      "parameters": "8B",
+      "strengths": [
+        "higher-quality writing",
+        "longer reasoning",
+        "coding assistance"
+      ],
+      "runtime": "Ollama",
+      "license": "Apache-2.0",
+      "hardware": "more RAM/VRAM; optional"
+    },
+    {
+      "id": "qwen2.5-coder:1.5b",
+      "family": "Qwen2.5-Coder",
+      "parameters": "1.5B",
+      "strengths": [
+        "code completion",
+        "small code edits",
+        "test drafts"
+      ],
+      "runtime": "Ollama",
+      "license": "verify model card",
+      "hardware": "low-memory coding specialist"
+    },
+    {
+      "id": "qwen2.5-coder:3b",
+      "family": "Qwen2.5-Coder",
+      "parameters": "3B",
+      "strengths": [
+        "code generation",
+        "debugging drafts",
+        "unit-test drafts"
+      ],
+      "runtime": "Ollama",
+      "license": "verify model card",
+      "hardware": "coding specialist; validate with tests"
+    },
+    {
+      "id": "gemma3:1b",
+      "family": "Gemma 3",
+      "parameters": "1B",
+      "strengths": [
+        "short text",
+        "classification",
+        "lightweight assistant tasks"
+      ],
+      "runtime": "Ollama",
+      "license": "review Gemma terms",
+      "hardware": "low-memory; check usage terms"
+    },
+    {
+      "id": "gemma3:4b",
+      "family": "Gemma 3",
+      "parameters": "4B",
+      "strengths": [
+        "writing",
+        "summarization",
+        "multimodal-capable family"
+      ],
+      "runtime": "Ollama",
+      "license": "review Gemma terms",
+      "hardware": "balanced option; check exact variant"
+    }
+  ],
+  "task_routes": {
+    "video_script_reels": [
+      "qwen3:4b",
+      "qwen3:1.7b"
+    ],
+    "social_captions_posts": [
+      "qwen3:4b",
+      "gemma3:4b",
+      "qwen3:1.7b"
+    ],
+    "poster_creative_brief": [
+      "qwen3:4b",
+      "gemma3:4b"
+    ],
+    "app_building_code_drafts": [
+      "qwen2.5-coder:3b",
+      "qwen2.5-coder:1.5b",
+      "qwen3:4b"
+    ],
+    "billing_system_design": [
+      "qwen3:4b",
+      "qwen3:8b"
+    ],
+    "research_summarization": [
+      "qwen3:4b",
+      "qwen3:1.7b"
+    ],
+    "structured_data_extraction": [
+      "qwen3:1.7b",
+      "qwen3:0.6b"
+    ]
+  },
+  "notes": [
+    "Suggestions only; models are not confirmed installed or benchmarked.",
+    "Text models draft poster concepts; final images need an image-generation engine.",
+    "Billing work stays in sandbox/design until reviewed; no real payments.",
+    "Verify current tags, hardware needs and model terms before use."
+  ]
+}

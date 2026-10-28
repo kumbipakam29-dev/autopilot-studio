@@ -18,6 +18,7 @@ permissions:
 jobs:
   python-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,5 +28,40 @@ jobs:
           python-version: '3.x'
       - name: Run all Python tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Run hard task suite and create JSON report
+        run: |
+          mkdir -p artifacts
+          python -m agents.hard_task_simulation --output artifacts/hard-task-learning-report.json
+      - name: Add report summary
+        if: always()
+        run: |
+          if [ -f artifacts/hard-task-learning-report.json ]; then
+            python - <<'PY'
+          import json, os
+          with open("artifacts/hard-task-learning-report.json", encoding="utf-8") as source:
+              report = json.load(source)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("# AutoPilot Studio hard-task report\n\n")
+              summary.write("- Run ID: " + report["run_id"] + "\n")
+              for key, label in (("A_compute_virtual_ram", "Compute / virtual RAM"), ("B_customer_creative_workflow", "Creative workflow")):
+                  track = report["tracks"][key]
+                  summary.write("- " + label + ": **" + track["status"] + "** (" + str(track["score"]) + "/100)\n")
+              summary.write("- Quality gate: **" + report["quality_gate"]["status"] + "**\n")
+              summary.write("- Customer delivery allowed: **false**\n")
+              summary.write("- Live model inference: **not performed**\n")
+              summary.write("- External actions: **not performed**\n")
+              summary.write("\n## Alerts\n")
+              for alert in report["alerts"]:
+                  summary.write("- **" + alert["severity"].upper() + "** — " + alert["message"] + "\n")
+          PY
+          fi
+      - name: Upload machine-readable report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hard-task-learning-report
+          path: artifacts/hard-task-learning-report.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Run harmless demo task
         run: python runtime/runner.py

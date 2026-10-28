@@ -1,0 +1,61 @@
+name: Hard Task Learning Report
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - feat/open-source-agent-learning-roadmap
+
+permissions:
+  contents: read
+
+jobs:
+  hard-task-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run full offline unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Run hard task simulation
+        run: |
+          mkdir -p artifacts
+          python -m agents.hard_task_simulation --output artifacts/hard-task-learning-report.json
+      - name: Write report summary
+        if: always()
+        run: |
+          if [ -f artifacts/hard-task-learning-report.json ]; then
+            python - <<'PY'
+          import json, os
+          with open("artifacts/hard-task-learning-report.json", encoding="utf-8") as source:
+              report = json.load(source)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("# AutoPilot Studio hard-task report\n\n")
+              summary.write("- Run ID: " + report["run_id"] + "\n")
+              for key, label in (("A_compute_virtual_ram", "Compute / virtual RAM"), ("B_customer_creative_workflow", "Creative workflow")):
+                  track = report["tracks"][key]
+                  summary.write("- " + label + ": **" + track["status"] + "** (" + str(track["score"]) + "/100)\n")
+              summary.write("- Quality gate: **" + report["quality_gate"]["status"] + "**\n")
+              summary.write("- Customer delivery allowed: **false**\n")
+              summary.write("- Execution mode: deterministic simulation; live model inference and external actions were not performed.\n")
+              summary.write("\n## Alerts\n")
+              for alert in report["alerts"]:
+                  summary.write("- **" + alert["severity"].upper() + "** — " + alert["message"] + "\n")
+          PY
+          fi
+      - name: Upload machine-readable evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hard-task-learning-report
+          path: artifacts/hard-task-learning-report.json
+          if-no-files-found: warn
+          retention-days: 14
