@@ -1,0 +1,9 @@
+{
+  "tool_name": "ComfyUI workflow API",
+  "source_url": "https://github.com/Comfy-Org/docs/blob/main/development/api-development/workflow-api-format.mdx",
+  "observed_on": "2026-10-28",
+  "public_behavior": "The public docs describe API-format workflows as JSON node graphs with input/output connections that can be submitted programmatically.",
+  "input_output_observed": "A validated workflow definition can be sent to a local ComfyUI server to request processing; output structure depends on the configured graph.",
+  "unknowns": "The exact model, custom-node behavior, licensing, GPU demand and output quality depend on the installed workflow and are not determined by the API schema alone.",
+  "evidence_scope": "public_demo_or_documentation"
+}
