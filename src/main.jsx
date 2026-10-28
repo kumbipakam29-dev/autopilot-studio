@@ -99,6 +99,31 @@ const EARNING_LEADS = [
 ];
 
 const EARNING_STATUSES = ['Lead found', 'Applied', 'Qualification pending', 'Approved to work', 'Work submitted', 'Accepted', 'Rejected', 'Payment pending', 'Paid'];
+
+const PDF_AGENT_ROLES = [
+  { name: 'Architect', status: 'Partial', note: 'Routes known tasks; no general autonomous planner.' },
+  { name: 'Coder', status: 'Not implemented', note: 'No safe, tested code-generation worker yet.' },
+  { name: 'Reviewer / Editor', status: 'Partial', note: 'Evidence and annotation checks exist; not a general security auditor.' },
+  { name: 'Researcher', status: 'Partial', note: 'Bounded public-source research exists; verify current terms manually.' },
+  { name: 'Writer', status: 'Partial', note: 'Offline caption, calendar and Reel draft templates exist.' },
+  { name: 'Analyst', status: 'Partial', note: 'Structured tracking exists; general AI analysis is not connected.' },
+  { name: 'Communicator', status: 'Partial', note: 'Creates drafts only; does not send messages.' },
+  { name: 'Executor', status: 'Partial', note: 'Local task routing only; no arbitrary shell or external actions.' },
+  { name: 'Memory', status: 'Partial', note: 'Evaluation/learning loop exists; no semantic conversation vector store connected.' },
+  { name: 'Orchestrator', status: 'Partial', note: 'Offline workflows coordinate bounded functions; CrewAI/LangGraph are not installed.' }
+];
+const DEFAULT_AGENT_BRIEF = {
+  businessName: 'Sample Cafe',
+  businessType: 'Cafe / restaurant',
+  location: 'Ahmedabad',
+  audience: 'local customers',
+  offer: 'coffee and fresh pastries',
+  platform: 'Instagram',
+  brandVoice: 'warm and friendly',
+  callToAction: 'Save this idea for your next outing',
+  verifiedFacts: ''
+};
+
 const readStore = (key, fallback) => {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
 };
@@ -115,6 +140,9 @@ function App() {
   const [tab, setTab] = React.useState('Overview');
   const [notes, setNotes] = React.useState(() => readStore('aps-notes', []));
   const [task, setTask] = React.useState('');
+  const [agentBrief, setAgentBrief] = React.useState(() => readStore('aps-agent-brief', DEFAULT_AGENT_BRIEF));
+  const [agentRuns, setAgentRuns] = React.useState(() => readStore('aps-agent-runs', []));
+  const [agentOutput, setAgentOutput] = React.useState(() => readStore('aps-agent-output', null));
   const [podState, setPodState] = React.useState(() => readStore('aps-pod-state', {}));
   const [search, setSearch] = React.useState('');
   const [productFilter, setProductFilter] = React.useState('All products');
@@ -130,6 +158,9 @@ function App() {
   const [earningStatus, setEarningStatus] = React.useState('Lead found');
 
   React.useEffect(() => { localStorage.setItem('aps-notes', JSON.stringify(notes)); }, [notes]);
+  React.useEffect(() => { localStorage.setItem('aps-agent-brief', JSON.stringify(agentBrief)); }, [agentBrief]);
+  React.useEffect(() => { localStorage.setItem('aps-agent-runs', JSON.stringify(agentRuns.slice(0, 10))); }, [agentRuns]);
+  React.useEffect(() => { if (agentOutput) localStorage.setItem('aps-agent-output', JSON.stringify(agentOutput)); }, [agentOutput]);
   React.useEffect(() => { localStorage.setItem('aps-pod-state', JSON.stringify(podState)); }, [podState]);
   React.useEffect(() => { localStorage.setItem('aps-earnings-log', JSON.stringify(earningsLog)); }, [earningsLog]);
 
@@ -138,6 +169,77 @@ function App() {
     setNotes([{ text: task.trim(), status: 'Queued locally', time: new Date().toLocaleString() }, ...notes]);
     setTask('');
   }
+
+  function updateAgentBrief(field, value) {
+    setAgentBrief(prev => ({ ...prev, [field]: value }));
+  }
+
+  function runLocalContentWorkflow(event) {
+    event.preventDefault();
+    const brief = Object.fromEntries(Object.entries(agentBrief).map(([key, value]) => [key, String(value ?? '').trim()]));
+    const required = ['businessName', 'businessType', 'audience', 'offer'];
+    const missing = required.filter(key => !brief[key]);
+    if (missing.length) {
+      setNotice('Complete business name, type, audience and offer before running the draft workflow.');
+      return;
+    }
+    const id = 'local-' + Date.now();
+    const createdAt = new Date().toISOString();
+    const offer = brief.offer.replace(/[.!?]+$/, '');
+    const cta = brief.callToAction || 'Save this post for later';
+    const location = brief.location ? ` in ${brief.location}` : '';
+    const facts = brief.verifiedFacts || 'Add one verified product, service or business detail before publishing.';
+    const captions = [
+      `${brief.businessName}: ${offer}. A simple introduction for ${brief.audience}. ${cta}.`,
+      `Looking for ${offer}${location}? This ${brief.businessType.toLowerCase()} content idea is for ${brief.audience}. Check the details and choose what fits you. ${cta}.`,
+      `A little look at ${brief.businessName}. Topic: ${offer}. Keep the message clear, use real photos or footage, and share only confirmed details. ${cta}.`
+    ];
+    const calendar = [
+      { day: 'Day 1', format: 'Intro post', idea: `Introduce ${brief.businessName} and explain ${offer} in plain language.` },
+      { day: 'Day 2', format: 'Helpful tip', idea: `Share one useful tip related to ${offer}; fact-check it before posting.` },
+      { day: 'Day 3', format: 'Behind the scenes', idea: 'Show a real workspace, preparation step or service process, only if footage is available.' },
+      { day: 'Day 4', format: 'FAQ', idea: `Answer one real customer question about ${offer} using a confirmed answer.` },
+      { day: 'Day 5', format: 'Product or service detail', idea: `Explain one feature or step of ${offer}. Use this verified detail: ${facts}` },
+      { day: 'Day 6', format: 'Story poll', idea: `Ask ${brief.audience} a relevant question; avoid implying customer results that are not evidenced.` },
+      { day: 'Day 7', format: 'Weekly recap', idea: `Summarize the week's useful points and invite viewers to take this action: ${cta}.` }
+    ];
+    const reelScript = [
+      { time: '0–3 sec', visual: 'Clear shot of the actual product, place or service', onScreen: `Need to know about ${offer}?`, voiceover: `Here is a quick look at ${offer}.` },
+      { time: '3–7 sec', visual: `Show ${brief.businessName} or the relevant work in progress`, onScreen: brief.businessName, voiceover: `This is ${brief.businessName}. Show only what is genuinely available.` },
+      { time: '7–12 sec', visual: 'Close-up, process demonstration or one real detail', onScreen: facts, voiceover: 'Add one verified detail or useful tip. Do not invent claims.' },
+      { time: '12–17 sec', visual: 'Simple end card with readable text', onScreen: cta, voiceover: cta }
+    ];
+    const output = {
+      id, createdAt, businessName: brief.businessName,
+      status: 'review_required',
+      generationMode: 'browser-local deterministic templates v0.1.0',
+      agentRuns: [
+        { agent: 'Brief Structurer', version: '0.1.0', status: 'completed', output: `Brief checked for ${brief.businessType}; required fields present.` },
+        { agent: 'Caption Variant Lab', version: '0.1.0', status: 'completed', output: 'Three caption drafts generated from the supplied brief.' },
+        { agent: 'Content Calendar Architect', version: '0.1.0', status: 'completed', output: 'Seven-day draft calendar generated.' },
+        { agent: 'Reel Script Engineer', version: '0.1.0', status: 'completed', output: '17-second, four-scene Reel outline generated.' },
+        { agent: 'Quality Reviewer', version: '0.1.0', status: 'review_required', output: 'Human review is required; check every factual claim, brand detail, CTA and permission before publication.' }
+      ],
+      brief, captions, calendar, reelScript,
+      qualityNotes: [
+        'This is a browser-local template workflow, not a connected language model or a call to the Python backend.',
+        'No public web research, client contact, DM, publication, listing change or purchase was performed.',
+        'Review the wording and verify all business claims before using the material externally.',
+        'Treat sample or fictional business details as spec work; do not imply a real client relationship.'
+      ],
+      evidence: { generatedInCurrentBrowser: true, externalSourcesFetched: false, outreachSent: false, contentPublished: false, modelApiCalled: false }
+    };
+    setAgentOutput(output);
+    setAgentRuns(prev => [output, ...prev].slice(0, 10));
+    setNotes(prev => [{ text: `Draft package generated: ${brief.businessName}`, status: 'Review required · local templates', time: new Date().toLocaleString() }, ...prev].slice(0, 30));
+    setNotice('Draft package generated locally. It has not been published or sent.');
+  }
+
+  function exportAgentRun(run) {
+    saveDownload(`autopilot-agent-run-${run.id}.json`, JSON.stringify(run, null, 2), 'application/json;charset=utf-8;');
+    setNotice('Run evidence JSON exported. It records a local template draft, not a live or model-backed agent run.');
+  }
+
   function stageOf(id) { return podState[id]?.stage || 'Idea'; }
   function setStage(id, stage) {
     setPodState(prev => ({ ...prev, [id]: { ...(prev[id] || {}), stage, updatedAt: new Date().toISOString() } }));
@@ -357,7 +459,45 @@ function App() {
         <div className="notice"><b>First-payment playbook</b><p>Use only official pages, confirm the payout method and minimum withdrawal before starting, do not pay a joining/deposit/unlock fee, do the real task yourself, follow its AI-assistance rules, and record “Accepted” or “Paid” only when the platform confirms it. Fake reviews, fake proof, duplicate accounts, location spoofing and CAPTCHA bypass are out.</p></div>
       </section>}
 
-      {tab === 'AI Agents' && <section className="panel"><h3>Agent connections</h3><p className="muted">No live agents are connected yet. The POD concept library is a local planning module, not a running autonomous agent.</p>{['Trend & Demand Research Agent','Original Design Brief Agent','Listing SEO Agent','IP & Print QA Agent','Publishing Queue Agent','Sales Learning Agent'].map(a => <div className="task" key={a}><span className="task-icon">✧</span><div><b>{a}</b><small>Backend integration required</small></div><span className="status warn">Not connected</span></div>)}</section>}
+      {tab === 'AI Agents' && <section className="agent-lab">
+        <section className="panel">
+          <div className="agent-hero-head">
+            <div><p className="eyebrow">VISIBLE WORKBENCH · ZERO API COST</p><h2>Run a local content draft workflow</h2><p className="muted">This runs deterministic browser templates using the brief below. It is not a live LLM or the Python backend.</p></div>
+            <span className="status good">Local run available</span>
+          </div>
+          <div className="notice"><b>Honest execution status</b><p>When you press Run, the browser creates real copy/calendar/Reel draft output and an evidence record on this device. No web research, AI-model API, DM, publication or external account action is performed. Saved browser data can be lost if app data is cleared.</p></div>
+          <form className="agent-brief-form" onSubmit={runLocalContentWorkflow}>
+            <label>Business / sample name<input value={agentBrief.businessName} onChange={e => updateAgentBrief('businessName', e.target.value)} required /></label>
+            <label>Business type<input value={agentBrief.businessType} onChange={e => updateAgentBrief('businessType', e.target.value)} required /></label>
+            <label>Location<input value={agentBrief.location} onChange={e => updateAgentBrief('location', e.target.value)} placeholder="City or area" /></label>
+            <label>Target audience<input value={agentBrief.audience} onChange={e => updateAgentBrief('audience', e.target.value)} required /></label>
+            <label>Offer / topic<input value={agentBrief.offer} onChange={e => updateAgentBrief('offer', e.target.value)} required /></label>
+            <label>Platform<select value={agentBrief.platform} onChange={e => updateAgentBrief('platform', e.target.value)}>{['Instagram','LinkedIn','Facebook','WhatsApp Status'].map(x => <option key={x}>{x}</option>)}</select></label>
+            <label>Brand voice<input value={agentBrief.brandVoice} onChange={e => updateAgentBrief('brandVoice', e.target.value)} placeholder="warm and friendly" /></label>
+            <label>Call to action<input value={agentBrief.callToAction} onChange={e => updateAgentBrief('callToAction', e.target.value)} /></label>
+            <label className="agent-wide">Verified facts / actual details<textarea value={agentBrief.verifiedFacts} onChange={e => updateAgentBrief('verifiedFacts', e.target.value)} placeholder="Optional: enter details you have verified. Leave blank if there are none." rows="3" /></label>
+            <button className="primary agent-wide" type="submit">Run local draft workflow →</button>
+          </form>
+        </section>
+
+        {agentOutput && <section className="panel agent-output" aria-live="polite">
+          <div className="agent-output-head"><div><p className="eyebrow">LATEST RUN · {agentOutput.id}</p><h2>{agentOutput.businessName}</h2><p className="muted">{new Date(agentOutput.createdAt).toLocaleString()} · {agentOutput.generationMode}</p></div><span className="status warn">Review required</span></div>
+          <div className="agent-run-steps">{agentOutput.agentRuns.map((item, i) => <article key={item.agent}><div className="agent-step-num">{String(i + 1).padStart(2, '0')}</div><div><b>{item.agent} v{item.version}</b><small>{item.output}</small></div><span className={'status ' + (item.status === 'completed' ? 'good' : 'warn')}>{item.status}</span></article>)}</div>
+          <div className="agent-output-section"><h3>1. Caption drafts · {agentOutput.brief.platform}</h3>{agentOutput.captions.map((caption, i) => <article className="agent-output-card" key={i}><div><b>Caption {i + 1}</b><p>{caption}</p></div><button className="secondary" type="button" onClick={() => copyText(caption, 'Caption copied. Verify claims before use.')}>Copy</button></article>)}</div>
+          <div className="agent-output-section"><h3>2. Seven-day content calendar</h3><div className="agent-calendar">{agentOutput.calendar.map(day => <article key={day.day}><span>{day.day}</span><b>{day.format}</b><p>{day.idea}</p></article>)}</div></div>
+          <div className="agent-output-section"><h3>3. 17-second Reel outline</h3><div className="agent-reel-scenes">{agentOutput.reelScript.map(scene => <article key={scene.time}><span>{scene.time}</span><div><b>Visual</b><p>{scene.visual}</p><b>On-screen text</b><p>{scene.onScreen}</p><b>Voiceover</b><p>{scene.voiceover}</p></div></article>)}</div></div>
+          <div className="notice"><b>Quality and evidence notes</b><ul>{agentOutput.qualityNotes.map(note => <li key={note}>{note}</li>)}</ul></div>
+          <button className="primary" type="button" onClick={() => exportAgentRun(agentOutput)}>Export run evidence JSON ↓</button>
+        </section>}
+
+        <section className="panel">
+          <div className="panel-head"><div><h3>PDF 10-agent ecosystem — honest status map</h3><p>Status describes mapped repository capability, not an always-running autonomous agent.</p></div><a href="https://github.com/kumbipakam29-dev/autopilot-studio/blob/feat/open-source-agent-learning-roadmap/docs/PDF_AGENT_ECOSYSTEM_CROSSWALK.md" target="_blank" rel="noreferrer">Implementation map ↗</a></div>
+          <div className="agent-role-grid">{PDF_AGENT_ROLES.map(role => <article key={role.name}><div><b>{role.name}</b><span className={'status ' + (role.status === 'Not implemented' ? 'warn' : '')}>{role.status}</span></div><p>{role.note}</p></article>)}</div>
+          <div className="notice"><b>Not yet connected</b><p>CrewAI/LangGraph, hosted model APIs, semantic vector memory and unrestricted execution are intentionally not activated. The 10 roles are not claimed to be 10 live model-backed agents.</p></div>
+        </section>
+
+        {agentRuns.length > 0 && <section className="panel"><div className="panel-head"><div><h3>Recent local draft runs</h3><p>Stored on this device only; not an authoritative cloud activity log.</p></div></div>{agentRuns.slice(0, 5).map(run => <div className="task" key={run.id}><span className="task-icon">✧</span><div><b>{run.businessName}</b><small>{new Date(run.createdAt).toLocaleString()} · {run.generationMode}</small></div><span className="status warn">Review required</span><button className="secondary" type="button" onClick={() => { setAgentOutput(run); setNotice('Loaded a saved local draft run.'); }}>View</button></div>)}</section>}
+      </section>}
 
       {tab === 'Task Queue' && <section className="panel"><h3>Add a task</h3><p className="muted">Tasks are stored locally; they are not executed automatically.</p><form onSubmit={e => { e.preventDefault(); add(); }} className="task-form"><input value={task} onChange={e => setTask(e.target.value)} placeholder="Describe a task to track…" aria-label="Task description"/><button className="primary">Add task</button></form>{notes.map((n,i) => <div className="task" key={i}><span className="task-icon">☷</span><div><b>{n.text}</b><small>{n.time}</small></div><span className="status">{n.status}</span></div>)}</section>}
 

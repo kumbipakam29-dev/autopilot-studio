@@ -56,3 +56,51 @@
 .earning-log-fields .secondary{padding:10px;font-size:11px}
 @media(max-width:1000px){.earning-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.earning-source-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.earning-log-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.earning-hero{display:block;padding:22px 19px}.earning-hero h2{font-size:22px}.earning-hero-actions{grid-template-columns:1fr;margin-top:16px}.earning-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.earning-stats article{padding:13px}.earning-stats b{font-size:19px}.earning-section{padding:15px}.earning-section-head{align-items:flex-start;flex-direction:column}.earning-lead-grid,.earning-source-grid,.earning-form,.earning-log-fields{grid-template-columns:1fr}.earning-actions{align-items:flex-start;flex-direction:column}.earning-actions .secondary{width:100%}.earning-log-head{flex-direction:column}.earning-log-fields .secondary{width:100%}}
+
+
+/* Visible local agent workbench: explicit draft-only browser execution */
+.agent-lab{display:grid;gap:18px}
+.agent-hero-head,.agent-output-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:18px}
+.agent-hero-head h2,.agent-output-head h2{font:800 22px/1.3 Manrope;margin:7px 0}
+.agent-hero-head p,.agent-output-head p{max-width:700px}
+.agent-brief-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:18px}
+.agent-brief-form label{display:grid;gap:6px;font-size:12px;font-weight:700;color:#6e7b91;min-width:0}
+.agent-brief-form input,.agent-brief-form select,.agent-brief-form textarea{width:100%;min-width:0;border:1px solid #dfe4ee;border-radius:9px;padding:11px 12px;background:#fff;color:#263148;font:13px 'DM Sans';outline-color:#7869e8}
+.agent-brief-form textarea{resize:vertical;line-height:1.5}
+.agent-wide{grid-column:1/-1}
+.agent-output-section{margin:21px 0}
+.agent-output-section h3{font:800 16px Manrope;margin:0 0 12px}
+.agent-run-steps{display:grid;gap:9px;margin:16px 0 22px}
+.agent-run-steps article{display:flex;align-items:center;gap:12px;border:1px solid #edf0f5;border-radius:11px;padding:12px;min-width:0}
+.agent-step-num{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:#f0efff;color:#6254cc;display:grid;place-items:center;font-weight:800}
+.agent-run-steps article>div:nth-child(2){flex:1;min-width:0}
+.agent-run-steps b,.agent-output-card b{font-size:13px;display:block}
+.agent-run-steps small{display:block;color:#7e899d;font-size:11px;line-height:1.5;margin-top:4px}
+.agent-output-card{display:flex;justify-content:space-between;gap:13px;align-items:flex-start;border:1px solid #edf0f5;border-radius:11px;padding:15px;margin:10px 0}
+.agent-output-card>div{min-width:0;flex:1}
+.agent-output-card p,.agent-calendar p,.agent-reel-scenes p{font-size:12px;line-height:1.65;color:#526078;margin:8px 0 0;overflow-wrap:anywhere}
+.agent-calendar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.agent-calendar article{border:1px solid #edf0f5;border-radius:11px;padding:13px;min-width:0}
+.agent-calendar span,.agent-reel-scenes article>span{display:inline-block;color:#6254cc;background:#f0efff;border-radius:7px;padding:5px 8px;font-size:10px;font-weight:800;margin-bottom:9px}
+.agent-calendar b{display:block;font-size:13px}
+.agent-reel-scenes{display:grid;gap:9px}
+.agent-reel-scenes article{display:flex;gap:14px;align-items:flex-start;border:1px solid #edf0f5;border-radius:11px;padding:13px}
+.agent-reel-scenes article>span{white-space:nowrap;min-width:66px;text-align:center}
+.agent-reel-scenes article>div{min-width:0}
+.agent-reel-scenes article b{display:block;font-size:11px;color:#7f8ba0;margin-top:3px}
+.agent-role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}
+.agent-role-grid article{border:1px solid #edf0f5;border-radius:11px;padding:13px;min-width:0}
+.agent-role-grid article>div{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.agent-role-grid article b{font-size:12px;line-height:1.5}
+.agent-role-grid article p{font-size:11px;line-height:1.6;color:#7e899d;margin:9px 0 0}
+.agent-lab .notice ul{margin:8px 0 0;padding-left:18px}
+.agent-lab .notice li{margin:5px 0;line-height:1.5}
+@media(max-width:760px){
+ .agent-hero-head,.agent-output-head{flex-direction:column}
+ .agent-brief-form,.agent-calendar,.agent-role-grid{grid-template-columns:1fr}
+ .agent-run-steps article{align-items:flex-start;flex-wrap:wrap}
+ .agent-run-steps article>div:nth-child(2){flex:1 1 calc(100% - 50px)}
+ .agent-output-card{flex-direction:column}
+ .agent-output-card .secondary{width:100%}
+ .agent-reel-scenes article{flex-direction:column;gap:8px}
+}
