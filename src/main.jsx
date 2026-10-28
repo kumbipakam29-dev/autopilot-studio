@@ -3,8 +3,42 @@ import { createRoot } from 'react-dom/client';
 import { POD_CONCEPTS, REVIEW_STAGES } from './podData.js';
 import './style.css';
 
-const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Training Loop', 'Task Queue', 'Reports', 'Settings'];
-const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Training Loop': '↻', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
+const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Creative Intelligence', 'Training Loop', 'Task Queue', 'Reports', 'Settings'];
+const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Creative Intelligence': '✧', 'Training Loop': '↻', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
+
+const CREATIVE_TOOL_CARDS = [
+  { name: 'ComfyUI', access: 'Local workflow graph', purpose: 'Run connected image/video/audio workflows and expose them through a local API.', url: 'https://github.com/Comfy-Org/ComfyUI', autopilot: 'Versioned workflow nodes and explicit input/output contracts.' },
+  { name: 'Wan2.2', access: 'Open weights · local', purpose: 'Candidate for text-to-video and image-to-video generation.', url: 'https://github.com/Wan-Video/Wan2.2', autopilot: 'Local rendering option after GPU, checkpoint and license validation.' },
+  { name: 'LTX-2.5', access: 'Community license', purpose: 'Video/audio model family with version-specific usage conditions.', url: 'https://github.com/Lightricks/LTX-2', autopilot: 'Optional candidate; commercial license clearance is a hard gate.' },
+  { name: 'VBench', access: 'Evaluation tools', purpose: 'Video quality dimensions such as motion smoothness, flicker and subject/background consistency.', url: 'https://github.com/Vchitect/VBench', autopilot: 'Compare actual exports with a fixed benchmark, not sales claims.' },
+  { name: 'Ideogram', access: 'Hosted service', purpose: 'Text-heavy poster and typography generation.', url: 'https://ideogram.ai/features/text-rendering/', autopilot: 'Proofread copy and keep critical text editable whenever possible.' },
+  { name: 'Pika', access: 'Hosted · credits/plan', purpose: 'Photo animation and transitions between ordered keyframes.', url: 'https://creation.pika.art/apps/pikaframes?tab=video-tools', autopilot: 'Implement our own keyframe planner and measure continuity.' },
+  { name: 'Krea', access: 'Hosted multi-model', purpose: 'Image/video generation, editing and enhancement in one workspace.', url: 'https://www.krea.ai/', autopilot: 'Separate generation, edit, enhancement and style/identity checks.' },
+  { name: 'Canva Magic Video', access: 'Hosted freemium', purpose: 'Template-guided assembly of photos/clips, transitions and music.', url: 'https://www.canva.com/help/magic-video/', autopilot: 'Use template assembly after the custom concept passes originality checks.' },
+  { name: 'Adobe Firefly Agent', access: 'Proprietary hosted', purpose: 'Brand kits, storyboards-to-video, product-photo video and first-cut editing.', url: 'https://news.adobe.com/news/2026/06/adobe-unveils-major-expansion', autopilot: 'Independent modular pipeline: brief → storyboard → shots → edit.' },
+  { name: 'Runway Workflows', access: 'Proprietary · credits/API', purpose: 'Reusable multi-model workflow chains and model routing.', url: 'https://dev.runwayml.com/workflows', autopilot: 'Transparent local-first router, cost/latency evidence and no silent paid fallback.' },
+  { name: 'FFmpeg', access: 'Local media pipeline', purpose: 'Deterministic cut, transcode, crop, audio mix and export.', url: 'https://www.ffmpeg.org/ffmpeg.html', autopilot: 'Validate final dimensions, frame rate, duration, codec and audio.' },
+  { name: 'Pillow', access: 'Local image library', purpose: 'Exact pixel-level text and image composition.', url: 'https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html', autopilot: 'Build crisp poster text overlays using approved copy and licensed fonts.' },
+  { name: 'OpenCV', access: 'Local vision library', purpose: 'Frame analysis, image processing and image/video quality signals.', url: 'https://github.com/opencv/opencv', autopilot: 'Screen for blur, crop shifts and frame differences, then human-review.' },
+  { name: 'Whisper', access: 'Open source · local', purpose: 'Speech transcription and subtitle drafts.', url: 'https://github.com/openai/whisper', autopilot: 'Proofread names, prices, accents, subtitle timing and audio consent.' }
+];
+
+function deriveCreativeHypotheses(observation) {
+  const text = [observation.publicBehavior, observation.inputOutputObserved].join(' ').toLowerCase();
+  const rules = [
+    { terms: ['keyframe', 'ordered image', 'first and last frame'], title: 'Keyframe continuity planner', proposal: 'Plan ordered reference frames and a separate motion instruction for each transition.', test: 'Compare subject/product continuity at the start, middle and end frames.' },
+    { terms: ['image to video', 'photo', 'uploaded image', 'reference image', 'image-to-video'], title: 'Reference-image anchoring', proposal: 'Preserve approved product, person, framing and colour attributes through each shot prompt.', test: 'Inspect identity and product details at three points in the clip.' },
+    { terms: ['workflow', 'node graph', 'multi-step', 'pipeline', 'storyboard'], title: 'Versioned workflow graph', proposal: 'Split research, concepts, shot prompts, rendering, editing and QA into versioned stages.', test: 'Replay the same brief and seed; compare reproducibility and recovery from failed stages.' },
+    { terms: ['typography', 'text rendering', 'editable text', 'headline', 'poster'], title: 'Editable typography layer', proposal: 'Generate the visual separately and add approved copy/logo as editable layout layers.', test: 'Verify exact text, contrast and readability at phone size and 200% zoom.' },
+    { terms: ['router', 'latency', 'cost', 'quality', 'model selection'], title: 'Transparent local-first router', proposal: 'Route by task fit, hardware, license and measured quality; never silently use a paid fallback.', test: 'Run a fixed prompt suite and log actual latency, validity and cost for each backend.' },
+    { terms: ['flicker', 'consistency', 'motion smoothness', 'benchmark', 'evaluation'], title: 'Temporal and identity QA', proposal: 'Check frame-to-frame identity, flicker, blur, crop and continuity before editing.', test: 'Compare automated signals with human labels on the same output sample.' },
+    { terms: ['audio', 'sound', 'music', 'voice', 'subtitle', 'caption'], title: 'Rights-aware audio and caption stage', proposal: 'Keep soundtrack, transcript, subtitle timing and audio rights as separate reviewable artifacts.', test: 'Review transcript, timing, loudness and license/consent evidence.' },
+    { terms: ['upscale', 'enhance', 'resolution', 'sharpness'], title: 'Post-generation enhancement', proposal: 'Enhance only after the best identity-consistent source is chosen; retain originals and settings.', test: 'Compare source and enhanced frames for detail loss and false texture.' }
+  ];
+  const results = rules.filter(rule => rule.terms.some(term => text.includes(term)));
+  return (results.length ? results : [{ title: 'Input/output contract', proposal: 'Document public inputs, visible outputs, constraints and unknowns before designing an independent module.', test: 'Repeat an authorized input and compare validity, consistency and failure handling.' }])
+    .map(({ title, proposal, test }) => ({ title, proposal, test, basis: 'Public behaviour only; proprietary internals not inferred or copied.' }));
+}
 
 const EARNING_SOURCES = [
   { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Phone-based voice/data tasks', note: 'Last checked listings showed ₹2 per approved recording. Easy to start, but below the ₹50–₹200 task target; verify available tasks and payout terms.' },
@@ -135,6 +169,40 @@ const saveDownload = (filename, content, type = 'text/csv;charset=utf-8;') => {
   URL.revokeObjectURL(url);
 };
 const csvCell = value => '"' + String(value ?? '').replace(/"/g, '""') + '"';
+
+const CREATIVE_TOOL_CARDS = [
+  { name: 'ComfyUI', access: 'Local workflow graph', purpose: 'Run connected image/video/audio workflows and expose them through a local API.', url: 'https://github.com/Comfy-Org/ComfyUI', autopilot: 'Versioned workflow nodes and explicit input/output contracts.' },
+  { name: 'Wan2.2', access: 'Open weights · local', purpose: 'Candidate for text-to-video and image-to-video generation.', url: 'https://github.com/Wan-Video/Wan2.2', autopilot: 'Local rendering option after GPU, checkpoint and license validation.' },
+  { name: 'LTX-2.5', access: 'Community license', purpose: 'Video/audio model family with version-specific usage conditions.', url: 'https://github.com/Lightricks/LTX-2', autopilot: 'Optional candidate; commercial license clearance is a hard gate.' },
+  { name: 'VBench', access: 'Evaluation tools', purpose: 'Video quality dimensions such as motion smoothness, flicker and subject/background consistency.', url: 'https://github.com/Vchitect/VBench', autopilot: 'Compare actual exports with a fixed benchmark, not sales claims.' },
+  { name: 'Ideogram', access: 'Hosted service', purpose: 'Text-heavy poster and typography generation.', url: 'https://ideogram.ai/features/text-rendering/', autopilot: 'Proofread copy and keep critical text editable whenever possible.' },
+  { name: 'Pika', access: 'Hosted · credits/plan', purpose: 'Photo animation and transitions between ordered keyframes.', url: 'https://creation.pika.art/apps/pikaframes?tab=video-tools', autopilot: 'Implement our own keyframe planner and measure continuity.' },
+  { name: 'Krea', access: 'Hosted multi-model', purpose: 'Image/video generation, editing and enhancement in one workspace.', url: 'https://www.krea.ai/', autopilot: 'Separate generation, edit, enhancement and style/identity checks.' },
+  { name: 'Canva Magic Video', access: 'Hosted freemium', purpose: 'Template-guided assembly of photos/clips, transitions and music.', url: 'https://www.canva.com/help/magic-video/', autopilot: 'Use template assembly after the custom concept passes originality checks.' },
+  { name: 'Adobe Firefly Agent', access: 'Proprietary hosted', purpose: 'Brand kits, storyboards-to-video, product-photo video and first-cut editing.', url: 'https://news.adobe.com/news/2026/06/adobe-unveils-major-expansion', autopilot: 'Independent modular pipeline: brief → storyboard → shots → edit.' },
+  { name: 'Runway Workflows', access: 'Proprietary · credits/API', purpose: 'Reusable multi-model workflow chains and model routing.', url: 'https://dev.runwayml.com/workflows', autopilot: 'Transparent local-first router, cost/latency evidence and no silent paid fallback.' },
+  { name: 'FFmpeg', access: 'Local media pipeline', purpose: 'Deterministic cut, transcode, crop, audio mix and export.', url: 'https://www.ffmpeg.org/ffmpeg.html', autopilot: 'Validate final dimensions, frame rate, duration, codec and audio.' },
+  { name: 'Pillow', access: 'Local image library', purpose: 'Exact pixel-level text and image composition.', url: 'https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html', autopilot: 'Build crisp poster text overlays using approved copy and licensed fonts.' },
+  { name: 'OpenCV', access: 'Local vision library', purpose: 'Frame analysis, image processing and image/video quality signals.', url: 'https://github.com/opencv/opencv', autopilot: 'Screen for blur, crop shifts and frame differences, then human-review.' },
+  { name: 'Whisper', access: 'Open source · local', purpose: 'Speech transcription and subtitle drafts.', url: 'https://github.com/openai/whisper', autopilot: 'Proofread names, prices, accents, subtitle timing and audio consent.' }
+];
+
+function deriveCreativeHypotheses(observation) {
+  const text = [observation.publicBehavior, observation.inputOutputObserved].join(' ').toLowerCase();
+  const rules = [
+    { terms: ['keyframe', 'ordered image', 'first and last frame'], title: 'Keyframe continuity planner', proposal: 'Plan ordered reference frames and a separate motion instruction for each transition.', test: 'Compare subject/product continuity at the start, middle and end frames.' },
+    { terms: ['image to video', 'photo', 'uploaded image', 'reference image', 'image-to-video'], title: 'Reference-image anchoring', proposal: 'Preserve approved product, person, framing and colour attributes through each shot prompt.', test: 'Inspect identity and product details at three points in the clip.' },
+    { terms: ['workflow', 'node graph', 'multi-step', 'pipeline', 'storyboard'], title: 'Versioned workflow graph', proposal: 'Split research, concepts, shot prompts, rendering, editing and QA into versioned stages.', test: 'Replay the same brief and seed; compare reproducibility and recovery from failed stages.' },
+    { terms: ['typography', 'text rendering', 'editable text', 'headline', 'poster'], title: 'Editable typography layer', proposal: 'Generate the visual separately and add approved copy/logo as editable layout layers.', test: 'Verify exact text, contrast and readability at phone size and 200% zoom.' },
+    { terms: ['router', 'latency', 'cost', 'quality', 'model selection'], title: 'Transparent local-first router', proposal: 'Route by task fit, hardware, license and measured quality; never silently use a paid fallback.', test: 'Run a fixed prompt suite and log actual latency, validity and cost for each backend.' },
+    { terms: ['flicker', 'consistency', 'motion smoothness', 'benchmark', 'evaluation'], title: 'Temporal and identity QA', proposal: 'Check frame-to-frame identity, flicker, blur, crop and continuity before editing.', test: 'Compare automated signals with human labels on the same output sample.' },
+    { terms: ['audio', 'sound', 'music', 'voice', 'subtitle', 'caption'], title: 'Rights-aware audio and caption stage', proposal: 'Keep soundtrack, transcript, subtitle timing and audio rights as separate reviewable artifacts.', test: 'Review transcript, timing, loudness and license/consent evidence.' },
+    { terms: ['upscale', 'enhance', 'resolution', 'sharpness'], title: 'Post-generation enhancement', proposal: 'Enhance only after the best identity-consistent source is chosen; retain originals and settings.', test: 'Compare source and enhanced frames for detail loss and false texture.' }
+  ];
+  const results = rules.filter(rule => rule.terms.some(term => text.includes(term)));
+  return (results.length ? results : [{ title: 'Input/output contract', proposal: 'Document public inputs, visible outputs, constraints and unknowns before designing an independent module.', test: 'Repeat an authorized input and compare validity, consistency and failure handling.' }])
+    .map(({ title, proposal, test }) => ({ title, proposal, test, basis: 'Public behaviour only; proprietary internals not inferred or copied.' }));
+}
 
 function App() {
   const [tab, setTab] = React.useState('Overview');
