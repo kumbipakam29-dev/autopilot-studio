@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - feat/open-source-agent-learning-roadmap
   workflow_dispatch:
 
 permissions:
