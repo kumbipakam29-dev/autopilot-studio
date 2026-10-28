@@ -224,3 +224,68 @@ Initially, learning should mean a versioned defect/correction log, not a claim o
 
 ---
 **Bottom line:** build the bridge before betting on one large model. The first proof is a believable, inspectable MP4—not a prompt, notebook, repository commit or promise.
+
+
+## Strategic scope correction: the goal is a cinematic creative engine, not a 2–3 second demo
+
+The watch is only a **benchmark scene** for checking object continuity, materials, camera motion and detail. It is not the product goal and the pipeline must not be optimized only for watch ads.
+
+### Long-term target
+Build a zero-budget-first **cinematic world-building and filmmaking pipeline** capable of developing original futuristic worlds, environments, vehicles, props, characters, action, camera language, lighting, sound design, and eventually coherent multi-scene short films. Commercial ads are one application of the same engine, not the limit.
+
+### Why short shots are still the first test
+A 2–3 second shot is a diagnostic unit, not the final ambition. If identity, lighting, motion and contact fail in a few seconds, longer scenes multiply the errors. The roadmap should therefore expand shot length and complexity only after the relevant controls pass, while always keeping the target at cinematic sequences and films.
+
+### Build toward film-level continuity
+The scene/job schema must eventually track:
+- world bible: rules of the world, visual language, time period, technology, geography and tone;
+- entity bible: stable IDs and canonical designs for characters, costumes, props, vehicles and locations;
+- scene graph and spatial map: where entities are, their scale, orientation and relationships;
+- shot plan: framing, lens, camera path, duration, blocking, lighting and intended emotional beat;
+- continuity state: positions, damage, clothing/prop changes, weather, light direction and time across shots;
+- motion source: deterministic rig/animation, captured reference, physics simulation, or generated motion;
+- audio plan: dialogue, ambience, Foley, effects, score placeholders and sync;
+- provenance/licence manifest for every source asset and model;
+- review data: accepted frames, rejected frames, defect labels and approved continuity references.
+
+### Cinematic production ladder
+1. **Single controlled object/shot:** prove stable shape, motion, light and materials.
+2. **Multi-shot sequence:** keep the same subject, environment and visual style across cuts.
+3. **Environment and camera continuity:** consistent geometry, lighting direction, spatial geography and movement across shots.
+4. **Character/vehicle continuity:** identity, clothing, anatomy, proportions, mechanical parts and interactions remain stable.
+5. **Action and physics:** collision, contact, inertia, debris, cloth, smoke, water and other effects use the appropriate simulator or controlled fallback.
+6. **Scene-level storytelling:** action, screen direction, pacing, composition, sound and emotional beats work together.
+7. **Short-film assembly:** multiple scenes, recurring characters/locations, transitions, dialogue/audio, edit and continuity review.
+8. **Repeatable production system:** versioned assets, render queues, resumable jobs, QA reports and reproducible exports.
+
+Do not wait for every stage to be perfect before creating ambitious concepts. Develop storyboards, animatics and cinematic tests in parallel, but label each as concept, animatic, rendered shot, or validated final. Never describe a storyboard or short proof-of-motion as a finished film.
+
+### More robust architecture for a future cinematic engine
+- **World/Story Planner:** turns a story into scenes, beats and shot lists; it proposes, does not silently overwrite approved canon.
+- **Continuity/Canon Registry:** stores immutable IDs and approved reference frames/design sheets for every entity and location.
+- **Scene Builder:** procedural Blender scene generation plus imports from permitted 3D assets.
+- **Physics/Motion Layer:** rigid-body and constraints for mechanical interactions; suitable specialised simulation for cloth/fluids/particles when needed; motion capture or reference footage when that is more reliable.
+- **Render Layer:** deterministic camera/light/material settings, render passes and low-res previews before expensive finals.
+- **Generative Layer:** optional image/video model for selected shots, inpainting, background extension and non-critical atmosphere; never the sole keeper of canon.
+- **Continuity Inspector:** compare frames and shots for subject identity, proportions, screen direction, position, costume/prop state and light.
+- **Editorial/Sound Layer:** timeline, audio sync, Foley, ambience, titles and colour finishing.
+- **Evidence/QA Gate:** automated media checks plus human review; outputs have explicit status and provenance.
+- **Job Orchestrator:** resumable steps, cached intermediate artifacts, per-stage logs, model/hardware metadata and failure classification.
+
+### Key design decision
+Treat AI-generated footage as a **rendering contributor**, not the source of truth. The source of truth is the approved world/asset/shot state. Whenever generated frames contradict that state, either correct them with control/inpainting/compositing or fall back to deterministic rendering or real reference footage.
+
+### Film-level success metrics
+Beyond basic resolution, measure:
+- entity identity and design consistency across frames and scenes;
+- spatial continuity and screen direction;
+- plausible acceleration, contact and object permanence;
+- material/light continuity;
+- camera intent, composition and readable action;
+- temporal flicker and artifact rate;
+- continuity errors per minute;
+- accepted-shot ratio and repair time;
+- render time, peak RAM/VRAM and compute cost;
+- human review scores for cinematic coherence, not just single-frame prettiness.
+
+The target is not simply “generate a beautiful frame.” It is **sustain believable cinematic reality across time, space, shots and story**.
