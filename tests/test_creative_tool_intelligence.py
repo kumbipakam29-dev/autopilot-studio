@@ -78,6 +78,25 @@ class CreativeToolIntelligenceTests(unittest.TestCase):
         report = analyze_public_observation(observation)
         self.assertIn("Editable typography pass", [item["title"] for item in report["original_hypotheses"]])
 
+    def test_all_catalog_task_maps_reference_known_tools(self):
+        from agents.creative_tool_intelligence import TASK_TOOL_MAP
+        known = {item["id"] for item in TOOL_CATALOG}
+        for task, tools in TASK_TOOL_MAP.items():
+            with self.subTest(task=task):
+                self.assertTrue(tools)
+                self.assertTrue(set(tools).issubset(known))
+
+    def test_repository_public_observations_generate_hypotheses(self):
+        import json
+        from pathlib import Path
+        observations = sorted(Path("examples").glob("creative-tool-observation-*.json"))
+        self.assertGreaterEqual(len(observations), 4)
+        for path in observations:
+            with self.subTest(path=path.name):
+                report = analyze_public_observation(json.loads(path.read_text(encoding="utf-8")))
+                self.assertTrue(report["original_hypotheses"])
+                self.assertFalse(report["safety_truth"]["private_code_copied"])
+
     def test_cycle_promotes_only_when_score_improves_and_all_gates_pass(self):
         report = build_reverse_engineering_cycle(cycle_input())
         self.assertGreater(report["benchmark"]["candidate_score"], report["benchmark"]["baseline_score"])
