@@ -5,15 +5,72 @@ A review-first prototype for POD research and public microtask opportunity disco
 ## Current capabilities
 - Python POD concept pipeline: public Google Trends RSS attempt, lexical concept matching, draft listing metadata, IP keyword flags, CSV/ZIP reports.
 - Earnings Hunter: bounded scans of curated official public pages, rate evidence extraction, scam-risk keyword triage, and CSV/Markdown reports.
+- Deterministic read-only opportunity evidence grader; see agents/evidence_grader.py and tests/test_evidence_grader.py.
 - Mobile web/Android interface with a local-only Earnings Hunter status and payout ledger. The ledger is stored in this device's browser storage and can be lost if app data is cleared.
 - GitHub Actions schedules tests and creates short-lived artifacts/APK builds.
 
 ## Important limitations
-This is **not** a fully autonomous AGI or a guaranteed income system. It does not log into earning platforms, apply for jobs, complete personal tests, submit work, bypass CAPTCHAs, verify a user's eligibility, or receive payouts. The app does not yet sync live GitHub Actions output into its local tracker. POD publishing and model inference are not connected. A discovered link is a lead, not a promise of available work or payment.
+This is **not** a fully autonomous AGI or a guaranteed income system. It does not log into earning platforms, apply for jobs, complete personal tests, submit work, bypass CAPTCHAs, verify a user's eligibility, or receive payouts. The app does not yet sync live GitHub Actions output into its local tracker. POD publishing and model inference are not connected. A discovered link is a lead, not a promise of available work or payment. The evidence grader uses supplied data only and does not prove a job is genuine or payment will occur.
 
 ## First verified payment
 - [First Verified Payment Sprint — India / zero budget](docs/FIRST_VERIFIED_PAYMENT_SPRINT.md)
 - [Direct-client CSV/text labeling experiment](docs/DIRECT_CLIENT_MICROGIG_EXPERIMENT.md)
+
+## Agent system (catalog / planned)
+- [100-agent registry (versioned JSON)](config/agent_registry_v1.json) — catalog only; agents are not all deployed or running.
+- [15 specialized agents across three framework patterns](config/specialist_agents_15_v1.json) — five distinct agent specifications each inspired by smolagents, LangGraph, and CrewAI; specifications only, not 15 running model-backed agents.
+- [15-agent catalog integrity tests](tests/test_specialist_agents_15.py)
+- [15 offline specialist capability prototypes](agents/specialist_capabilities.py) — deterministic, standard-library-only MVPs with no model calls or network access; drafts and classifiers only, not autonomous external actions.
+- [Offline capability regression tests](tests/test_specialist_capabilities.py)
+- [JSON CLI runner](agents/run_specialist.py) — accepts JSON on stdin and returns a capability result on stdout.
+- [Offline client-acquisition draft pipeline](agents/client_acquisition_pipeline.py) — composes brief structuring, content angles, captions, a seven-day calendar, two 17-second Reels, fictional spec work and conditional outreach drafts; no browsing, sending, or publishing.
+- [Client-acquisition pipeline tests](tests/test_client_acquisition_pipeline.py)
+- [Client-acquisition pipeline guide](docs/CLIENT_ACQUISITION_DRAFT_PIPELINE.md)
+- [Ahmedabad prospect research starter list](docs/PROSPECT_RESEARCH_AHMEDABAD_2026-10.md) — public-source candidates to manually qualify; no businesses contacted.
+- [Ahmedabad prospect research — batch 2](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_2_2026-10.md) — additional candidates and content hypotheses; no businesses contacted.
+- [Ahmedabad prospect research — batch 3](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_3_2026-10.md) — additional official-source café candidates; no businesses contacted.
+- [Ahmedabad prospect research — batch 4](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_4_2026-10.md) — four more candidates; research-only, not yet qualified.
+- [Ahmedabad bulk coverage plan](docs/AHMEDABAD_BULK_COVERAGE_PLAN.md) — category × neighbourhood discovery method, qualification gates, and coverage clusters.
+- [Ahmedabad prospect inventory v1 (CSV)](docs/AHMEDABAD_PROSPECT_INVENTORY_V1.csv) — 20 public-directory candidates, all marked unqualified and not contacted.
+- [Ahmedabad prospect research — batch 5](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_5_2026-10.md) — wider categories: interiors, education, property, auto care, photography and events; research only.
+- [Ahmedabad prospect inventory — batch 5 (CSV)](docs/AHMEDABAD_PROSPECT_INVENTORY_BATCH_5.csv) — 23 additional candidates with explicit verification/contact gates.
+- [Ahmedabad batch 5 outreach drafts (unsent)](docs/AHMEDABAD_BATCH_5_OUTREACH_DRAFTS_UNSENT.md) — six permission-first one-to-one drafts; not sent.
+- [Ahmedabad prospect research — batch 6](docs/PROSPECT_RESEARCH_AHMEDABAD_BATCH_6_2026-10.md) — 15 more public-listing candidates across interiors, auto care, coaching and events; unqualified.
+- [Ahmedabad prospect inventory — batch 6 (CSV)](docs/AHMEDABAD_PROSPECT_INVENTORY_BATCH_6.csv) — verification and approval gates for each candidate.
+- [Local-first CRM guide](crm/README.md) — private SQLite lead/client tracking, sourcing rules, and setup.
+- [CRM CLI](crm/crm_cli.py) — standard-library CRM commands, CSV import, pipeline stages, and customizable unsent outreach drafts.
+- [Blank CRM import template](crm/import_template.csv) — schema only; no real lead data.
+- [Ahmedabad CRM intake batch 7 (CSV)](crm/lead_import_batch_7.csv) — ten initial records with source status, offer hypotheses and verification gates; import manually after review.
+- [Ahmedabad CRM intake batch 7 research notes](docs/CRM_LEAD_INTAKE_BATCH_7_2026-10.md) — evidence notes and qualification steps.
+- [Prospect qualification scorecard](docs/PROSPECT_QUALIFICATION_SCORECARD.md) — hard gates, evidence scoring, and status/payment integrity rules.
+- [Portfolio spec work: café + local service](docs/PORTFOLIO_SPEC_WORK_CAFE_AND_LOCAL_SERVICE.md) — two fictional examples with post concepts, captions, 17-second Reels, and seven-day calendars.
+- [Ahmedabad outreach drafts](docs/AHMEDABAD_OUTREACH_DRAFTS_2026-10.md) — four fact-grounded drafts for manual review; unsent.
+- [Specialist capability GitHub Actions workflow](.github/workflows/specialist-capability-tests.yml) — runs the full offline unittest suite on pushes and pull requests.
+- [Agent versioning and supervised learning standard](docs/AGENT_VERSIONING_AND_SUPERVISED_LEARNING.md)
+- [Pinned GitHub upstream agent sources](config/upstream_agent_sources_v1.json) — 10 public projects with commit pins, licenses and adaptation roles.
+- [GitHub agent source adoption plan](docs/GITHUB_UPSTREAM_AGENT_SOURCES.md) — staged adoption, including first read-only evidence grader.
+- [Open-source agent learning and integration roadmap](docs/OPEN_SOURCE_AGENT_LEARNING_ROADMAP.md)
+- [PDF-derived 10-agent ecosystem crosswalk](docs/PDF_AGENT_ECOSYSTEM_CROSSWALK.md) — maps both uploaded PDF outlines to the existing code and tested/partial/missing states.
+- [Training-loop evidence guide](docs/TRAINING_LOOP_EVIDENCE_GUIDE.md) and [Python CLI](agents/learning_cycle_cli.py) — generate an importable, supervised evaluation record without model training or auto-release.
+- [Training-loop CLI tests](tests/test_learning_cycle_cli.py).
+- [Machine-readable PDF role mapping](config/pdf_agent_ecosystem_crosswalk_v1.json) and [integrity tests](tests/test_pdf_agent_ecosystem_crosswalk.py).
+
+## CRM and prospect intake
+- [Local-first CRM guide](crm/README.md) and [CRM CLI](crm/crm_cli.py) — local SQLite tracking and unsent draft generation; no automatic outreach.
+- [Blank CRM import template](crm/import_template.csv)
+- [Ahmedabad intake batch 7](crm/lead_import_batch_7.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_7_2026-10.md)
+- [Ahmedabad intake batch 8](crm/lead_import_batch_8.csv) and [research notes](docs/CRM_LEAD_INTAKE_BATCH_8_2026-10.md)
+
+- [Market research specialist learning-cycle example](docs/MARKET_RESEARCH_SPECIALIST_LEARNING_CYCLE.md) — offline workflow, reviewer-scored baseline/candidate comparison, regression gates, and non-claims.
+- [Supervised learning-cycle orchestrator](agents/learning_cycle.py) — evaluates one baseline/candidate pair, checks regression outcomes, and blocks automatic release.
+- [Learning-cycle integration tests](tests/test_learning_cycle.py) — verifies approval gates, hard-fail handling, and regression rejection.
+- [Human-reviewed evaluation loop](agents/evaluation_loop.py) — weighted scoring, hard-fail overrides, and conservative baseline/candidate comparison.
+- [Evaluation loop tests](tests/test_evaluation_loop.py) — score arithmetic, hard-fail precedence, safety regression, and human approval checks.
+- [Offline specialist task runner](agents/specialist_runner.py) — deterministic, no-network task handlers and local JSONL evaluation logs; not an LLM runtime.
+- [Specialist runner tests](tests/test_specialist_runner.py) — checks catalog validation, missing evidence, rejected external-action task types, and local log behavior.
+- [15-specialist supervised learning loop](docs/15_SPECIALIST_AGENT_LEARNING_LOOP.md) — bounded specialist contracts, feedback-to-regression workflow, safety gates, and scoring rubric.
+- [15-specialist learning-loop configuration](config/agent_learning_loop_v1.json) — versioned JSON profiles (catalog only; not 15 running processes).
+- [Offline configuration tests](tests/test_agent_learning_loop_config.py) — checks specialist count, unique IDs, contract fields, scoring weights and approval gates.
 
 ## Research documents
 - [Deep research, system gap audit, free tools/models and zero-budget roadmap](docs/DEEP_RESEARCH_ZERO_BUDGET.md)

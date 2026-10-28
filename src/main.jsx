@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { POD_CONCEPTS, REVIEW_STAGES } from './podData.js';
 import './style.css';
 
-const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Task Queue', 'Reports', 'Settings'];
-const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
+const NAV = ['Overview', 'POD Studio', 'Earnings Hunter', 'AI Agents', 'Training Loop', 'Task Queue', 'Reports', 'Settings'];
+const ICONS = { 'Overview': '◫', 'POD Studio': '✦', 'Earnings Hunter': '₹', 'AI Agents': '✧', 'Training Loop': '↻', 'Task Queue': '☷', 'Reports': '▤', 'Settings': '⚙' };
 
 const EARNING_SOURCES = [
   { name: 'Karmyug AI', url: 'https://work.karmyug.in/jobs', kind: 'Phone-based voice/data tasks', note: 'Last checked listings showed ₹2 per approved recording. Easy to start, but below the ₹50–₹200 task target; verify available tasks and payout terms.' },
@@ -99,6 +99,31 @@ const EARNING_LEADS = [
 ];
 
 const EARNING_STATUSES = ['Lead found', 'Applied', 'Qualification pending', 'Approved to work', 'Work submitted', 'Accepted', 'Rejected', 'Payment pending', 'Paid'];
+
+const PDF_AGENT_ROLES = [
+  { name: 'Architect', status: 'Partial', note: 'Routes known tasks; no general autonomous planner.' },
+  { name: 'Coder', status: 'Not implemented', note: 'No safe, tested code-generation worker yet.' },
+  { name: 'Reviewer / Editor', status: 'Partial', note: 'Evidence and annotation checks exist; not a general security auditor.' },
+  { name: 'Researcher', status: 'Partial', note: 'Bounded public-source research exists; verify current terms manually.' },
+  { name: 'Writer', status: 'Partial', note: 'Offline caption, calendar and Reel draft templates exist.' },
+  { name: 'Analyst', status: 'Partial', note: 'Structured tracking exists; general AI analysis is not connected.' },
+  { name: 'Communicator', status: 'Partial', note: 'Creates drafts only; does not send messages.' },
+  { name: 'Executor', status: 'Partial', note: 'Local task routing only; no arbitrary shell or external actions.' },
+  { name: 'Memory', status: 'Partial', note: 'Evaluation/learning loop exists; no semantic conversation vector store connected.' },
+  { name: 'Orchestrator', status: 'Partial', note: 'Offline workflows coordinate bounded functions; CrewAI/LangGraph are not installed.' }
+];
+const DEFAULT_AGENT_BRIEF = {
+  businessName: 'Sample Cafe',
+  businessType: 'Cafe / restaurant',
+  location: 'Ahmedabad',
+  audience: 'local customers',
+  offer: 'coffee and fresh pastries',
+  platform: 'Instagram',
+  brandVoice: 'warm and friendly',
+  callToAction: 'Save this idea for your next outing',
+  verifiedFacts: ''
+};
+
 const readStore = (key, fallback) => {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
 };
@@ -115,6 +140,20 @@ function App() {
   const [tab, setTab] = React.useState('Overview');
   const [notes, setNotes] = React.useState(() => readStore('aps-notes', []));
   const [task, setTask] = React.useState('');
+  const [agentBrief, setAgentBrief] = React.useState(() => readStore('aps-agent-brief', DEFAULT_AGENT_BRIEF));
+  const [agentRuns, setAgentRuns] = React.useState(() => readStore('aps-agent-runs', []));
+  const [agentOutput, setAgentOutput] = React.useState(() => readStore('aps-agent-output', null));
+  const [trainingRuns, setTrainingRuns] = React.useState(() => readStore('aps-training-runs', []));
+  const [trainingForm, setTrainingForm] = React.useState(() => readStore('aps-training-form', {
+    agent: 'Writer / Content Strategist',
+    task: 'Create a clear Instagram caption',
+    baselineScore: '60',
+    candidateScore: '75',
+    errorCategory: 'Clarity / completeness',
+    regression: 'pass',
+    evidence: '',
+    changeSummary: ''
+  }));
   const [podState, setPodState] = React.useState(() => readStore('aps-pod-state', {}));
   const [search, setSearch] = React.useState('');
   const [productFilter, setProductFilter] = React.useState('All products');
@@ -130,6 +169,11 @@ function App() {
   const [earningStatus, setEarningStatus] = React.useState('Lead found');
 
   React.useEffect(() => { localStorage.setItem('aps-notes', JSON.stringify(notes)); }, [notes]);
+  React.useEffect(() => { localStorage.setItem('aps-agent-brief', JSON.stringify(agentBrief)); }, [agentBrief]);
+  React.useEffect(() => { localStorage.setItem('aps-agent-runs', JSON.stringify(agentRuns.slice(0, 10))); }, [agentRuns]);
+  React.useEffect(() => { if (agentOutput) localStorage.setItem('aps-agent-output', JSON.stringify(agentOutput)); }, [agentOutput]);
+  React.useEffect(() => { localStorage.setItem('aps-training-runs', JSON.stringify(trainingRuns.slice(0, 30))); }, [trainingRuns]);
+  React.useEffect(() => { localStorage.setItem('aps-training-form', JSON.stringify(trainingForm)); }, [trainingForm]);
   React.useEffect(() => { localStorage.setItem('aps-pod-state', JSON.stringify(podState)); }, [podState]);
   React.useEffect(() => { localStorage.setItem('aps-earnings-log', JSON.stringify(earningsLog)); }, [earningsLog]);
 
@@ -138,6 +182,169 @@ function App() {
     setNotes([{ text: task.trim(), status: 'Queued locally', time: new Date().toLocaleString() }, ...notes]);
     setTask('');
   }
+
+  async function importTrainingEvidenceFile(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const record = JSON.parse(await file.text());
+      if (record.record_type !== 'autopilot_learning_cycle_evidence_v1' || !record.result || !record.result.baseline_review || !record.result.candidate_review) {
+        throw new Error('This is not a supported Python learning-cycle evidence JSON file.');
+      }
+      const result = record.result;
+      const baselineScore = Number(result.baseline_review.weighted_score);
+      const candidateScore = Number(result.candidate_review.weighted_score);
+      const regression = result.regression_passed === true ? 'pass' : 'fail';
+      const run = {
+        id: result.task_id || 'imported-' + Date.now(),
+        createdAt: record.created_at || new Date().toISOString(),
+        agent: record.agent_name || 'Unspecified specialist',
+        task: result.task_id || 'Imported Python learning-cycle result',
+        baselineScore, candidateScore,
+        delta: Number(result.comparison?.delta ?? (candidateScore - baselineScore)),
+        errorCategory: record.error_category || 'Unspecified',
+        regression,
+        evidence: record.evidence_notes || result.change_rationale || '',
+        changeSummary: result.change_rationale || '',
+        approvalStatus: result.reviewer_approved ? 'Reviewer approved for manual release review' :
+          result.decision === 'awaiting_human_approval' ? 'Pending human review' : result.decision,
+        status: result.decision,
+        scoreMethod: 'Imported from actual Python evaluation-cycle output; rubric scores remain reviewer-supplied',
+        approvedAt: null,
+        importedEvidence: true,
+        result
+      };
+      setTrainingRuns(prev => [run, ...prev.filter(x => x.id !== run.id)].slice(0, 30));
+      setNotice('Python learning-cycle evidence imported. Decision: ' + result.decision + '. No code deployed and no model weights changed.');
+    } catch (error) {
+      setNotice('Import failed: ' + (error?.message || 'invalid JSON'));
+    } finally {
+      event.target.value = '';
+    }
+  }
+
+  function updateTrainingForm(field, value) {
+    setTrainingForm(prev => ({ ...prev, [field]: value }));
+  }
+
+  function recordTrainingCycle(event) {
+    event.preventDefault();
+    const baseline = Number(trainingForm.baselineScore);
+    const candidate = Number(trainingForm.candidateScore);
+    if (!Number.isFinite(baseline) || !Number.isFinite(candidate) || baseline < 0 || baseline > 100 || candidate < 0 || candidate > 100) {
+      setNotice('Baseline and candidate scores must be between 0 and 100.');
+      return;
+    }
+    const run = {
+      id: 'cycle-' + Date.now(),
+      createdAt: new Date().toISOString(),
+      agent: trainingForm.agent,
+      task: trainingForm.task.trim(),
+      baselineScore: baseline,
+      candidateScore: candidate,
+      delta: candidate - baseline,
+      errorCategory: trainingForm.errorCategory,
+      regression: trainingForm.regression,
+      evidence: trainingForm.evidence.trim(),
+      changeSummary: trainingForm.changeSummary.trim(),
+      approvalStatus: 'Pending human review',
+      status: trainingForm.regression === 'fail' ? 'blocked_regression' : 'review_required',
+      scoreMethod: 'Manually entered reviewer scores; not an independent AI evaluation',
+      approvedAt: null
+    };
+    setTrainingRuns(prev => [run, ...prev].slice(0, 30));
+    setNotice(trainingForm.regression === 'fail' ? 'Cycle recorded and blocked: regression failed. No approval or release performed.' : 'Cycle recorded for human review. Scores are manually entered and do not prove model learning.');
+  }
+
+  function decideTrainingCycle(id, decision) {
+    setTrainingRuns(prev => prev.map(run => run.id === id
+      ? { ...run, approvalStatus: decision === 'approve' ? 'Approved by user in dashboard' : 'Rejected by user in dashboard', status: decision === 'approve' && run.regression === 'pass' && run.delta >= 0 ? 'approved_for_manual_release' : 'rejected_or_blocked', approvedAt: new Date().toISOString() }
+      : run));
+    setNotice(decision === 'approve'
+      ? 'Marked approved for manual release only. This does not deploy code or change model weights.'
+      : 'Cycle rejected. No code or model weights were changed.');
+  }
+
+  function exportTrainingLog() {
+    saveDownload('autopilot-training-loop-evidence.json', JSON.stringify({
+      exportedAt: new Date().toISOString(),
+      source: 'device-local training loop dashboard',
+      limitations: ['Scores are manually entered, not independently generated.', 'No model weights are trained.', 'Approval records do not deploy code.', 'This local log is not a server-backed audit log.'],
+      runs: trainingRuns
+    }, null, 2), 'application/json;charset=utf-8;');
+    setNotice('Training-loop evidence exported. See the JSON limitations before interpreting results.');
+  }
+
+  function updateAgentBrief(field, value) {
+    setAgentBrief(prev => ({ ...prev, [field]: value }));
+  }
+
+  function runLocalContentWorkflow(event) {
+    event.preventDefault();
+    const brief = Object.fromEntries(Object.entries(agentBrief).map(([key, value]) => [key, String(value ?? '').trim()]));
+    const required = ['businessName', 'businessType', 'audience', 'offer'];
+    const missing = required.filter(key => !brief[key]);
+    if (missing.length) {
+      setNotice('Complete business name, type, audience and offer before running the draft workflow.');
+      return;
+    }
+    const id = 'local-' + Date.now();
+    const createdAt = new Date().toISOString();
+    const offer = brief.offer.replace(/[.!?]+$/, '');
+    const cta = brief.callToAction || 'Save this post for later';
+    const location = brief.location ? ` in ${brief.location}` : '';
+    const facts = brief.verifiedFacts || 'Add one verified product, service or business detail before publishing.';
+    const captions = [
+      `${brief.businessName}: ${offer}. A simple introduction for ${brief.audience}. ${cta}.`,
+      `Looking for ${offer}${location}? This ${brief.businessType.toLowerCase()} content idea is for ${brief.audience}. Check the details and choose what fits you. ${cta}.`,
+      `A little look at ${brief.businessName}. Topic: ${offer}. Keep the message clear, use real photos or footage, and share only confirmed details. ${cta}.`
+    ];
+    const calendar = [
+      { day: 'Day 1', format: 'Intro post', idea: `Introduce ${brief.businessName} and explain ${offer} in plain language.` },
+      { day: 'Day 2', format: 'Helpful tip', idea: `Share one useful tip related to ${offer}; fact-check it before posting.` },
+      { day: 'Day 3', format: 'Behind the scenes', idea: 'Show a real workspace, preparation step or service process, only if footage is available.' },
+      { day: 'Day 4', format: 'FAQ', idea: `Answer one real customer question about ${offer} using a confirmed answer.` },
+      { day: 'Day 5', format: 'Product or service detail', idea: `Explain one feature or step of ${offer}. Use this verified detail: ${facts}` },
+      { day: 'Day 6', format: 'Story poll', idea: `Ask ${brief.audience} a relevant question; avoid implying customer results that are not evidenced.` },
+      { day: 'Day 7', format: 'Weekly recap', idea: `Summarize the week's useful points and invite viewers to take this action: ${cta}.` }
+    ];
+    const reelScript = [
+      { time: '0–3 sec', visual: 'Clear shot of the actual product, place or service', onScreen: `Need to know about ${offer}?`, voiceover: `Here is a quick look at ${offer}.` },
+      { time: '3–7 sec', visual: `Show ${brief.businessName} or the relevant work in progress`, onScreen: brief.businessName, voiceover: `This is ${brief.businessName}. Show only what is genuinely available.` },
+      { time: '7–12 sec', visual: 'Close-up, process demonstration or one real detail', onScreen: facts, voiceover: 'Add one verified detail or useful tip. Do not invent claims.' },
+      { time: '12–17 sec', visual: 'Simple end card with readable text', onScreen: cta, voiceover: cta }
+    ];
+    const output = {
+      id, createdAt, businessName: brief.businessName,
+      status: 'review_required',
+      generationMode: 'browser-local deterministic templates v0.1.0',
+      agentRuns: [
+        { agent: 'Brief Structurer', version: '0.1.0', status: 'completed', output: `Brief checked for ${brief.businessType}; required fields present.` },
+        { agent: 'Caption Variant Lab', version: '0.1.0', status: 'completed', output: 'Three caption drafts generated from the supplied brief.' },
+        { agent: 'Content Calendar Architect', version: '0.1.0', status: 'completed', output: 'Seven-day draft calendar generated.' },
+        { agent: 'Reel Script Engineer', version: '0.1.0', status: 'completed', output: '17-second, four-scene Reel outline generated.' },
+        { agent: 'Quality Reviewer', version: '0.1.0', status: 'review_required', output: 'Human review is required; check every factual claim, brand detail, CTA and permission before publication.' }
+      ],
+      brief, captions, calendar, reelScript,
+      qualityNotes: [
+        'This is a browser-local template workflow, not a connected language model or a call to the Python backend.',
+        'No public web research, client contact, DM, publication, listing change or purchase was performed.',
+        'Review the wording and verify all business claims before using the material externally.',
+        'Treat sample or fictional business details as spec work; do not imply a real client relationship.'
+      ],
+      evidence: { generatedInCurrentBrowser: true, externalSourcesFetched: false, outreachSent: false, contentPublished: false, modelApiCalled: false }
+    };
+    setAgentOutput(output);
+    setAgentRuns(prev => [output, ...prev].slice(0, 10));
+    setNotes(prev => [{ text: `Draft package generated: ${brief.businessName}`, status: 'Review required · local templates', time: new Date().toLocaleString() }, ...prev].slice(0, 30));
+    setNotice('Draft package generated locally. It has not been published or sent.');
+  }
+
+  function exportAgentRun(run) {
+    saveDownload(`autopilot-agent-run-${run.id}.json`, JSON.stringify(run, null, 2), 'application/json;charset=utf-8;');
+    setNotice('Run evidence JSON exported. It records a local template draft, not a live or model-backed agent run.');
+  }
+
   function stageOf(id) { return podState[id]?.stage || 'Idea'; }
   function setStage(id, stage) {
     setPodState(prev => ({ ...prev, [id]: { ...(prev[id] || {}), stage, updatedAt: new Date().toISOString() } }));
@@ -357,8 +564,87 @@ function App() {
         <div className="notice"><b>First-payment playbook</b><p>Use only official pages, confirm the payout method and minimum withdrawal before starting, do not pay a joining/deposit/unlock fee, do the real task yourself, follow its AI-assistance rules, and record “Accepted” or “Paid” only when the platform confirms it. Fake reviews, fake proof, duplicate accounts, location spoofing and CAPTCHA bypass are out.</p></div>
       </section>}
 
-      {tab === 'AI Agents' && <section className="panel"><h3>Agent connections</h3><p className="muted">No live agents are connected yet. The POD concept library is a local planning module, not a running autonomous agent.</p>{['Trend & Demand Research Agent','Original Design Brief Agent','Listing SEO Agent','IP & Print QA Agent','Publishing Queue Agent','Sales Learning Agent'].map(a => <div className="task" key={a}><span className="task-icon">✧</span><div><b>{a}</b><small>Backend integration required</small></div><span className="status warn">Not connected</span></div>)}</section>}
+      {tab === 'AI Agents' && <section className="agent-lab">
+        <section className="panel">
+          <div className="agent-hero-head">
+            <div><p className="eyebrow">VISIBLE WORKBENCH · ZERO API COST</p><h2>Run a local content draft workflow</h2><p className="muted">This runs deterministic browser templates using the brief below. It is not a live LLM or the Python backend.</p></div>
+            <span className="status good">Local run available</span>
+          </div>
+          <div className="notice"><b>Honest execution status</b><p>When you press Run, the browser creates real copy/calendar/Reel draft output and an evidence record on this device. No web research, AI-model API, DM, publication or external account action is performed. Saved browser data can be lost if app data is cleared.</p></div>
+          <form className="agent-brief-form" onSubmit={runLocalContentWorkflow}>
+            <label>Business / sample name<input value={agentBrief.businessName} onChange={e => updateAgentBrief('businessName', e.target.value)} required /></label>
+            <label>Business type<input value={agentBrief.businessType} onChange={e => updateAgentBrief('businessType', e.target.value)} required /></label>
+            <label>Location<input value={agentBrief.location} onChange={e => updateAgentBrief('location', e.target.value)} placeholder="City or area" /></label>
+            <label>Target audience<input value={agentBrief.audience} onChange={e => updateAgentBrief('audience', e.target.value)} required /></label>
+            <label>Offer / topic<input value={agentBrief.offer} onChange={e => updateAgentBrief('offer', e.target.value)} required /></label>
+            <label>Platform<select value={agentBrief.platform} onChange={e => updateAgentBrief('platform', e.target.value)}>{['Instagram','LinkedIn','Facebook','WhatsApp Status'].map(x => <option key={x}>{x}</option>)}</select></label>
+            <label>Brand voice<input value={agentBrief.brandVoice} onChange={e => updateAgentBrief('brandVoice', e.target.value)} placeholder="warm and friendly" /></label>
+            <label>Call to action<input value={agentBrief.callToAction} onChange={e => updateAgentBrief('callToAction', e.target.value)} /></label>
+            <label className="agent-wide">Verified facts / actual details<textarea value={agentBrief.verifiedFacts} onChange={e => updateAgentBrief('verifiedFacts', e.target.value)} placeholder="Optional: enter details you have verified. Leave blank if there are none." rows="3" /></label>
+            <button className="primary agent-wide" type="submit">Run local draft workflow →</button>
+          </form>
+        </section>
 
+        {agentOutput && <section className="panel agent-output" aria-live="polite">
+          <div className="agent-output-head"><div><p className="eyebrow">LATEST RUN · {agentOutput.id}</p><h2>{agentOutput.businessName}</h2><p className="muted">{new Date(agentOutput.createdAt).toLocaleString()} · {agentOutput.generationMode}</p></div><span className="status warn">Review required</span></div>
+          <div className="agent-run-steps">{agentOutput.agentRuns.map((item, i) => <article key={item.agent}><div className="agent-step-num">{String(i + 1).padStart(2, '0')}</div><div><b>{item.agent} v{item.version}</b><small>{item.output}</small></div><span className={'status ' + (item.status === 'completed' ? 'good' : 'warn')}>{item.status}</span></article>)}</div>
+          <div className="agent-output-section"><h3>1. Caption drafts · {agentOutput.brief.platform}</h3>{agentOutput.captions.map((caption, i) => <article className="agent-output-card" key={i}><div><b>Caption {i + 1}</b><p>{caption}</p></div><button className="secondary" type="button" onClick={() => copyText(caption, 'Caption copied. Verify claims before use.')}>Copy</button></article>)}</div>
+          <div className="agent-output-section"><h3>2. Seven-day content calendar</h3><div className="agent-calendar">{agentOutput.calendar.map(day => <article key={day.day}><span>{day.day}</span><b>{day.format}</b><p>{day.idea}</p></article>)}</div></div>
+          <div className="agent-output-section"><h3>3. 17-second Reel outline</h3><div className="agent-reel-scenes">{agentOutput.reelScript.map(scene => <article key={scene.time}><span>{scene.time}</span><div><b>Visual</b><p>{scene.visual}</p><b>On-screen text</b><p>{scene.onScreen}</p><b>Voiceover</b><p>{scene.voiceover}</p></div></article>)}</div></div>
+          <div className="notice"><b>Quality and evidence notes</b><ul>{agentOutput.qualityNotes.map(note => <li key={note}>{note}</li>)}</ul></div>
+          <button className="primary" type="button" onClick={() => exportAgentRun(agentOutput)}>Export run evidence JSON ↓</button>
+        </section>}
+
+        <section className="panel">
+          <div className="panel-head"><div><h3>PDF 10-agent ecosystem — honest status map</h3><p>Status describes mapped repository capability, not an always-running autonomous agent.</p></div><a href="https://github.com/kumbipakam29-dev/autopilot-studio/blob/feat/open-source-agent-learning-roadmap/docs/PDF_AGENT_ECOSYSTEM_CROSSWALK.md" target="_blank" rel="noreferrer">Implementation map ↗</a></div>
+          <div className="agent-role-grid">{PDF_AGENT_ROLES.map(role => <article key={role.name}><div><b>{role.name}</b><span className={'status ' + (role.status === 'Not implemented' ? 'warn' : '')}>{role.status}</span></div><p>{role.note}</p></article>)}</div>
+          <div className="notice"><b>Not yet connected</b><p>CrewAI/LangGraph, hosted model APIs, semantic vector memory and unrestricted execution are intentionally not activated. The 10 roles are not claimed to be 10 live model-backed agents.</p></div>
+        </section>
+
+        {agentRuns.length > 0 && <section className="panel"><div className="panel-head"><div><h3>Recent local draft runs</h3><p>Stored on this device only; not an authoritative cloud activity log.</p></div></div>{agentRuns.slice(0, 5).map(run => <div className="task" key={run.id}><span className="task-icon">✧</span><div><b>{run.businessName}</b><small>{new Date(run.createdAt).toLocaleString()} · {run.generationMode}</small></div><span className="status warn">Review required</span><button className="secondary" type="button" onClick={() => { setAgentOutput(run); setNotice('Loaded a saved local draft run.'); }}>View</button></div>)}</section>}
+      </section>}
+
+      {tab === 'Training Loop' && <section className="training-lab">
+        <section className="panel">
+          <p className="eyebrow">SUPERVISED EVALUATION · HUMAN GATE</p>
+          <h2>Training Loop & Evidence</h2>
+          <p className="muted">Record a before/after task review, the error category, regression result and approval decision. This dashboard tracks evidence; it does not train model weights or independently verify the scores.</p>
+          <div className="notice"><b>Honest status</b><p>Numbers entered below are reviewer-provided. A higher candidate score is a recorded comparison, not proof that an AI model learned. Approval means “eligible for a separate manual release review” only.</p></div>
+          <form className="training-form" onSubmit={recordTrainingCycle}>
+            <label>Specialist<select value={trainingForm.agent} onChange={e => updateTrainingForm('agent', e.target.value)}>{['Architect / Orchestrator','Coder','Browser Agent','Researcher / Source Verifier','Writer / Content Strategist','Reviewer / Quality Evaluator','Analyst','Communicator','Executor','Memory'].map(x => <option key={x}>{x}</option>)}</select></label>
+            <label>Task / benchmark<input required value={trainingForm.task} onChange={e => updateTrainingForm('task', e.target.value)} /></label>
+            <label>Baseline score (0–100)<input type="number" min="0" max="100" required value={trainingForm.baselineScore} onChange={e => updateTrainingForm('baselineScore', e.target.value)} /></label>
+            <label>Candidate score (0–100)<input type="number" min="0" max="100" required value={trainingForm.candidateScore} onChange={e => updateTrainingForm('candidateScore', e.target.value)} /></label>
+            <label>Error category<select value={trainingForm.errorCategory} onChange={e => updateTrainingForm('errorCategory', e.target.value)}>{['None observed','Factual accuracy / evidence','Clarity / completeness','Formatting','Tool failure / timeout','Safety / permission','Regression','Other'].map(x => <option key={x}>{x}</option>)}</select></label>
+            <label>Regression test<select value={trainingForm.regression} onChange={e => updateTrainingForm('regression', e.target.value)}><option value="pass">Pass</option><option value="fail">Fail — block approval</option><option value="not_run">Not run — review only</option></select></label>
+            <label className="training-wide">Change summary<input value={trainingForm.changeSummary} onChange={e => updateTrainingForm('changeSummary', e.target.value)} placeholder="What changed between baseline and candidate?" /></label>
+            <label className="training-wide">Evidence / reviewer notes<textarea rows="3" value={trainingForm.evidence} onChange={e => updateTrainingForm('evidence', e.target.value)} placeholder="Paste test result, example output, or reviewer notes. Do not enter secrets." /></label>
+            <button className="primary training-wide" type="submit">Record evaluation cycle</button>
+          </form>
+        </section>
+        <section className="panel">
+          <div className="panel-head"><div><h3>Evaluation history</h3><p>Device-local records · newest first · maximum 30 cycles</p></div><button className="secondary" type="button" onClick={exportTrainingLog}>Export JSON ↓</button></div>
+          <div className="training-import">
+            <label htmlFor="training-evidence-file">Import a real Python learning-cycle JSON record</label>
+            <input id="training-evidence-file" type="file" accept=".json,application/json" onChange={importTrainingEvidenceFile} />
+            <small>Generate the file with <code>python -m agents.learning_cycle_cli --input cycle.json --output evidence.json</code>. The CLI runs the repository's Python evaluation logic. Scores still need independent evidence and reviewer input.</small>
+          </div>
+          {trainingRuns.length === 0 ? <div className="empty">No evaluation cycles recorded on this device yet. Add a real benchmark run above; example scores are not imported as real evidence.</div> :
+            <div className="training-history">{trainingRuns.map(run => <article key={run.id} className="training-run">
+              <div className="training-run-head"><div><b>{run.agent}</b><small>{new Date(run.createdAt).toLocaleString()} · {run.id}</small></div><span className={'status ' + (run.regression === 'fail' || run.status === 'rejected_or_blocked' ? 'warn' : 'good')}>{run.approvalStatus}</span></div>
+              <p className="training-task">{run.task}</p>
+              <div className="training-score-row"><div><small>Baseline</small><strong>{run.baselineScore}/100</strong></div><div><small>Candidate</small><strong>{run.candidateScore}/100</strong></div><div><small>Change</small><strong>{run.delta > 0 ? '+' : ''}{run.delta}</strong></div><div><small>Regression</small><strong>{run.regression}</strong></div></div>
+              <p className="muted training-meta">Error: {run.errorCategory} · {run.scoreMethod}</p>
+              {run.changeSummary && <p><b>Change:</b> {run.changeSummary}</p>}
+              {run.evidence && <p><b>Evidence:</b> {run.evidence}</p>}
+              {run.approvalStatus === 'Pending human review' && run.regression === 'pass' && run.delta >= 0 && <div className="training-actions"><button className="primary" type="button" onClick={() => decideTrainingCycle(run.id, 'approve')}>Approve for manual release review</button><button className="secondary" type="button" onClick={() => decideTrainingCycle(run.id, 'reject')}>Reject</button></div>}
+              {run.regression === 'fail' && <p className="training-blocked">Blocked: regression failed; approval controls disabled.</p>}
+              {run.regression === 'not_run' && <p className="training-blocked">Review only: run regression tests before any release decision.</p>}
+              {run.approvedAt && <small>Decision recorded: {new Date(run.approvedAt).toLocaleString()}</small>}
+            </article>)}</div>}
+        </section>
+        <section className="panel"><h3>What this dashboard does not claim</h3><ul className="training-limits"><li>No LLM fine-tuning or model-weight updates.</li><li>No autonomous code edits, deployment or production release.</li><li>No external evaluator is connected; scores are manually entered.</li><li>Records are stored in this browser/device, not synced to GitHub or a server.</li><li>For valid comparisons, use the same benchmark inputs and independently capture baseline/candidate outputs.</li></ul></section>
+      </section>}
       {tab === 'Task Queue' && <section className="panel"><h3>Add a task</h3><p className="muted">Tasks are stored locally; they are not executed automatically.</p><form onSubmit={e => { e.preventDefault(); add(); }} className="task-form"><input value={task} onChange={e => setTask(e.target.value)} placeholder="Describe a task to track…" aria-label="Task description"/><button className="primary">Add task</button></form>{notes.map((n,i) => <div className="task" key={i}><span className="task-icon">☷</span><div><b>{n.text}</b><small>{n.time}</small></div><span className="status">{n.status}</span></div>)}</section>}
 
       {tab === 'Reports' && <section className="panel"><h3>Reports</h3><p className="muted">Reports will appear after a backend or data source is connected.</p><div className="empty">No sales or marketplace reports available yet.</div></section>}

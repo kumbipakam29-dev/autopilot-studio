@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0.0",
+  "project": "AutoPilot-Studio",
+  "purpose": "Pinned upstream GitHub learning sources for adapting proven agent patterns into AutoPilot agents.",
+  "status": "sources pinned and reviewed at repository-metadata level; no upstream code copied or installed yet",
+  "budget_policy": "No paid API by default. Local/offline mock tests required. Hardware and runtime costs must be checked before using local models.",
+  "import_policy": "Do not blindly vendor whole repositories. Review license and dependency tree; adapt small examples with attribution. Run untrusted code only in an isolated sandbox. Pin commit SHAs; re-check upstream before upgrades.",
+  "selection": [
+    {
+      "name": "smolagents",
+      "repo": "https://github.com/huggingface/smolagents",
+      "license": "Apache-2.0",
+      "commit": "96f33faaf028479119ec8d34507b47694cf14e34",
+      "roles": [
+        "read-only research prototype",
+        "evidence grader"
+      ],
+      "learn": [
+        "minimal tool-calling loop",
+        "model-provider abstraction",
+        "agent tests"
+      ],
+      "adoption": "first candidate after existing CI is green"
+    },
+    {
+      "name": "LangGraph",
+      "repo": "https://github.com/langchain-ai/langgraph",
+      "license": "MIT",
+      "commit": "858891aaa164ebdacf33b8f5e7f88b38b9132211",
+      "roles": [
+        "task router",
+        "approval workflow",
+        "long-running state"
+      ],
+      "learn": [
+        "explicit state graph",
+        "checkpoint and resume",
+        "human-in-the-loop"
+      ],
+      "adoption": "evaluate only if current workflow needs graph state"
+    },
+    {
+      "name": "Agno",
+      "repo": "https://github.com/agno-agi/agno",
+      "license": "Apache-2.0",
+      "commit": "ffe47567920e5a5c5d5d416c2b366f8c32c62f31",
+      "roles": [
+        "team orchestration prototype",
+        "knowledge/research workflow"
+      ],
+      "learn": [
+        "agent/team abstractions",
+        "structured outputs",
+        "evaluation patterns"
+      ],
+      "adoption": "compare against simpler native Python baseline"
+    },
+    {
+      "name": "CrewAI",
+      "repo": "https://github.com/crewAIInc/crewAI",
+      "license": "MIT",
+      "commit": "bb4d892e684e9289422e816b8769e7976fdd451a",
+      "roles": [
+        "role-based research/content team"
+      ],
+      "learn": [
+        "role and task definitions",
+        "handoff patterns",
+        "task-level acceptance criteria"
+      ],
+      "adoption": "study examples; don't run a large crew without measured need"
+    },
+    {
+      "name": "OpenHands",
+      "repo": "https://github.com/OpenHands/OpenHands",
+      "license": "MIT",
+      "commit": "311dc1be63758e51d61e43d6574d5c03c7a30688",
+      "roles": [
+        "coding-agent patterns",
+        "CI diagnosis research"
+      ],
+      "learn": [
+        "software-agent loop",
+        "test-driven iteration",
+        "sandbox boundary patterns"
+      ],
+      "adoption": "study architecture only; never grant unrestricted repo/shell access"
+    },
+    {
+      "name": "Ollama",
+      "repo": "https://github.com/ollama/ollama",
+      "license": "MIT",
+      "commit": "8ec9ecdf692e417798169ff8d5972159078d3754",
+      "roles": [
+        "local model runtime option"
+      ],
+      "learn": [
+        "local model serving",
+        "model identity/version pinning"
+      ],
+      "adoption": "not installed; first verify machine OS, RAM, disk and hardware"
+    },
+    {
+      "name": "Pydantic AI",
+      "repo": "https://github.com/pydantic/pydantic-ai",
+      "license": "MIT",
+      "commit": "eb53455eda571bf27b4974e54f9a539826dc6673",
+      "roles": [
+        "typed extraction",
+        "validated JSON outputs"
+      ],
+      "learn": [
+        "typed input/output",
+        "validation and retries",
+        "dependency injection"
+      ],
+      "adoption": "consider for source extraction or registry outputs"
+    },
+    {
+      "name": "Microsoft Agent Framework",
+      "repo": "https://github.com/microsoft/agent-framework",
+      "license": "MIT",
+      "commit": "1168c001dd228d6c7a623fd14f53e1f05b7b4540",
+      "roles": [
+        "workflow orchestration comparison"
+      ],
+      "learn": [
+        "workflow abstractions",
+        "agent orchestration patterns"
+      ],
+      "adoption": "compare dependencies and Python compatibility before use"
+    },
+    {
+      "name": "Langflow",
+      "repo": "https://github.com/langflow-ai/langflow",
+      "license": "MIT",
+      "commit": "aeb10d96bb2ea797696613af931e91ddf51f3320",
+      "roles": [
+        "visual workflow prototyping"
+      ],
+      "learn": [
+        "visual workflow design",
+        "component composition"
+      ],
+      "adoption": "optional; likely too heavy until core tests pass"
+    },
+    {
+      "name": "AutoGen",
+      "repo": "https://github.com/microsoft/autogen",
+      "license": "mixed repository metadata; verify code/docs subfolder licenses before reuse",
+      "commit": "004749e6b7102c8fd317b9b1499ce5807223c278",
+      "roles": [
+        "multi-agent conversation research"
+      ],
+      "learn": [
+        "agent communication patterns",
+        "human proxy patterns"
+      ],
+      "adoption": "research-only until maintenance direction and component license are checked"
+    }
+  ],
+  "immediate_plan": [
+    "1. Repair or diagnose existing offline CI failures before importing dependencies.",
+    "2. Prototype one read-only smolagents adapter using deterministic fake-model tests.",
+    "3. Benchmark it against the existing Python Earnings Hunter and Source Verifier on the same fixtures.",
+    "4. Reject the adapter if quality, security, runtime, dependency size or zero-budget requirements are worse.",
+    "5. Only then consider an optional pinned dependency; preserve native Python fallback and rollback."
+  ]
+}

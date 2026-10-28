@@ -67,6 +67,7 @@ def main():
         if not isinstance(item, dict):
             raise SystemExit(f"Item {index} must be an object.")
         fit_score, flags = score(item)
+        needs_verification = bool(flags) or not item.get("eligibility_checked", False) or not item.get("payment_verified", False)
         rows.append({
             "opportunity_id": str(item.get("opportunity_id") or f"opp-{index:04d}"),
             "source": item.get("source", ""),
@@ -77,7 +78,7 @@ def main():
             "eligibility_checked": str(bool(item.get("eligibility_checked", False))).lower(),
             "fit_score": fit_score,
             "risk_flags": ";".join(flags),
-            "status": "needs_verification" if flags else "awaiting_user_approval",
+            "status": "needs_verification" if needs_verification else "awaiting_user_approval",
             "approval_required": "true",
             "notes": item.get("notes", ""),
         })

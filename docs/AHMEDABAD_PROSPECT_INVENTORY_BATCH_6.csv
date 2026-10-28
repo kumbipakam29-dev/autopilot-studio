@@ -1,0 +1,16 @@
+business_name,category,area,source_type,official_source_verified,current_content_audited,contact_route_verified,contact_approved,contacted,client_status,payment_verified,content_idea_hypothesis,stage
+Inlay Interior Design,Interior design,Satellite,Public business listing,No,No,No,No,No,Not a client,No,Material-choice/project journey,DIRECTORY_LEAD_AUDIT_NEEDED
+Koncept Interior,Interior design,Naranpura/Sola Cross Road,Public business listing,No,No,No,No,No,Not a client,No,Design-to-execution process,DIRECTORY_LEAD_AUDIT_NEEDED
+SkyGreen Interior,Interior design,Motera,Public business listing,No,No,No,No,No,Not a client,No,Site-progress/room-planning,DIRECTORY_LEAD_AUDIT_NEEDED
+Ramdev Interior Pvt Ltd,Interior design,Gota/Jagatpur,Public business listing,No,No,No,No,No,Not a client,No,Project stages/handover checklist,DIRECTORY_LEAD_AUDIT_NEEDED
+Mecha Civil Designs,Architecture/interiors,Bhat/Chandkheda,Public business listing,No,No,No,No,No,Not a client,No,Space planning/materials explainer,DIRECTORY_LEAD_AUDIT_NEEDED
+RS Design Studio,Architecture/interiors,Prahlad Nagar,Public business listing,No,No,No,No,No,Not a client,No,Residential vs commercial project story,DIRECTORY_LEAD_AUDIT_NEEDED
+The Detailing Mafia,Auto detailing,Odhav/Vastral,Public business listing,No,No,No,No,No,Not a client,No,Approved process clips/car-care tips,DIRECTORY_LEAD_AUDIT_NEEDED
+Creative Motors - Mithakhali,Auto detailing,Mithakhali/Navrangpura,Public business listing,No,No,No,No,No,Not a client,No,Detailing stages/paint-care FAQ,DIRECTORY_LEAD_AUDIT_NEEDED
+Creative Motors - Thaltej,Auto detailing,Thaltej/SG Highway,Public business listing,No,No,No,No,No,Not a client,No,Service explainer with approved footage,DIRECTORY_LEAD_AUDIT_NEEDED
+CarzSpa - Makarba,Auto detailing,Makarba,Public business listing,No,No,No,No,No,Not a client,No,Detailing process explainer,DIRECTORY_LEAD_AUDIT_NEEDED
+CarzSpa - Nikol,Auto detailing,Nikol,Public business listing,No,No,No,No,No,Not a client,No,Maintenance tips/package explainer,DIRECTORY_LEAD_AUDIT_NEEDED
+Shivam Automall,Auto accessories/detailing,Navrangpura,Public business listing,No,No,No,No,No,Not a client,No,New-car protection/accessory explainer,DIRECTORY_LEAD_AUDIT_NEEDED
+IMS Ahmedabad,Coaching/career guidance,University Road/Gulbai Tekra,Public business listing,No,No,No,No,No,Not a client,No,Exam-format explainer/student FAQ,DIRECTORY_LEAD_AUDIT_NEEDED
+Vision Coaching Institute,Coaching,Nikol,Public business listing,No,No,No,No,No,Not a client,No,Concept mini-lesson/revision prompt,DIRECTORY_LEAD_AUDIT_NEEDED
+ArtCore Event,Event management,Usmanpura,Public business listing,No,No,No,No,No,Not a client,No,Event setup checklist/approved timelapse,DIRECTORY_LEAD_AUDIT_NEEDED
