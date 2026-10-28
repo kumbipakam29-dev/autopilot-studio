@@ -25,17 +25,17 @@ AGENTS = [
     ("publishing_agent", "Publish only after approval through authorized integrations", ["approval_agent"]),
 ]
 
-def build_agent_pipeline(brief):
+def build_agent_pipeline(brief, *, use_llm=False):
     order = build_creative_work_order(brief)
     brief_ok = order["quality_gate"]["status"] == "DRAFT_REVIEW_REQUIRED"
     work_types = set(brief.get("work_types", []))
     wants_video = bool(work_types.intersection({"reel_video", "video_ad"}))
-    cinematic_pack = build_cinematic_ad_pack(brief) if wants_video and brief_ok else None
+    cinematic_pack = build_cinematic_ad_pack(brief, use_llm=use_llm) if wants_video and brief_ok else None
 
     statuses = {
         "intake_agent": "BRIEF_VALIDATED" if brief_ok else "BLOCKED_BRIEF_QUALITY_GATE",
         "research_agent": "BLOCKED_NO_RESEARCH_CONNECTOR",
-        "creative_director_agent": "DRAFT_GENERATED_RULE_BASED" if cinematic_pack else (
+        "creative_director_agent": ("DRAFT_GENERATED_BY_CONFIGURED_LLM" if cinematic_pack and cinematic_pack["generation_mode"] == "configured_llm" else "DRAFT_GENERATED_RULE_BASED") if cinematic_pack else (
             "PLANNED" if brief_ok else "BLOCKED_BRIEF_QUALITY_GATE"),
         "script_agent": "DRAFT_SHOTLIST_GENERATED" if cinematic_pack else (
             "PLANNED" if brief_ok and wants_video else ("NOT_REQUIRED" if brief_ok else "BLOCKED_BRIEF_QUALITY_GATE")),
@@ -60,7 +60,7 @@ def build_agent_pipeline(brief):
         "cinematic_ad_pack": cinematic_pack,
         "agent_tasks": tasks,
         "execution_truth": {
-            "rule_based_creative_plan_generated": bool(cinematic_pack),
+            "rule_based_creative_plan_generated": bool(cinematic_pack and cinematic_pack["generation_mode"] == "deterministic_industry_routes"),\n            "external_llm_used": bool(cinematic_pack and cinematic_pack["execution_truth"]["llm_inference_used"]),
             "public_research_performed": False,
             "external_llm_used": False,
             "image_rendered": False,
@@ -96,7 +96,7 @@ def main():
                           "creative_pack_created": report["execution_truth"]["rule_based_creative_plan_generated"],
                           "video_rendered": False, "published": False, "output": str(out)}))
         return 0
-    except (OSError, ValueError, TypeError) as exc:
+    except (OSError, ValueError, TypeError, RuntimeError) as exc:
         print(json.dumps({"status": "FAILED", "error_type": type(exc).__name__, "error": str(exc)}))
         return 2
 
