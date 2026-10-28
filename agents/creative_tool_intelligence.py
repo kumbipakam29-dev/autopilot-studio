@@ -369,6 +369,100 @@ def _weighted_score(metrics: dict[str, float]) -> float:
     return round(sum(metrics[name] * weight for name, weight in METRIC_WEIGHTS.items()) / 5 * 100, 2)
 
 
+NEXT_EXPERIMENTS = {
+    "brief_fit": "Add approved customer segment, product/service details and the actual campaign objective to the brief.",
+    "concept_diversity": "Change the narrative mechanism and focal action, not only palette, camera or background.",
+    "product_identity_fidelity": "Increase approved reference-image use and compare product/logo regions across the shot.",
+    "temporal_consistency": "Use keyframes for the shot start/end and reduce the number of simultaneous moving elements.",
+    "factuality": "Restrict copy to the approved-facts list and render offers/claims as editable post-production text.",
+    "visual_legibility": "Move all critical text to editable layers; measure contrast and inspect at phone size.",
+    "technical_export": "Use deterministic FFmpeg export settings and verify resolution, frame rate, duration, codec and audio.",
+}
+
+
+def next_experiment(metrics: dict[str, float], *, metrics_are_actual: bool) -> dict[str, str]:
+    if not metrics_are_actual:
+        return {
+            "target_dimension": "unmeasured",
+            "experiment": "Generate actual baseline and candidate media; record reviewer/evaluator and score evidence.",
+        }
+    weakest = min(metrics, key=metrics.get)
+    return {"target_dimension": weakest, "experiment": NEXT_EXPERIMENTS[weakest]}
+
+
+def append_cycle_ledger(path: str | Path, report: dict[str, Any]) -> dict[str, Any]:
+    ledger = Path(path)
+    ledger.parent.mkdir(parents=True, exist_ok=True)
+    entries = []
+    if ledger.exists():
+        for line_number, line in enumerate(ledger.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                raise ValueError(f"Ledger has invalid JSON on line {line_number}") from None
+            if not isinstance(item, dict) or not isinstance(item.get("cycle_id"), str):
+                raise ValueError(f"Ledger line {line_number} is missing a cycle_id")
+            entries.append(item)
+    cycle_id = report.get("cycle_id")
+    if not isinstance(cycle_id, str):
+        raise ValueError("Only a reverse-engineering cycle report can be appended to the ledger")
+    if any(item["cycle_id"] == cycle_id for item in entries):
+        return {"path": str(ledger), "inserted": False, "entry_count": len(entries), "reason": "duplicate_cycle"}
+    benchmark = report.get("benchmark", {})
+    entry = {
+        "cycle_id": cycle_id,
+        "recorded_on": date.today().isoformat(),
+        "experiment_name": report.get("experiment_name"),
+        "observed_tool": report.get("observed_tool", {}).get("tool_name"),
+        "decision": report.get("decision"),
+        "metrics_are_actual": benchmark.get("scores_are_measured_inputs", False),
+        "baseline_score": benchmark.get("baseline_score"),
+        "candidate_score": benchmark.get("candidate_score"),
+        "delta": benchmark.get("delta"),
+        "metric_provenance": benchmark.get("metric_provenance"),
+        "hard_gates_passed": report.get("hard_gates_passed", False),
+        "next_experiment": report.get("next_experiment"),
+    }
+    with ledger.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\\n")
+    return {"path": str(ledger), "inserted": True, "entry_count": len(entries) + 1}
+
+
+def summarize_cycle_ledger(path: str | Path) -> dict[str, Any]:
+    ledger = Path(path)
+    if not ledger.exists():
+        entries = []
+    else:
+        entries = []
+        for line_number, line in enumerate(ledger.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                raise ValueError(f"Ledger has invalid JSON on line {line_number}") from None
+            if not isinstance(item, dict) or not isinstance(item.get("cycle_id"), str):
+                raise ValueError(f"Ledger line {line_number} is missing a cycle_id")
+            entries.append(item)
+    decisions: dict[str, int] = {}
+    for entry in entries:
+        decision = str(entry.get("decision", "unknown"))
+        decisions[decision] = decisions.get(decision, 0) + 1
+    measured = [entry for entry in entries if entry.get("metrics_are_actual") is True]
+    best = max(measured, key=lambda entry: entry.get("candidate_score", -1), default=None)
+    return {
+        "schema_version": REGISTRY_VERSION,
+        "ledger_path": str(ledger),
+        "cycle_count": len(entries),
+        "decision_counts": decisions,
+        "measured_cycle_count": len(measured),
+        "best_measured_candidate": best,
+        "note": "Only entries marked metrics_are_actual=true are included in best-candidate comparison.",
+    }
+
+
 def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
     """Compare an original candidate with a measured baseline from public/authorized evidence."""
     if not isinstance(raw, dict):
@@ -403,6 +497,7 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
         decision = "BLOCK_PROMOTION_FIX_HARD_GATES"
     else:
         decision = "KEEP_BASELINE_OR_RUN_ANOTHER_EXPERIMENT"
+    suggested_experiment = next_experiment(candidate, metrics_are_actual=metrics_are_actual)
     serial = json.dumps({
         "experiment_name": experiment_name,
         "observation": observation,
@@ -435,6 +530,7 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
         "hard_gates": gates,
         "hard_gates_passed": gates_passed,
         "decision": decision,
+        "next_experiment": suggested_experiment,
         "next_loop": (
             "Replace placeholder scores with measurements from actual output files before ranking a candidate."
             if decision == "NEED_REAL_OUTPUT_MEASUREMENTS" else
@@ -459,6 +555,8 @@ def main() -> int:
     parser.add_argument("--allow-paid-options", action="store_true", help="Do not prioritize zero-budget tools")
     parser.add_argument("--cycle", help="Path to a JSON evidence/benchmark cycle input")
     parser.add_argument("--observation", help="Path to a public evidence observation JSON")
+    parser.add_argument("--ledger", help="Optional JSONL path to append a cycle result or read history")
+    parser.add_argument("--history", action="store_true", help="Summarize the cycle history in --ledger")
     parser.add_argument("--output", default="artifacts/creative-tool-intelligence.json")
     args = parser.parse_args()
     try:
@@ -468,10 +566,16 @@ def main() -> int:
             result = recommend_tools(args.task, zero_budget=not args.allow_paid_options, local_only=not args.allow_hosted)
         elif args.cycle:
             result = build_reverse_engineering_cycle(json.loads(Path(args.cycle).read_text(encoding="utf-8")))
+            if args.ledger:
+                result["ledger_update"] = append_cycle_ledger(args.ledger, result)
+        elif args.history:
+            if not args.ledger:
+                parser.error("--history requires --ledger")
+            result = summarize_cycle_ledger(args.ledger)
         elif args.observation:
             result = analyze_public_observation(json.loads(Path(args.observation).read_text(encoding="utf-8")))
         else:
-            parser.error("use --list-tools, --task, --observation, or --cycle")
+            parser.error("use --list-tools, --task, --observation, --cycle, or --history")
         path = Path(args.output)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
