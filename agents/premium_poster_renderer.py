@@ -40,10 +40,11 @@ def build_svg(brief: dict) -> str:
     lines = lines[:3] or ["A better", "experience"]
     headline = "\n".join(f'<text x="76" y="{430+i*86}" class="headline">{_text(part)}</text>' for i, part in enumerate(lines))
     safe_client = _text(client.upper())
+    safe_topic = _text(topic)
     safe_goal = _text(goal[:90])
     safe_cta = _text(cta.upper()[:42])
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="title desc">
-<title id="title">{safe_client} campaign poster concept</title><desc id="desc">Editable vector poster prototype. Replace abstract artwork with approved client imagery before delivery.</desc>
+<title id="title">{safe_client} campaign poster concept: {safe_topic}</title><desc id="desc">Editable vector poster prototype. Replace abstract artwork with approved client imagery before delivery.</desc>
 <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="{bg}"/><stop offset="1" stop-color="#263044"/></linearGradient><radialGradient id="glow"><stop stop-color="{accent}" stop-opacity=".55"/><stop offset="1" stop-color="{accent}" stop-opacity="0"/></radialGradient></defs>
 <style>.brand{{font:700 27px Arial,sans-serif;letter-spacing:4px;fill:{paper}}}.eyebrow{{font:700 17px Arial,sans-serif;letter-spacing:5px;fill:{accent}}}.headline{{font:800 76px Arial,sans-serif;letter-spacing:-2px;fill:{paper}}}.body{{font:400 25px Arial,sans-serif;fill:{paper}}}.cta{{font:700 20px Arial,sans-serif;letter-spacing:3px;fill:{bg}}}.small{{font:400 16px Arial,sans-serif;letter-spacing:2px;fill:{paper};opacity:.75}}</style>
 <rect width="1080" height="1350" fill="url(#bg)"/><circle cx="835" cy="330" r="390" fill="url(#glow)"/><circle cx="840" cy="330" r="235" fill="none" stroke="{accent}" stroke-width="2" opacity=".8"/><circle cx="840" cy="330" r="185" fill="none" stroke="{paper}" stroke-width="1" opacity=".35"/><path d="M620 120 L1010 510 M720 90 L1035 405 M610 220 L950 560" stroke="{accent}" stroke-width="2" opacity=".45"/>
