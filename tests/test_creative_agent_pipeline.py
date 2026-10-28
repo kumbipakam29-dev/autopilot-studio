@@ -31,16 +31,22 @@ class CreativeAgentPipelineTests(unittest.TestCase):
         self.assertIn("quality_agent", names)
         self.assertIn("publishing_agent", names)
         self.assertEqual(len(names), len(set(names)))
+        self.assertEqual(len(result["cinematic_ad_pack"]["concepts"]), 3)
+        self.assertTrue(result["execution_truth"]["rule_based_creative_plan_generated"])
 
     def test_does_not_claim_render_or_publish(self):
         result = build_agent_pipeline(self.brief())
         self.assertFalse(result["execution_truth"]["video_rendered"])
         self.assertFalse(result["execution_truth"]["published"])
         self.assertTrue(any("renderer" in task["status"].lower() for task in result["agent_tasks"]))
+        self.assertEqual(next(t for t in result["agent_tasks"] if t["agent"] == "research_agent")["status"],
+                         "BLOCKED_NO_RESEARCH_CONNECTOR")
 
     def test_business_type_is_carried_into_work_order(self):
         result = build_agent_pipeline(self.brief("auto parts store"))
         self.assertEqual(result["client"]["business_type"], "auto parts store")
+        self.assertIn("Precision exploded view",
+                      [x["title"] for x in result["cinematic_ad_pack"]["concepts"]])
 
     def test_invalid_brief_is_rejected(self):
         with self.assertRaises(ValueError):
