@@ -201,6 +201,18 @@ function App() {
   const [earningRateCurrency, setEarningRateCurrency] = React.useState('INR');
   const [earningUrl, setEarningUrl] = React.useState('');
   const [earningStatus, setEarningStatus] = React.useState('Lead found');
+  const [creativeObservation, setCreativeObservation] = React.useState(() => readStore('aps-creative-observation-form', {
+    toolName: '', sourceUrl: '', observedOn: new Date().toISOString().slice(0, 10),
+    publicBehavior: '', inputOutputObserved: '', unknowns: 'Underlying model, internal prompts and private implementation details are not verified.'
+  }));
+  const [creativeObservationRuns, setCreativeObservationRuns] = React.useState(() => readStore('aps-creative-observation-runs', []));
+  const [creativeCycleForm, setCreativeCycleForm] = React.useState(() => readStore('aps-creative-cycle-form', {
+    experimentName: 'Client-specific cinematic ad experiment',
+    baselineScore: '60', candidateScore: '75', evidence: '',
+    actualOutputsReviewed: false, assetRightsConfirmed: false, commercialLicenseCleared: false,
+    noUnsupportedClaims: false, noDirectImitation: false, privacyReviewed: false
+  }));
+  const [creativeCycles, setCreativeCycles] = React.useState(() => readStore('aps-creative-cycles', []));
 
   React.useEffect(() => { localStorage.setItem('aps-notes', JSON.stringify(notes)); }, [notes]);
   React.useEffect(() => { localStorage.setItem('aps-agent-brief', JSON.stringify(agentBrief)); }, [agentBrief]);
@@ -210,6 +222,10 @@ function App() {
   React.useEffect(() => { localStorage.setItem('aps-training-form', JSON.stringify(trainingForm)); }, [trainingForm]);
   React.useEffect(() => { localStorage.setItem('aps-pod-state', JSON.stringify(podState)); }, [podState]);
   React.useEffect(() => { localStorage.setItem('aps-earnings-log', JSON.stringify(earningsLog)); }, [earningsLog]);
+  React.useEffect(() => { localStorage.setItem('aps-creative-observation-form', JSON.stringify(creativeObservation)); }, [creativeObservation]);
+  React.useEffect(() => { localStorage.setItem('aps-creative-observation-runs', JSON.stringify(creativeObservationRuns.slice(0, 30))); }, [creativeObservationRuns]);
+  React.useEffect(() => { localStorage.setItem('aps-creative-cycle-form', JSON.stringify(creativeCycleForm)); }, [creativeCycleForm]);
+  React.useEffect(() => { localStorage.setItem('aps-creative-cycles', JSON.stringify(creativeCycles.slice(0, 50))); }, [creativeCycles]);
 
   function add() {
     if (!task.trim()) return;
