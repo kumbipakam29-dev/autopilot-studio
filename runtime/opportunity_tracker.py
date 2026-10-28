@@ -32,6 +32,8 @@ def score(item):
     if not item.get("eligibility_checked", False):
         flags.append("eligibility_not_checked")
     if not item.get("payment_text"):
+        flags.append("payment_text_missing")
+    if not item.get("payment_verified", False):
         flags.append("payment_not_verified")
     if any(word in title + " " + description for word in ("registration fee", "pay to apply", "deposit required", "crypto deposit")):
         flags.append("possible_upfront_fee")
