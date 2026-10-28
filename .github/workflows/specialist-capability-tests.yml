@@ -5,9 +5,11 @@ on:
     branches:
       - main
       - feat/open-source-agent-learning-roadmap
+      - feat/office-orchestrator-all-options
   pull_request:
     branches:
       - main
+      - feat/open-source-agent-learning-roadmap
   workflow_dispatch:
 
 permissions:
@@ -21,8 +23,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+        uses: actions/setup-python@v5
       - name: Run offline unit tests
         run: python -m unittest discover -s tests -v

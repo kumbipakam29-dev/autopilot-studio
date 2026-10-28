@@ -2,7 +2,7 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, earnings-hunter-mobile-ui-2026-10, high-value-data-labeling-sources, feat/open-source-agent-learning-roadmap]
+    branches: [main, earnings-hunter-mobile-ui-2026-10, high-value-data-labeling-sources, feat/open-source-agent-learning-roadmap, feat/office-orchestrator-all-options]
 permissions:
   contents: write
 jobs:
@@ -57,9 +57,9 @@ jobs:
           name: AutoPilot Studio POD Workspace ${{ github.run_number }}
           body: |
             Auto-built APK from the current main branch.
-            
+
             This build adds a local POD concept workspace. Trend feeds, image-generation APIs, seller accounts and live marketplace publishing are not connected.
-            
+
             Note: this is a debug-signed APK. If Android refuses to update a previous build, uninstall the previous build and install this APK.
           files: AutoPilot-Studio-POD.apk
           make_latest: true
