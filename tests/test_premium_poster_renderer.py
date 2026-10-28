@@ -9,7 +9,11 @@ class PremiumPosterRendererTests(unittest.TestCase):
         svg = build_svg(brief)
         self.assertIn('width="1080" height="1350"', svg)
         self.assertIn('class="headline"', svg)
-        self.assertIn("Glow with confidence", svg)
+        # Long headlines are deliberately wrapped across readable lines; the full topic
+        # remains available to screen readers and metadata in the SVG title.
+        self.assertIn("Glow with confidence", svg.split("</title>", 1)[0])
+        self.assertIn(">Glow with</text>", svg)
+        self.assertIn(">confidence</text>", svg)
         self.assertIn("VECTOR PREVIEW", svg)
         self.assertIn("Replace abstract artwork with approved client imagery", svg)
 
