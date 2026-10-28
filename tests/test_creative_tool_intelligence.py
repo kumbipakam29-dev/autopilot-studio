@@ -34,6 +34,8 @@ def cycle_input(baseline=3, candidate=4, gates=True):
         },
         "baseline_metrics": metrics(baseline),
         "candidate_metrics": metrics(candidate),
+        "metrics_are_actual": True,
+        "metric_provenance": "Test-controlled scores for unit-testing decision logic; not claims about real media quality.",
         "hard_gates": {key: gates for key in HARD_GATES},
         "original_changes": [
             "Use a client-specific storyboard with separate shot prompts.",
@@ -76,6 +78,14 @@ class CreativeToolIntelligenceTests(unittest.TestCase):
     def test_cycle_keeps_baseline_when_candidate_not_better(self):
         report = build_reverse_engineering_cycle(cycle_input(baseline=4, candidate=4))
         self.assertEqual(report["decision"], "KEEP_BASELINE_OR_RUN_ANOTHER_EXPERIMENT")
+
+    def test_placeholder_measurements_never_promote(self):
+        data = cycle_input()
+        data["metrics_are_actual"] = False
+        data["metric_provenance"] = "Template values only; no media exists yet."
+        report = build_reverse_engineering_cycle(data)
+        self.assertEqual(report["decision"], "NEED_REAL_OUTPUT_MEASUREMENTS")
+        self.assertFalse(report["benchmark"]["scores_are_measured_inputs"])
 
     def test_observation_requires_https_public_evidence(self):
         data = cycle_input()
