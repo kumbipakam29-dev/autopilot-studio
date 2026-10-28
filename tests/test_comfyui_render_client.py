@@ -87,6 +87,22 @@ class ComfyUIRenderClientTests(unittest.TestCase):
             self.assertEqual(submitted["3"]["inputs"]["seed"], 42)
             self.assertFalse(result["output_downloaded"])
 
+    def test_unsafe_output_prefix_rejected_before_file_access(self):
+        client = ComfyUIClient(self.config())
+        with self.assertRaises(ComfyUIError):
+            client.submit_workflow("does-not-exist.json", approved=True, output_prefix="../outside")
+
+    def test_unused_input_image_is_not_uploaded(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "workflow.json"
+            workflow = {"1": {"class_type": "KSampler", "inputs": {"seed": 42}}}
+            path.write_text(json.dumps(workflow), encoding="utf-8")
+            client = ComfyUIClient(self.config())
+            with patch.object(client, "upload_image") as upload:
+                with self.assertRaises(ComfyUIError):
+                    client.submit_workflow(path, approved=True, image_path="source.jpg")
+            upload.assert_not_called()
+
     def test_provider_nodes_blocked_by_default(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "workflow.json"
