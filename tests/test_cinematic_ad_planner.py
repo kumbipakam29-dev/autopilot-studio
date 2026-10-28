@@ -68,6 +68,26 @@ class CinematicAdPlannerTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 build_cinematic_ad_pack(self.brief(), use_llm=True)
 
+    def test_routes_cover_multiple_business_categories(self):
+        cases = [
+            ("fitness studio", "Movement in one beat"),
+            ("real estate agency", "Doorway-to-view"),
+            ("education center", "Concept comes alive"),
+            ("ecommerce store", "Material-to-use"),
+            ("software company", "Problem-to-workflow"),
+            ("music artist", "Studio-to-stage"),
+            ("healthcare clinic", "Care environment"),
+            ("travel hospitality", "Arrival reveal"),
+            ("fashion boutique", "Fabric in motion"),
+            ("jewellery shop", "Light on the detail"),
+            ("construction contractor", "Blueprint-to-build"),
+            ("general retail store", "Aisle-to-hero"),
+        ]
+        for business_type, expected_title in cases:
+            with self.subTest(business_type=business_type):
+                pack = build_cinematic_ad_pack(self.brief(business_type))
+                self.assertIn(expected_title, [item["title"] for item in pack["concepts"]])
+
     def test_pack_does_not_claim_media_rendered_or_published(self):
         pack = build_cinematic_ad_pack(self.brief())
         self.assertFalse(pack["execution_truth"]["image_rendered"])
