@@ -34,7 +34,7 @@ jobs:
           python -m agents.hard_task_simulation --output artifacts/hard-task-learning-report.json
       - name: Generate creative portfolios, tool shortlist and learning-loop evidence
         run: |
-          mkdir -p artifacts/creative-packs artifacts/creative-pipelines artifacts/creative-tool-intelligence
+          mkdir -p artifacts/creative-packs artifacts/creative-pipelines artifacts/creative-tool-intelligence/observations
           for business in salon auto-parts retail; do
             python -m agents.cinematic_ad_planner \
               --brief "examples/cinematic-ad-brief-${business}.json" \
@@ -47,6 +47,11 @@ jobs:
             --output artifacts/creative-tool-intelligence/catalog.json
           python -m agents.creative_tool_intelligence --task premium_cinematic_reel \
             --output artifacts/creative-tool-intelligence/premium-reel-shortlist.json
+          for observation in examples/creative-tool-observation-*.json; do
+            name=$(basename "$observation" .json)
+            python -m agents.creative_tool_intelligence --observation "$observation" \
+              --output "artifacts/creative-tool-intelligence/observations/${name}.json"
+          done
           python -m agents.creative_tool_intelligence --cycle examples/creative-reverse-engineering-cycle.json \
             --output artifacts/creative-tool-intelligence/reverse-engineering-template-report.json
       - name: Add creative artifact summary
@@ -104,6 +109,7 @@ jobs:
             artifacts/creative-packs/*.json
             artifacts/creative-pipelines/*.json
             artifacts/creative-tool-intelligence/*.json
+            artifacts/creative-tool-intelligence/**/*.json
           if-no-files-found: warn
           retention-days: 14
       - name: Run harmless demo task
