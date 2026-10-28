@@ -10,6 +10,7 @@ from pathlib import Path
 
 from agents.creative_work_order import build_creative_work_order
 from agents.cinematic_ad_planner import build_cinematic_ad_pack
+from agents.creative_tool_intelligence import REGISTRY_VERSION, recommend_tools
 
 AGENTS = [
     ("intake_agent", "Validate brief, approved facts and asset permissions", []),
@@ -56,12 +57,32 @@ def build_agent_pipeline(brief, *, use_llm=False):
              for name, purpose, deps in AGENTS]
     pid = hashlib.sha256((order["work_order_id"] + "|creative_agent_pipeline_v2").encode()).hexdigest()[:16]
     llm_used = bool(cinematic_pack and cinematic_pack["execution_truth"]["llm_inference_used"])
+    tool_tasks = []
+    if wants_video:
+        tool_tasks.append("premium_cinematic_reel")
+    if "poster_design" in work_types:
+        tool_tasks.append("text_heavy_poster")
+    if "website_build" in work_types or "app_build" in work_types:
+        tool_tasks.append("brand_consistency")
+    if not tool_tasks and "social_content" in work_types:
+        tool_tasks.append("storyboard")
+    tool_recommendations = [
+        recommend_tools(task, zero_budget=True, local_only=True)
+        for task in dict.fromkeys(tool_tasks)
+    ]
     return {
         "schema_version": "creative_agent_pipeline_v2",
         "pipeline_id": pid,
         "client": order["client"],
         "work_order": order,
         "cinematic_ad_pack": cinematic_pack,
+        "tool_intelligence": {
+            "registry_version": REGISTRY_VERSION,
+            "policy": "zero-budget preferred; local-first; no automatic paid fallback",
+            "recommendations": tool_recommendations,
+            "live_tool_discovery_performed": False,
+            "current_license_and_hardware_verified_for_this_job": False,
+        },
         "agent_tasks": tasks,
         "execution_truth": {
             "rule_based_creative_plan_generated": bool(cinematic_pack and cinematic_pack["generation_mode"] == "deterministic_industry_routes"),
