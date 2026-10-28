@@ -95,6 +95,18 @@ class CinematicAdPlannerTests(unittest.TestCase):
         self.assertFalse(pack["execution_truth"]["published"])
         self.assertFalse(pack["quality_gate"]["rendered_assets_verified"])
 
+    def test_repository_example_briefs_generate_three_routes(self):
+        from pathlib import Path
+        import json
+        examples = sorted(Path("examples").glob("cinematic-ad-brief-*.json"))
+        self.assertGreaterEqual(len(examples), 3)
+        for example in examples:
+            with self.subTest(example=example.name):
+                brief = json.loads(example.read_text(encoding="utf-8"))
+                pack = build_cinematic_ad_pack(brief)
+                self.assertEqual(len(pack["concepts"]), 3)
+                self.assertEqual(pack["quality_gate"]["status"], "DRAFT_REVIEW_REQUIRED")
+
     def test_invalid_brief_is_rejected(self):
         with self.assertRaises(ValueError):
             build_cinematic_ad_pack({"client_name": "Missing fields"})
