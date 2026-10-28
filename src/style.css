@@ -143,3 +143,49 @@
 .training-import input{width:100%;min-width:0;font-size:12px;color:#536078}
 .training-import small{font-size:11px;line-height:1.6;color:#78849a;overflow-wrap:anywhere}
 .training-import code{white-space:normal;overflow-wrap:anywhere;color:#5346b5}
+
+
+/* Creative Intelligence: readable evidence cards and explicit gate controls */
+.creative-gate {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 10px !important;
+  grid-column: 1 / -1;
+  padding: 11px 12px;
+  border: 1px solid #edf0f5;
+  border-radius: 9px;
+  background: #fafbfe;
+  line-height: 1.5;
+}
+.training-form label.creative-gate input[type="checkbox"] {
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  padding: 0;
+  accent-color: #6758df;
+}
+.creative-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.creative-tool-card {
+  border: 1px solid #e8ecf3;
+  border-radius: 12px;
+  background: #fff;
+  padding: 15px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.creative-tool-card h4 { margin: 0; font: 800 14px Manrope; }
+.creative-tool-card p { font-size: 12px; line-height: 1.6; color: #748198; }
+.creative-tool-card .creative-access { display: inline-block; margin: 8px 0; }
+.creative-tool-card a { color: #6254cc; font-weight: 700; font-size: 12px; text-decoration: none; }
+.creative-tool-card a:hover { text-decoration: underline; }
+.creative-observation-hypothesis { border-top: 1px solid #edf0f5; padding: 12px 0; }
+.creative-observation-hypothesis p { font-size: 12px; line-height: 1.6; color: #657189; }
+@media(max-width:760px) {
+  .creative-tool-grid { grid-template-columns: minmax(0, 1fr); }
+  .creative-gate { grid-column: 1; }
+}
