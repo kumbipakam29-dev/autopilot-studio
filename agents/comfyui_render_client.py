@@ -51,7 +51,6 @@ def load_config(environ: dict[str, str] | None = None) -> ComfyUIConfig:
     parsed = urlsplit(base)
     if not parsed.netloc or parsed.username or parsed.password:
         raise ComfyUIError("ComfyUI URL must be a valid host URL without embedded credentials")
-    local_hosts = {"127.0.0.1", "localhost", "[::1]"}
     remote = parsed.hostname not in {"127.0.0.1", "localhost", "::1"}
     if remote and env.get("AUTOPILOT_ALLOW_REMOTE_COMFYUI", "").lower() != "true":
         raise ComfyUIError(
@@ -247,11 +246,29 @@ class ComfyUIClient:
                 + "). Review for data transfer and billing before setting "
                 "AUTOPILOT_COMFYUI_ALLOW_PROVIDER_NODES=true."
             )
-        image_filename = self.upload_image(image_path) if image_path else None
+        serialized = json.dumps(workflow)
+        needs_image = "__AUTOPILOT_IMAGE_FILENAME__" in serialized
+        if needs_image and not image_path:
+            raise ComfyUIError("Workflow requires an input image placeholder but --image was not supplied")
+        if image_path and not needs_image:
+            raise ComfyUIError("An input image was supplied but the workflow has no image placeholder")
         workflow = substitute_placeholders(
             workflow, positive_prompt=positive_prompt, negative_prompt=negative_prompt,
-            image_filename=image_filename, seed=seed, output_prefix=output_prefix,
+            image_filename="__AUTOPILOT_IMAGE_PENDING_UPLOAD__" if needs_image else None,
+            seed=seed, output_prefix=output_prefix,
         )
+        image_filename = self.upload_image(image_path) if needs_image and image_path else None
+
+        def replace_uploaded_name(value: Any) -> Any:
+            if isinstance(value, dict):
+                return {key: replace_uploaded_name(item) for key, item in value.items()}
+            if isinstance(value, list):
+                return [replace_uploaded_name(item) for item in value]
+            if isinstance(value, str):
+                return value.replace("__AUTOPILOT_IMAGE_PENDING_UPLOAD__", image_filename or "")
+            return value
+
+        workflow = replace_uploaded_name(workflow)
         response = self._post_json("/prompt", {"prompt": workflow})
         prompt_id = response.get("prompt_id")
         if not isinstance(prompt_id, str) or not prompt_id:
@@ -264,7 +281,6 @@ class ComfyUIClient:
             "workflow_node_errors": response.get("node_errors", {}),
             "provider_nodes_found": external_nodes,
             "output_downloaded": False,
-            "model_inference_confirmed": False,
         }
 
     def wait_for_outputs(self, prompt_id: str, output_dir: str | Path, *,
@@ -315,7 +331,7 @@ class ComfyUIClient:
             "prompt_id": prompt_id,
             "outputs": saved,
             "output_downloaded": bool(saved),
-            "model_inference_confirmed": bool(saved),
+            "workflow_completed_with_outputs": bool(saved),
         }
 
     @staticmethod
