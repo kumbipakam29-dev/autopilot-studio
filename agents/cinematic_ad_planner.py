@@ -81,6 +81,102 @@ ROUTES = {
         ("Shopping moment", "Show a practical customer journey using approved store imagery.",
          "customer_journey", "natural motion and clean transitions, no fabricated endorsements", "Make every visit count."),
     ],
+    "fitness": [
+        ("Movement in one beat", "Open with a real training movement and reveal the coaching or equipment behind it.",
+         "kinetic_movement", "controlled tracking shot with realistic body mechanics", "Progress starts with the next rep."),
+        ("Equipment macro", "Show texture, setup and safe use of the actual equipment.",
+         "equipment_macro", "short macro push and clean rack focus", "Built around the work."),
+        ("Training rhythm", "Build a rhythmic sequence from warm-up to a realistic training moment.",
+         "training_rhythm", "paced cuts synchronized to original sound design; no fabricated body transformations", "Make your next session count."),
+    ],
+    "real_estate": [
+        ("Doorway-to-view", "Enter the actual property and reveal its real layout in one fluid movement.",
+         "architectural_walkthrough", "smooth gimbal push with natural perspective and no room reshaping", "See the space for yourself."),
+        ("Material and detail", "Feature real finishes, light, fittings and floor-plan details.",
+         "interior_macro", "slow rack focus and natural daylight movement", "Details make the difference."),
+        ("A day in the space", "Show a plausible lifestyle moment tied to the actual property's real features.",
+         "lifestyle_context", "steady wide shot to detail cut; do not invent views or amenities", "Picture your next chapter."),
+    ],
+    "education": [
+        ("Concept comes alive", "Turn one approved learning concept into a clear visual reveal.",
+         "concept_visualization", "simple motion graphics and clean transitions; keep text editor-added", "One idea. A clearer picture."),
+        ("Behind the lesson", "Show a real lesson, tool or activity with permission-cleared people.",
+         "learning_process", "deliberate overhead and close-up cuts", "Learning made tangible."),
+        ("Curiosity hook", "Open with a learner question and resolve it using an approved explanation.",
+         "question_reveal", "focus shift from question card to real demonstration", "Bring your questions."),
+    ],
+    "ecommerce": [
+        ("Material-to-use", "Move from the real material and finish into the product being used.",
+         "product_macro_use", "macro push-in followed by a match cut to real use", "Designed for real life."),
+        ("Packaging reveal", "Show the authentic packaging, product detail and unboxing sequence.",
+         "unboxing_sequence", "controlled top-down motion with stable item identity", "The details start at the box."),
+        ("One product, three angles", "Show three distinct real features or use cases from approved product references.",
+         "multi_angle_product", "three precise camera angles; no invented features", "Take a closer look."),
+    ],
+    "software": [
+        ("Problem-to-workflow", "Start with a real user task and show the relevant interface workflow.",
+         "interface_workflow", "screen capture plus clean zooms; use only approved UI data", "Make the next step clearer."),
+        ("Feature in focus", "Show one genuine feature, then the precise steps to use it.",
+         "feature_demo", "cursor-led movement and readable editor-added labels", "See how it works."),
+        ("Before the click", "Frame a common workflow challenge, then demonstrate the actual product flow.",
+         "workflow_transition", "clean match cut from task to interface; no fabricated metrics", "Try the workflow for yourself."),
+    ],
+    "music artist": [
+        ("Studio-to-stage", "Move from a real studio detail to a permission-cleared performance moment.",
+         "studio_performance", "slow push into a rhythmic cut; use original or licensed audio", "Hear the story behind the sound."),
+        ("Instrument macro", "Make the actual instrument, fingers and sound texture the visual hero.",
+         "instrument_macro", "macro focus pull and subtle camera orbit", "Every note has a detail."),
+        ("The making of", "Show authentic parts of the creative process without copying another artist's style.",
+         "creative_process", "documentary close-ups and deliberate match cuts", "A sound with its own story."),
+    ],
+    "healthcare": [
+        ("Care environment", "Show the real facility, equipment and service journey without patient details.",
+         "care_environment", "calm camera glide and clean lighting; protect patient privacy", "Clear information. Thoughtful care."),
+        ("Service explainer", "Explain one verified service using approved wording and a clinician-reviewed script.",
+         "service_explainer", "precise close-ups and editor-added labels", "Know what to expect."),
+        ("Meet the team", "Introduce verified staff roles and the real environment with consent.",
+         "team_introduction", "natural portraits and steady movement; no outcome promises", "Start with a conversation."),
+    ],
+    "travel hospitality": [
+        ("Arrival reveal", "Move from the real entrance into a distinctive approved property or destination detail.",
+         "arrival_walkthrough", "smooth forward move with true-to-location architecture", "See where your next trip begins."),
+        ("Experience details", "Connect three real details that define the guest experience.",
+         "experience_sequence", "macro details with paced transitions", "Make room for an experience."),
+        ("A moment there", "Show a realistic visitor moment with permissions and authentic location assets.",
+         "destination_moment", "natural movement, accurate environment and no invented amenities", "Explore the details."),
+    ],
+    "fashion": [
+        ("Fabric in motion", "Use the actual garment fabric, silhouette and details as the opening hook.",
+         "fabric_macro", "controlled fabric movement and clean orbit; preserve garment design", "Made to move with you."),
+        ("Three styling directions", "Present three distinct ways to style the actual product without changing its design.",
+         "styling_triptych", "matched framing and consistent garment details", "Your style, your direction."),
+        ("Walk-in reveal", "Reveal the real product on a consenting model or approved mannequin.",
+         "fashion_reveal", "slow tracking shot and natural motion, no body retouching claims", "Let the details speak."),
+    ],
+    "jewellery": [
+        ("Light on the detail", "Reveal the actual piece through macro facets, metalwork and reflected light.",
+         "jewellery_macro", "slow orbital macro with realistic reflection and stable setting", "Every detail catches the light."),
+        ("Craft and setting", "Focus on real craftsmanship and the approved item's construction.",
+         "craft_detail", "precise rack focus and restrained sparkle", "Crafted to be noticed."),
+        ("Gift moment", "Show the actual item in an elegant, consent-approved gifting context.",
+         "gift_reveal", "soft push-in and calm match cut", "A little moment that lasts."),
+    ],
+    "electronics": [
+        ("Component precision", "Highlight real ports, finish and components without exposing invented internals.",
+         "device_macro", "controlled macro moves and stable geometry", "Details that work for you."),
+        ("Setup-to-use", "Show the actual device being set up and used for one approved use case.",
+         "setup_demo", "hands-on close-ups and legible editor-added overlays", "See it in action."),
+        ("Feature reveal", "Reveal one verified feature with a clear, practical demonstration.",
+         "feature_demo", "clean orbit and crisp transition; avoid unsupported performance claims", "Discover the details."),
+    ],
+    "construction": [
+        ("Blueprint-to-build", "Transition from an approved plan to real progress or completed work.",
+         "plan_to_build", "precise match cuts, accurate site details and safety gear", "Built step by step."),
+        ("Craft at work", "Feature real tools, materials and skilled workmanship.",
+         "workmanship_macro", "close-up movement and realistic material behaviour", "Good work is visible."),
+        ("Finished-space reveal", "Reveal the actual completed space without altering its dimensions or finishes.",
+         "finished_space", "slow wide-to-detail move with true-to-site geometry", "See the work come together."),
+    ],
     "local service": [
         ("Problem-to-process", "Show the real job context, then the skilled process and completed work.",
          "process_reveal", "steady detail shots, clear match cuts, no fabricated before/after", "See the care behind the work."),
@@ -102,8 +198,9 @@ DEFAULT_ROUTES = [
 
 def _industry_routes(business_type: str):
     value = re.sub(r"[^a-z0-9]+", " ", business_type.lower()).strip()
-    for key, routes in ROUTES.items():
-        if key in value or value in key:
+    for key, routes in sorted(ROUTES.items(), key=lambda item: len(item[0]), reverse=True):
+        normalized_key = key.replace("_", " ")
+        if normalized_key in value or value in normalized_key:
             return routes
     if any(word in value for word in ("salon", "hair", "beauty", "parlour", "parlor", "spa")):
         return ROUTES["salon"]
