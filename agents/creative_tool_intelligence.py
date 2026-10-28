@@ -285,7 +285,10 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
     candidate_score = _weighted_score(candidate)
     delta = round(candidate_score - baseline_score, 2)
     gates_passed = all(gates[key] is True for key in HARD_GATES)
-    if not metrics_are_actual:\n        decision = "NEED_REAL_OUTPUT_MEASUREMENTS"\n    elif gates_passed and delta > 0:\n        decision = "PROMOTE_CANDIDATE_TO_HUMAN_REVIEW"
+    if not metrics_are_actual:
+        decision = "NEED_REAL_OUTPUT_MEASUREMENTS"
+    elif gates_passed and delta > 0:
+        decision = "PROMOTE_CANDIDATE_TO_HUMAN_REVIEW"
     elif not gates_passed:
         decision = "BLOCK_PROMOTION_FIX_HARD_GATES"
     else:
@@ -296,7 +299,9 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
         "baseline_metrics": baseline,
         "candidate_metrics": candidate,
         "hard_gates": gates,
-        "metric_provenance": metric_provenance,\n        "metrics_are_actual": metrics_are_actual,\n        "original_changes": change_log,
+        "metric_provenance": metric_provenance,
+        "metrics_are_actual": metrics_are_actual,
+        "original_changes": change_log,
     }, ensure_ascii=False, sort_keys=True)
     return {
         "schema_version": REGISTRY_VERSION,
@@ -320,7 +325,10 @@ def build_reverse_engineering_cycle(raw: dict[str, Any]) -> dict[str, Any]:
         "hard_gates": gates,
         "hard_gates_passed": gates_passed,
         "decision": decision,
-        "next_loop": (\n            "Replace placeholder scores with measurements from actual output files before ranking a candidate."\n            if decision == "NEED_REAL_OUTPUT_MEASUREMENTS" else\n            "Have a human compare output files, approve/reject the candidate, record issues, and run the same benchmark again."
+        "next_loop": (
+            "Replace placeholder scores with measurements from actual output files before ranking a candidate."
+            if decision == "NEED_REAL_OUTPUT_MEASUREMENTS" else
+            "Have a human compare output files, approve/reject the candidate, record issues, and run the same benchmark again."
             if decision == "PROMOTE_CANDIDATE_TO_HUMAN_REVIEW"
             else "Record failed metrics, change one or two implementation variables, then rerun the same benchmark."
         ),
