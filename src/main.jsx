@@ -840,7 +840,7 @@ function App() {
           <div className="panel-head"><div><h3>3. Python agent pipeline + CI evidence</h3><p>The Python tools and CI samples are separate from the browser-local prototype above.</p></div></div>
           <div className="earning-actions">
             <a href="https://github.com/kumbipakam29-dev/autopilot-studio/pull/62" target="_blank" rel="noreferrer">Open draft implementation PR ↗</a>
-            <a href="https://api.github.com/repos/kumbipakam29-dev/autopilot-studio/actions/artifacts/12788574385/zip" target="_blank" rel="noreferrer">Download creative evidence ZIP ↗</a>
+            <a href="https://api.github.com/repos/kumbipakam29-dev/autopilot-studio/actions/artifacts/12789776395/zip" target="_blank" rel="noreferrer">Download creative evidence ZIP ↗</a>
           </div>
           <div className="notice"><b>What's inside the ZIP</b><p>Three client-specific campaign packs (salon, auto-parts, retail), 18-second shot plans, prompt sets, 11-agent handoff reports, source-linked tool registry, five public-tool hypothesis reports, learning ledger snapshot and hard-task test report. Packs are prompts/plans—not finished rendered Reels.</p></div>
         </section>
