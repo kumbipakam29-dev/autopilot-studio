@@ -121,26 +121,27 @@ def _industry_routes(business_type: str):
 
 def _build_shots(client_name: str, business_type: str, topic: str, audience: str, goal: str,
                  cta: str, route: tuple[str, str, str, str, str], reference_notes: list[str]) -> list[dict[str, Any]]:
-    title, narrative, mechanic, motion, payoff = route
+    title, narrative, mechanic, route_motion, payoff = route
     context = "; ".join(reference_notes[:3]) if reference_notes else "Use only supplied, approved client assets."
     scenes = [
         ("0-2s", "Pattern interrupt", f"Extreme detail of the real {topic} relevant to {business_type}; immediate visual intrigue.",
-         f"Vertical 9:16 cinematic macro of the actual client-provided {topic}, grounded in {business_type}. {context}. Realistic materials, crisp focus, premium commercial lighting. No generated lettering, no fake logos, no additional products."),
+         f"Vertical 9:16 cinematic macro of the actual client-provided {topic}, grounded in {business_type}. {context}. Realistic materials, crisp focus, premium commercial lighting. No generated lettering, no fake logos, no additional products.",
+         "Very slow camera push-in with subtle natural environmental movement; preserve product and subject identity."),
         ("2-6s", "Signature motion", f"{narrative} Keep the supplied product, person and brand details consistent.",
-         f"Continue the same {business_type} campaign and exact reference subject. Visual mechanic: {mechanic}. One clear focal action, realistic physics, consistent shape, colour and identity. Keep composition vertical 9:16. No text or logo hallucinations."),
+         f"Continue the same {business_type} campaign and exact reference subject. Visual mechanic: {mechanic}. One clear focal action, realistic physics, consistent shape, colour and identity. Keep composition vertical 9:16. No text or logo hallucinations.",
+         route_motion),
         ("6-13s", "Credible proof / payoff", f"Show a truthful use or process detail relevant to {audience} and {goal}; use only approved facts.",
-         f"Show the actual approved product/service in a plausible real context. Camera motion: {motion}. Premium but believable commercial look, natural texture, true-to-reference details, no unsupported results, no invented awards or testimonials. No embedded text."),
+         f"Show the actual approved product/service in a plausible real context. Camera motion: {route_motion}. Premium but believable commercial look, natural texture, true-to-reference details, no unsupported results, no invented awards or testimonials. No embedded text.",
+         "Use one controlled camera move, realistic physics, stable geometry and consistent identity; avoid flicker, morphing and invented details."),
         ("13-18s", "Brand end frame", f"Hold on an elegant hero frame with space for the real logo and the CTA: {cta}.",
-         f"Create a clean final hero composition for {client_name} in vertical 9:16, with clear negative space for editor-added approved logo and CTA. Do not render text or a fake logo. Keep product details faithful to reference."),
+         f"Create a clean final hero composition for {client_name} in vertical 9:16, with clear negative space for editor-added approved logo and CTA. Do not render text or a fake logo. Keep product details faithful to reference.",
+         "Slow, elegant camera settle; keep clear negative space for typography added in post."),
     ]
-    return [{"time": t, "purpose": purpose, "scene_direction": direction, "visual_prompt": visual,
-             "motion_prompt": motion if idx == 1 else (
-                 "Very slow camera push-in with subtle natural environmental movement; preserve product and subject identity."
-                 if idx == 0 else
-                 "Use one controlled camera move, realistic physics, stable geometry and consistent identity; avoid flicker, morphing and invented details."
-                 if idx == 2 else
-                 "Slow, elegant camera settle; keep clear negative space for typography added in post.")
-            } for idx, (t, purpose, direction, visual, motion) in enumerate(scenes)]
+    return [
+        {"time": t, "purpose": purpose, "scene_direction": direction, "visual_prompt": visual,
+         "motion_prompt": motion}
+        for t, purpose, direction, visual, motion in scenes
+    ]
 
 def _llm_routes(brief: dict[str, Any]) -> tuple[list[tuple[str, str, str, str, str]], dict[str, Any]]:
     """Ask the configured LLM for three original, structurally validated creative routes."""
