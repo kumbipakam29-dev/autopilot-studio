@@ -15,6 +15,10 @@ This is **not** a fully autonomous AGI or a guaranteed income system. It does no
 - [First Verified Payment Sprint — India / zero budget](docs/FIRST_VERIFIED_PAYMENT_SPRINT.md)
 - [Direct-client CSV/text labeling experiment](docs/DIRECT_CLIENT_MICROGIG_EXPERIMENT.md)
 
+## Creative production prototype
+- [Cinematic watch-ad production specification and six-shot prompts](docs/CINEMATIC_PRODUCT_AD_PIPELINE.md)
+- [Runnable Wan2.1 watch-motion smoke test notebook (GPU required; free allocation not guaranteed)](notebooks/WATCH_MOTION_SMOKE_TEST.ipynb)
+
 ## Research documents
 - [Deep research, system gap audit, free tools/models and zero-budget roadmap](docs/DEEP_RESEARCH_ZERO_BUDGET.md)
 - [1,224 categorized opportunity hypotheses (CSV)](docs/IDEA_BANK_1200.csv)
