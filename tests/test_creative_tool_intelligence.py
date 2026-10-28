@@ -99,6 +99,12 @@ class CreativeToolIntelligenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_reverse_engineering_cycle(data)
 
+    def test_private_code_or_access_bypass_is_rejected(self):
+        data = cycle_input()
+        data["observation"]["private_code_accessed"] = True
+        with self.assertRaises(ValueError):
+            build_reverse_engineering_cycle(data)
+
     def test_unknown_or_private_scope_is_rejected(self):
         data = cycle_input()
         data["observation"]["evidence_scope"] = "private_code_access"
